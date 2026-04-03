@@ -121,6 +121,17 @@ body {
   color: rgba(253, 246, 240, 0.7);
 }
 
+.menubar-right a {
+  color: inherit;
+  text-decoration: none;
+  transition: color 0.15s;
+}
+
+.menubar-right a:hover {
+  color: #fff;
+  text-decoration: underline;
+}
+
 /* DESKTOP ICONS */
 .desktop-icons {
   position: fixed;
@@ -1040,7 +1051,6 @@ body {
 }
 
 /* DESKTOP WIDGETS */
-.desktop-widgets-wrapper { display: contents; }
 .desktop-widgets-container {
   position: fixed;
   inset: 0;
@@ -1133,162 +1143,40 @@ body {
 @media (max-width: 768px) {
   body { overflow: auto; }
 
-  .menubar {
-    height: 48px;
-    padding: 0 20px;
-    background: transparent;
-    border-bottom: none;
-    box-shadow: none;
-    display: flex;
-    justify-content: space-between;
-    pointer-events: none;
-    flex-shrink: 0;
-  }
-
-  .menubar-logo, .menubar-items, .desktop-link { display: none !important; }
-
-  .menubar-right {
-    flex: 1;
-    display: flex;
-    justify-content: space-between;
-    width: 100%;
-    align-items: center;
-    pointer-events: auto;
-  }
-
-  .time-display {
-    order: -1;
-    font-weight: 700;
-    font-size: 15px;
-    color: white;
-  }
-
-  .mobile-status-icons {
-    display: flex;
-    gap: 8px;
-    font-size: 14px;
-    color: white;
-  }
-
-  .menubar::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(180deg, rgba(0,0,0,0.3) 0%, transparent 100%);
-    pointer-events: none;
-    z-index: -1;
-  }
-
   .desktop {
-    height: 100dvh !important;
-    max-height: 100dvh !important;
-    overflow: hidden !important;
-    padding-bottom: 0 !important;
-    display: flex;
-    flex-direction: column;
-    background-size: 110% 110%;
-    background-position: center;
-    position: relative;
+    height: auto;
+    min-height: 100vh;
+    padding-bottom: 100px;
   }
 
-  .desktop-widgets-wrapper { 
-    display: block; 
-    flex: 1; 
-    overflow: hidden;
-    scrollbar-width: none;
-    -ms-overflow-style: none;
-  }
-  .desktop-widgets-wrapper::-webkit-scrollbar { display: none; }
-  .desktop-widgets-container {
-    position: relative !important;
-    display: flex !important;
-    flex-direction: column !important;
-    padding: 0px 16px !important;
-    gap: 6px !important;
-    pointer-events: auto !important;
-    width: 100% !important;
-    z-index: 10 !important;
-    height: auto !important;
-    inset: auto !important;
-    transform: scale(0.8);
-    transform-origin: top center;
+  .menubar {
+    height: 40px;
+    padding: 0 12px;
   }
 
-  .widget-zone {
-    max-width: 100% !important;
-    width: 100% !important;
-    align-items: center !important;
-    margin: 0 !important;
-    gap: 8px !important;
-  }
+  .menubar-logo { width: 22px; height: 22px; font-size: 11px; }
+  .menubar-items { display: none; }
+  .menubar-right { font-size: 13px; }
 
-  .widget-row {
-    flex-direction: row !important;
-    justify-content: center !important;
-    flex-wrap: wrap !important;
-    gap: 10px !important;
-    width: 100% !important;
-  }
-
-  .widget-panel {
-    transform: scale(1) !important;
-    width: 140px !important;
-    height: 140px !important;
-    border-radius: 20px !important;
-    padding: 12px !important;
-    margin: 0 !important;
-    min-height: unset !important;
-  }
-
-  .photo-widget-large, .wide-widget, .media-widget {
-    width: 290px !important;
-    height: 125px !important;
-    max-width: 290px !important;
-    border-radius: 20px !important;
-    transform: scale(1) !important;
-    margin: 0 !important;
-  }
-
-  .photo-widget-small {
-    width: 140px !important;
-    height: 140px !important;
-    border-radius: 20px !important;
-  }
-
-  .media-art { width: 38px !important; height: 38px !important; }
-  .media-title { font-size: 11px !important; }
-  .media-artist { font-size: 9px !important; }
-  .media-controls { font-size: 12px !important; margin-top: 2px !important; }
-  .weather-temp { font-size: 28px !important; }
-  .calendar-day { width: 11px !important; height: 11px !important; font-size: 8px !important; }
-
-  /* COMPACT FOLDERS AT BOTTOM OF WIDGETS */
   .desktop-icons {
-    position: relative !important;
-    display: grid !important;
-    grid-template-columns: repeat(4, 1fr) !important;
-    gap: 4px !important;
-    padding: 0px 20px 80px !important;
-    width: 100% !important;
-    right: auto !important; top: auto !important;
-    z-index: 20 !important;
-    margin-top: -60px;
-    transform: scale(0.8);
-    transform-origin: bottom center;
+    position: static;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    padding: 60px 16px 20px;
+    width: 100%;
+    right: auto; top: auto;
   }
 
   .desktop-icon {
-    width: auto !important;
-    padding: 2px !important;
+    width: auto;
+    padding: 8px;
   }
 
-  .icon-img { 
-    width: 44px !important; 
-    height: 44px !important; 
-    font-size: 22px !important; 
-    border-radius: 12px !important;
-  }
-  .icon-label { font-size: 9px !important; margin-top: 2px !important; opacity: 0.9; }
+  .desktop-widgets-wrapper { display: none; }
+
+  .icon-img { width: 56px; height: 56px; font-size: 28px; }
+  .icon-label { font-size: 11px; margin-top: 4px; }
 
   /* FULL SCREEN WINDOWS ON MOBILE */
   .window {
@@ -1327,13 +1215,13 @@ body {
 
   /* DOCK MOBILE */
   .dock-container {
-    bottom: 15px;
-    padding: 5px;
+    bottom: 20px;
+    padding: 10px;
   }
   .dock {
-    padding: 6px 10px;
-    gap: 8px;
+    padding: 8px 12px;
+    gap: 12px;
   }
-  .dock-item { padding: 4px; }
-  .dock-icon .icon-svg { width: 22px; height: 22px; }
+  .dock-item { padding: 6px; }
+  .dock-icon .icon-svg { width: 24px; height: 24px; }
 }
