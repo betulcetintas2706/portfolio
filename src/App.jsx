@@ -24,8 +24,8 @@ export default function App() {
         <div className="desktop-widgets-wrapper">
           <DesktopWidgets />
         </div>
+        <DesktopIcons activePage={activePage} showPage={showPage} />
       </div>
-      <DesktopIcons activePage={activePage} showPage={showPage} />
       <Window
         activePage={activePage}
         showPage={showPage}

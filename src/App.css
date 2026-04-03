@@ -1040,6 +1040,7 @@ body {
 }
 
 /* DESKTOP WIDGETS */
+.desktop-widgets-wrapper { display: contents; }
 .desktop-widgets-container {
   position: fixed;
   inset: 0;
@@ -1135,11 +1136,14 @@ body {
   .desktop {
     height: auto;
     min-height: 100vh;
-    padding-bottom: 100px;
+    padding-bottom: 120px;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
   }
 
   .menubar {
-    height: 40px;
+    height: 42px;
     padding: 0 12px;
   }
 
@@ -1147,25 +1151,71 @@ body {
   .menubar-items { display: none; }
   .menubar-right { font-size: 13px; }
 
+  .desktop-widgets-wrapper { display: block; }
+  .desktop-widgets-container {
+    position: relative !important;
+    display: flex !important;
+    flex-direction: column !important;
+    padding: 60px 16px 20px !important;
+    gap: 24px !important;
+    pointer-events: auto !important;
+    width: 100% !important;
+    z-index: 10 !important;
+    height: auto !important;
+    inset: auto !important;
+  }
+
+  .widget-zone {
+    max-width: 100% !important;
+    width: 100% !important;
+    align-items: center !important;
+    margin: 0 !important;
+    gap: 20px !important;
+  }
+
+  .widget-panel {
+    transform: scale(1) !important;
+    width: 100% !important;
+    max-width: 320px !important;
+    height: auto !important;
+    min-height: 160px;
+  }
+
+  .photo-widget-large, .photo-widget-small, .wide-widget, .media-widget {
+    width: 100% !important;
+    max-width: 320px !important;
+    height: auto !important;
+    min-height: 160px;
+  }
+
+  .photo-widget-large { height: 280px !important; }
+
+  .widget-row {
+    flex-direction: column !important;
+    align-items: center !important;
+    gap: 20px !important;
+    width: 100% !important;
+  }
+
+  /* FOLDERS FLOW AFTER WIDGETS */
   .desktop-icons {
-    position: static;
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 12px;
-    padding: 60px 16px 20px;
-    width: 100%;
-    right: auto; top: auto;
+    position: relative !important;
+    display: grid !important;
+    grid-template-columns: repeat(4, 1fr) !important;
+    gap: 8px !important;
+    padding: 0 12px 100px !important;
+    width: 100% !important;
+    right: auto !important; top: auto !important;
+    z-index: 20 !important;
   }
 
   .desktop-icon {
-    width: auto;
-    padding: 8px;
+    width: auto !important;
+    padding: 4px !important;
   }
 
-  .desktop-widgets-wrapper { display: none; }
-
-  .icon-img { width: 56px; height: 56px; font-size: 28px; }
-  .icon-label { font-size: 11px; margin-top: 4px; }
+  .icon-img { width: 48px !important; height: 48px !important; font-size: 24px !important; }
+  .icon-label { font-size: 10px !important; }
 
   /* FULL SCREEN WINDOWS ON MOBILE */
   .window {
