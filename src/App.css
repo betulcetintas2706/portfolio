@@ -1134,7 +1134,7 @@ body {
   body { overflow: auto; }
 
   .menubar {
-    height: 44px;
+    height: 48px;
     padding: 0 20px;
     background: transparent;
     border-bottom: none;
@@ -1142,6 +1142,7 @@ body {
     display: flex;
     justify-content: space-between;
     pointer-events: none;
+    flex-shrink: 0;
   }
 
   .menubar-logo, .menubar-items, .desktop-link { display: none !important; }
@@ -1179,28 +1180,38 @@ body {
   }
 
   .desktop {
-    height: auto;
-    min-height: 100vh;
-    padding-bottom: 120px;
+    height: 100dvh !important;
+    max-height: 100dvh !important;
+    overflow: hidden !important;
+    padding-bottom: 0 !important;
     display: flex;
     flex-direction: column;
-    overflow-y: auto;
     background-size: 110% 110%;
     background-position: center;
+    position: relative;
   }
 
-  .desktop-widgets-wrapper { display: block; }
+  .desktop-widgets-wrapper { 
+    display: block; 
+    flex: 1; 
+    overflow: hidden;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  .desktop-widgets-wrapper::-webkit-scrollbar { display: none; }
   .desktop-widgets-container {
     position: relative !important;
     display: flex !important;
     flex-direction: column !important;
-    padding: 60px 16px 20px !important;
-    gap: 24px !important;
+    padding: 0px 16px !important;
+    gap: 6px !important;
     pointer-events: auto !important;
     width: 100% !important;
     z-index: 10 !important;
     height: auto !important;
     inset: auto !important;
+    transform: scale(0.8);
+    transform-origin: top center;
   }
 
   .widget-zone {
@@ -1208,21 +1219,21 @@ body {
     width: 100% !important;
     align-items: center !important;
     margin: 0 !important;
-    gap: 12px !important;
+    gap: 8px !important;
   }
 
   .widget-row {
     flex-direction: row !important;
     justify-content: center !important;
     flex-wrap: wrap !important;
-    gap: 12px !important;
+    gap: 10px !important;
     width: 100% !important;
   }
 
   .widget-panel {
-    transform: scale(0.9) !important;
-    width: 145px !important;
-    height: 145px !important;
+    transform: scale(1) !important;
+    width: 140px !important;
+    height: 140px !important;
     border-radius: 20px !important;
     padding: 12px !important;
     margin: 0 !important;
@@ -1230,38 +1241,40 @@ body {
   }
 
   .photo-widget-large, .wide-widget, .media-widget {
-    width: 300px !important;
-    height: 145px !important;
-    max-width: 300px !important;
+    width: 290px !important;
+    height: 125px !important;
+    max-width: 290px !important;
     border-radius: 20px !important;
-    transform: scale(0.9) !important;
-    margin: -10px 0 !important;
+    transform: scale(1) !important;
+    margin: 0 !important;
   }
 
   .photo-widget-small {
-    width: 145px !important;
-    height: 145px !important;
+    width: 140px !important;
+    height: 140px !important;
     border-radius: 20px !important;
   }
 
-  .media-art { width: 44px !important; height: 44px !important; }
-  .media-title { font-size: 12px !important; }
-  .media-artist { font-size: 10px !important; }
-  .media-controls { font-size: 14px !important; margin-top: 4px !important; }
-  .weather-temp { font-size: 32px !important; }
-  .calendar-day { width: 12px !important; height: 12px !important; font-size: 8px !important; }
+  .media-art { width: 38px !important; height: 38px !important; }
+  .media-title { font-size: 11px !important; }
+  .media-artist { font-size: 9px !important; }
+  .media-controls { font-size: 12px !important; margin-top: 2px !important; }
+  .weather-temp { font-size: 28px !important; }
+  .calendar-day { width: 11px !important; height: 11px !important; font-size: 8px !important; }
 
-  /* FOLDERS FLOW AFTER WIDGETS */
+  /* COMPACT FOLDERS AT BOTTOM OF WIDGETS */
   .desktop-icons {
     position: relative !important;
     display: grid !important;
     grid-template-columns: repeat(4, 1fr) !important;
     gap: 4px !important;
-    padding: 0 16px 120px !important;
+    padding: 0px 20px 80px !important;
     width: 100% !important;
     right: auto !important; top: auto !important;
     z-index: 20 !important;
-    margin-top: -10px;
+    margin-top: -60px;
+    transform: scale(0.8);
+    transform-origin: bottom center;
   }
 
   .desktop-icon {
@@ -1314,13 +1327,13 @@ body {
 
   /* DOCK MOBILE */
   .dock-container {
-    bottom: 20px;
-    padding: 10px;
+    bottom: 15px;
+    padding: 5px;
   }
   .dock {
-    padding: 8px 12px;
-    gap: 12px;
+    padding: 6px 10px;
+    gap: 8px;
   }
-  .dock-item { padding: 6px; }
-  .dock-icon .icon-svg { width: 24px; height: 24px; }
+  .dock-item { padding: 4px; }
+  .dock-icon .icon-svg { width: 22px; height: 22px; }
 }
