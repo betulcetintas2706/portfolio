@@ -21,7 +21,9 @@ export default function App() {
     <>
       <MenuBar showPage={showPage} />
       <div className="desktop">
-        <DesktopWidgets />
+        <div className="desktop-widgets-wrapper">
+          <DesktopWidgets />
+        </div>
       </div>
       <DesktopIcons activePage={activePage} showPage={showPage} />
       <Window

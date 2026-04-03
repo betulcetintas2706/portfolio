@@ -37,7 +37,7 @@ export default function Window({ activePage, showPage, title, windowBodyRef }) {
   };
 
   const handlePointerMove = (e) => {
-    if (!isDragging) return;
+    if (!isDragging || window.innerWidth <= 768) return;
     setPosition({
       x: e.clientX - dragStart.x,
       y: e.clientY - dragStart.y
