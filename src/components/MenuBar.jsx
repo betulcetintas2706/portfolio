@@ -35,9 +35,13 @@ export default function MenuBar({ showPage }) {
         ))}
       </div>
       <div className="menubar-right">
-        <a href="https://github.com/betulcetintas2706" target="_blank" rel="noopener noreferrer" style={{ color: 'inherit', textDecoration: 'none', cursor: 'pointer' }}>🔗 GitHub</a>
-        <a href="https://www.linkedin.com/in/betul-cetintas/" target="_blank" rel="noopener noreferrer" style={{ color: 'inherit', textDecoration: 'none', cursor: 'pointer' }}>🔗 linkedin.com/in/betul-cetintas</a>
-        <span>{time}</span>
+        <div className="mobile-status-icons">
+          <span className="wifi-icon">📶</span>
+          <span className="battery-icon">🔋</span>
+        </div>
+        <a href="https://github.com/betulcetintas2706" target="_blank" rel="noopener noreferrer" className="desktop-link">🔗 GitHub</a>
+        <a href="https://www.linkedin.com/in/betul-cetintas/" target="_blank" rel="noopener noreferrer" className="desktop-link">🔗 linkedin.com/in/betul-cetintas</a>
+        <span className="time-display">{time}</span>
       </div>
     </div>
   );

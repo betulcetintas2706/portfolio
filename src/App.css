@@ -1133,6 +1133,51 @@ body {
 @media (max-width: 768px) {
   body { overflow: auto; }
 
+  .menubar {
+    height: 44px;
+    padding: 0 20px;
+    background: transparent;
+    border-bottom: none;
+    box-shadow: none;
+    display: flex;
+    justify-content: space-between;
+    pointer-events: none;
+  }
+
+  .menubar-logo, .menubar-items, .desktop-link { display: none !important; }
+
+  .menubar-right {
+    flex: 1;
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    align-items: center;
+    pointer-events: auto;
+  }
+
+  .time-display {
+    order: -1;
+    font-weight: 700;
+    font-size: 15px;
+    color: white;
+  }
+
+  .mobile-status-icons {
+    display: flex;
+    gap: 8px;
+    font-size: 14px;
+    color: white;
+  }
+
+  .menubar::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(0,0,0,0.3) 0%, transparent 100%);
+    pointer-events: none;
+    z-index: -1;
+  }
+
   .desktop {
     height: auto;
     min-height: 100vh;
@@ -1140,16 +1185,9 @@ body {
     display: flex;
     flex-direction: column;
     overflow-y: auto;
+    background-size: 110% 110%;
+    background-position: center;
   }
-
-  .menubar {
-    height: 42px;
-    padding: 0 12px;
-  }
-
-  .menubar-logo { width: 22px; height: 22px; font-size: 11px; }
-  .menubar-items { display: none; }
-  .menubar-right { font-size: 13px; }
 
   .desktop-widgets-wrapper { display: block; }
   .desktop-widgets-container {
@@ -1170,52 +1208,74 @@ body {
     width: 100% !important;
     align-items: center !important;
     margin: 0 !important;
-    gap: 20px !important;
+    gap: 12px !important;
+  }
+
+  .widget-row {
+    flex-direction: row !important;
+    justify-content: center !important;
+    flex-wrap: wrap !important;
+    gap: 12px !important;
+    width: 100% !important;
   }
 
   .widget-panel {
-    transform: scale(1) !important;
-    width: 100% !important;
-    max-width: 320px !important;
-    height: auto !important;
-    min-height: 160px;
+    transform: scale(0.9) !important;
+    width: 145px !important;
+    height: 145px !important;
+    border-radius: 20px !important;
+    padding: 12px !important;
+    margin: 0 !important;
+    min-height: unset !important;
   }
 
-  .photo-widget-large, .photo-widget-small, .wide-widget, .media-widget {
-    width: 100% !important;
-    max-width: 320px !important;
-    height: auto !important;
-    min-height: 160px;
+  .photo-widget-large, .wide-widget, .media-widget {
+    width: 300px !important;
+    height: 145px !important;
+    max-width: 300px !important;
+    border-radius: 20px !important;
+    transform: scale(0.9) !important;
+    margin: -10px 0 !important;
   }
 
-  .photo-widget-large { height: 280px !important; }
-
-  .widget-row {
-    flex-direction: column !important;
-    align-items: center !important;
-    gap: 20px !important;
-    width: 100% !important;
+  .photo-widget-small {
+    width: 145px !important;
+    height: 145px !important;
+    border-radius: 20px !important;
   }
+
+  .media-art { width: 44px !important; height: 44px !important; }
+  .media-title { font-size: 12px !important; }
+  .media-artist { font-size: 10px !important; }
+  .media-controls { font-size: 14px !important; margin-top: 4px !important; }
+  .weather-temp { font-size: 32px !important; }
+  .calendar-day { width: 12px !important; height: 12px !important; font-size: 8px !important; }
 
   /* FOLDERS FLOW AFTER WIDGETS */
   .desktop-icons {
     position: relative !important;
     display: grid !important;
     grid-template-columns: repeat(4, 1fr) !important;
-    gap: 8px !important;
-    padding: 0 12px 100px !important;
+    gap: 4px !important;
+    padding: 0 16px 120px !important;
     width: 100% !important;
     right: auto !important; top: auto !important;
     z-index: 20 !important;
+    margin-top: -10px;
   }
 
   .desktop-icon {
     width: auto !important;
-    padding: 4px !important;
+    padding: 2px !important;
   }
 
-  .icon-img { width: 48px !important; height: 48px !important; font-size: 24px !important; }
-  .icon-label { font-size: 10px !important; }
+  .icon-img { 
+    width: 44px !important; 
+    height: 44px !important; 
+    font-size: 22px !important; 
+    border-radius: 12px !important;
+  }
+  .icon-label { font-size: 9px !important; margin-top: 2px !important; opacity: 0.9; }
 
   /* FULL SCREEN WINDOWS ON MOBILE */
   .window {
