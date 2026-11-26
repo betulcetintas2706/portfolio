@@ -1,3 +1,4 @@
+import Extras from './Extras';
 import { personalInfo } from '../data/portfolioData';
 import AboutPage from './pages/AboutPage';
 import ExperiencePage from './pages/ExperiencePage';
@@ -23,6 +24,7 @@ export default function SimpleView({ onDesktop }) {
 
   return (
     <div className="simple-view">
+      <Extras windowsOnly />
       <nav className="simple-nav">
         <span className="simple-brand" onClick={() => go('top')}>Betül Cetintas</span>
         <div className="simple-links">

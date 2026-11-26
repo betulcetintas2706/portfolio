@@ -192,7 +192,7 @@ export const projects = [
     desc: "Recreation of the Purble Place Comfy Cakes game on a DE1-SoC FPGA in Verilog. I own the game logic and control: FSMs, order generation and checking, scoring, timing and difficulty.",
     tags: ["Verilog", "FPGA", "DE1-SoC", "FSMs"],
     award: "In Progress",
-    icon: "chip",
+    image: "./games/cakes/preview.png",
   },
   {
     title: "VYBE",
@@ -207,7 +207,7 @@ export const projects = [
     desc: "Minecraft-themed Gold Miner arcade game built fully in hardware in Verilog on the DE1-SoC. 31-state control FSM plus sub-FSMs, five custom RAM modules, pixel-level collision detection, 320×240 VGA graphics, a 45-second HEX timer, PS/2 keyboard controls, LFSR object placement and win/fail audio.",
     tags: ["Verilog", "FPGA", "DE1-SoC", "FSMs", "VGA"],
     award: "FPGA Final Project",
-    icon: "chip",
+    image: "./games/goldminer-preview.png",
   },
   {
     title: "Mental Health Pop-up Space",

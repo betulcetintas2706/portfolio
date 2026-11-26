@@ -163,7 +163,7 @@ const WIDTHS = { goldminer: 680, cakes: 680 };
 const INSPECT_WIDTHS = { goldminer: 1010, cakes: 1010 };
 const TITLES = { gallery: 'Gallery', music: 'Music', movies: 'Movies', goldminer: 'Gold Miner', cakes: 'Comfy Cakes' };
 
-export default function Extras() {
+export default function Extras({ windowsOnly = false }) {
   const [open, setOpen] = useState(false);
   const [wins, setWins] = useState([]); // ids in z order
   const [views, setViews] = useState({}); // game id -> 'play' | 'inspect'
@@ -193,7 +193,7 @@ export default function Extras() {
 
   return (
     <>
-      <div className={`extras${open ? ' open' : ''}`}>
+      {!windowsOnly && <div className={`extras${open ? ' open' : ''}`}>
         <button className="zip-icon" onClick={toggleZip} aria-expanded={open} title={open ? 'Zip it back up' : 'Open me'}>
           <span className="zip-svg"><img src={open ? './fun/Extras.png' : './fun/Extras_Zip.png'} alt="" draggable="false" /></span>
           <span className="zip-label">{open ? 'extras' : 'extras.zip'}</span>
@@ -209,7 +209,7 @@ export default function Extras() {
             <span>{it.label}</span>
           </button>
         ))}
-      </div>
+      </div>}
       {createPortal(wins.map((id, z) => {
         const Body = BODIES[id];
         const view = views[id] || 'play';

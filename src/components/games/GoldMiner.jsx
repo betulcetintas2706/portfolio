@@ -218,7 +218,7 @@ export default function GoldMiner({ probe, ctl, active = true }) {
       ctx.fillStyle = 'rgba(30,6,14,0.82)'; ctx.fillRect(36, 70, W - 72, 128);
       ctx.strokeStyle = tone; ctx.lineWidth = 2; ctx.strokeRect(37, 71, W - 74, 126);
       text(title, W / 2, 96, 30, tone, 'center');
-      lines.forEach((l, i) => text(l, W / 2, 128 + i * 18, 16, '#fdf6f0', 'center'));
+      lines.forEach((l, i) => text(l, W / 2, 128 + i * 18, 14, '#fdf6f0', 'center'));
     };
 
     let raf; let last = performance.now();

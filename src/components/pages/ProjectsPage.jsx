@@ -23,7 +23,7 @@ function ProjectCard({ proj, onCase }) {
     <div className="project-card" id={`proj-${proj.title.toLowerCase().replace(/[^a-z0-9]/g, '')}`}>
       <div className="project-thumb">
         {proj.image ? (
-          <img src={proj.image} alt={proj.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+          <img src={proj.image} alt={proj.title} style={{ width: '100%', height: '100%', objectFit: 'cover', imageRendering: PLAYABLE[proj.title] ? 'pixelated' : undefined }} />
         ) : (
           IconComp && <IconComp />
         )}
@@ -32,9 +32,14 @@ function ProjectCard({ proj, onCase }) {
         <div className="project-title">{proj.title}</div>
         <div className="project-desc">{proj.desc}</div>
         {PLAYABLE[proj.title] && (
-          <button className="case-open play-open" onClick={() => window.dispatchEvent(new CustomEvent('open-extra', { detail: PLAYABLE[proj.title] }))}>
-            ▶ Play it here
-          </button>
+          <div className="game-btns">
+            <button className="game-btn play" onClick={() => window.dispatchEvent(new CustomEvent('open-extra', { detail: { id: PLAYABLE[proj.title], view: 'play' } }))}>
+              ▶ Play
+            </button>
+            <button className="game-btn inspect" onClick={() => window.dispatchEvent(new CustomEvent('open-extra', { detail: { id: PLAYABLE[proj.title], view: 'inspect' } }))}>
+              See how it works
+            </button>
+          </div>
         )}
         {caseId && onCase && (
           <button className="case-open" onClick={() => onCase(caseId)}>Read the case study →</button>
