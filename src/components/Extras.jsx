@@ -23,6 +23,18 @@ const BABIES = [
   { src: './gallery/babies/baby-08.jpg', cap: 'with her toy' },
   { src: './gallery/babies/baby-09.jpg', cap: 'comfy' },
   { src: './gallery/babies/baby-10.jpg', cap: 'treat time' },
+  { src: './gallery/babies/baby-11.jpg', cap: 'belly up' },
+  { src: './gallery/babies/baby-12.jpg', cap: 'the stare' },
+  { src: './gallery/babies/baby-13.jpg', cap: 'sunbathing' },
+  { src: './gallery/babies/baby-14.jpg', cap: 'let me out' },
+  { src: './gallery/babies/baby-15.jpg', cap: 'paw up' },
+  { src: './gallery/babies/baby-16.jpg', cap: 'long cat' },
+  { src: './gallery/babies/baby-17.jpg', cap: 'study buddy' },
+  { src: './gallery/babies/baby-18.jpg', cap: 'loaf mode' },
+  { src: './gallery/babies/baby-19.jpg', cap: 'blep' },
+  { src: './gallery/babies/baby-20.jpg', cap: 'blanket fort' },
+  { src: './gallery/babies/baby-21.jpg', cap: 'nap together' },
+  { src: './gallery/babies/baby-22.jpg', cap: 'helping me study' },
 ];
 const MORE = [
   { src: './lilies.png', cap: 'lilies' },
