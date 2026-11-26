@@ -231,7 +231,7 @@ if (typeof window !== 'undefined') {
 }
 
 function Villain({ mode, hit, low, sound }) {
-  // what he wants to talk about right now (hit lines are queued, see below)
+  // what she wants to talk about right now (hit lines are queued, see below)
   const base = low && mode !== 'dead' && mode !== 'won' ? 'low' : mode;
   const [say, setSay] = useState(null); // { k, i } of the line being said
   const [typed, setTyped] = useState('');
@@ -242,7 +242,7 @@ function Villain({ mode, hit, low, sound }) {
   const i = say?.i || 0;
 
   // speech queue: a line always plays to the end. Clicks, hits and stage
-  // changes wait for him to finish, except the final win/lose lines.
+  // changes wait for her to finish, except the final win/lose lines.
   const sp = useRef({ busy: false, clip: null, typer: null, timers: [], idx: {}, last: null, pendingHit: false, heard: false });
   const baseRef = useRef(base); baseRef.current = base;
   const modeRef = useRef(mode); modeRef.current = mode;
@@ -308,7 +308,7 @@ function Villain({ mode, hit, low, sound }) {
     if (!c.busy) speakRef.current();
   }, [base]);
 
-  // a hit waits for the current line, then he complains
+  // a hit waits for the current line, then she complains
   useEffect(() => {
     if (!hit) return;
     const c = sp.current;
@@ -336,7 +336,14 @@ function Villain({ mode, hit, low, sound }) {
     if (!sound && c.clip) { c.clip.onended = null; c.clip.pause(); c.clip = null; c.timers.push(setTimeout(() => { c.busy = false; setTalking(false); speakRef.current(); }, 600)); }
   }, [sound]);
 
-  // when the intro closes, let the last line finish instead of cutting it
+  // skipping the intro silences her right away
+  useEffect(() => {
+    const hush = () => stopAll();
+    window.addEventListener('pickle-hush', hush);
+    return () => window.removeEventListener('pickle-hush', hush);
+  }, []);
+
+  // when the game ends on its own, let the last line finish instead of cutting it
   useEffect(() => () => {
     const c = sp.current;
     clearInterval(c.typer); c.timers.forEach(clearTimeout); c.timers = [];
@@ -448,6 +455,9 @@ export default function HackIntro({ onDone }) {
     document.body.classList.remove('hack-dead');
   };
 
+  // skipping stops her voice and the music right away
+  const skip = () => { window.dispatchEvent(new Event('pickle-hush')); musicStop(0.15); finish(); };
+
   const finish = () => {
     try { localStorage.setItem('seenHackIntro', '1'); } catch { /* ignore */ }
     restoreAll();
@@ -476,7 +486,7 @@ export default function HackIntro({ onDone }) {
   }, [phase, shown]);
 
   useEffect(() => {
-    const k = (e) => { if (e.key === 'Escape') finish(); };
+    const k = (e) => { if (e.key === 'Escape') skip(); };
     window.addEventListener('keydown', k);
     return () => window.removeEventListener('keydown', k);
   });
@@ -602,9 +612,9 @@ export default function HackIntro({ onDone }) {
   return (
     <div className={`hack hack-${phase}`} role="dialog" aria-label="Save the site mini game">
       <div className="hack-scan" aria-hidden="true" />
-      <button className="hack-skip" onClick={finish}>Skip intro →</button>
+      <button className="hack-skip" onClick={skip}>Skip intro →</button>
       <button className="hk-sound" onClick={toggleSound} aria-pressed={sound}>{sound ? 'Sound on' : 'Sound off'}</button>
-      {sound && needTap && <div className="hk-tap" aria-hidden="true">click anywhere to hear him</div>}
+      {sound && needTap && <div className="hk-tap" aria-hidden="true">click anywhere to hear her</div>}
       <Villain mode={phase} hit={hit && phase === 'debug'} low={left <= 10 && phase !== 'alert'} sound={sound} />
 
       {phase !== 'alert' && phase !== 'won' && phase !== 'dead' && (
