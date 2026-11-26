@@ -65,11 +65,7 @@ const PLACES = [
   { src: './gallery/places/place-27.jpg', cap: 'petit champlain' },
   { src: './gallery/places/place-28.jpg', cap: 'umbrella alley, quebec' },
 ];
-const MORE = [
-  { src: './lilies.png', cap: 'lilies' },
-  { src: './rug.png', cap: 'home' },
-  { src: './quote-bg.jpg', cap: 'words to live by' },
-];
+const MORE = [];
 
 
 const MOVIES = [];
