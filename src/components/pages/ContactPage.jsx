@@ -12,7 +12,7 @@ export default function ContactPage() {
   const body = `${form.message}\n\nFrom: ${form.name}${form.email ? ` (${form.email})` : ''}`;
   const enc = encodeURIComponent;
   const send = () => {
-    if (!form.message.trim()) { setErr('Write a short message first 🙂'); return; }
+    if (!form.message.trim()) { setErr('Write a short message first.'); return; }
     setErr(''); setPick(true);
   };
   const links = {
@@ -100,7 +100,7 @@ export default function ContactPage() {
         </div>
         {err && <div className="send-err">{err}</div>}
         {!pick ? (
-          <button className="form-submit" onClick={send}>Send Message ✦</button>
+          <button className="form-submit" onClick={send}>Send Message</button>
         ) : (
           <div className="send-pick">
             <div className="send-pick-title">How do you want to send it?</div>

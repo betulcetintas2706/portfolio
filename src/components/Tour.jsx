@@ -3,10 +3,10 @@ import { useEffect, useLayoutEffect, useState, useCallback } from 'react';
 const STEPS = [
   { sel: ['.dock'], title: 'The dock', text: 'Jump to any section from here: projects, experience, awards and more.' },
   { sel: ['.desktop-icon'], title: 'Desktop folders', text: 'The same pages live here too, plus my résumé.' },
-  { sel: ['img.sticker[alt="Sleepy pickle"]'], title: 'Stickers', text: "They're not glued down 🐱🥒 Drag them anywhere you like.", wiggle: true },
-  { sel: ['.media-widget'], title: 'Music player', text: 'Press play, it really works ♪' },
+  { sel: ['img.sticker[alt="Sleepy pickle"]'], title: 'Stickers', text: "They're not glued down. Drag them anywhere you like.", wiggle: true },
+  { sel: ['.media-widget'], title: 'Music player', text: 'Press play, it really works.' },
   { sel: ['.extras'], title: 'extras.zip', text: 'Open it for my gallery, music and movies.', openZip: true, pad: 110 },
-  { sel: ['.menubar-logo'], title: 'A little secret', text: 'Click the ★ five times for a surprise ✨' },
+  { sel: ['.menubar-logo'], title: 'A little secret', text: 'Click the ★ five times for a surprise.' },
 ];
 
 function unionRect(sels) {
@@ -91,7 +91,7 @@ export default function Tour({ onFinish, onClose }) {
       {hole && <div className="tour-hole" style={hole} />}
       <div className="tour-card" style={{ ...card, width: W }}>
         <div className="tour-head">
-          <span>✦ {step.title}</span>
+          <span>{step.title}</span>
           <span className="tour-count">{i + 1}/{STEPS.length}</span>
         </div>
         <p>{step.text}</p>

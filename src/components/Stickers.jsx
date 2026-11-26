@@ -45,12 +45,12 @@ function StickyNote() {
   return (
     <div className="sticky-note" role="note">
       <div className="sticky-head">
-        <span>📌 note.txt</span>
+        <span>note.txt</span>
         <button className="sticky-x" onClick={() => setOpen(false)} aria-label="Close note">×</button>
       </div>
-      <p>psst! the stickers aren't glued down 🐱🥒</p>
+      <p>psst! the stickers aren't glued down.</p>
       <p>drag them anywhere you like.</p>
-      <p className="sticky-small">also, click the ★ in the top left 5 times ✨</p>
+      <p className="sticky-small">also, click the ★ in the top left 5 times.</p>
     </div>
   );
 }

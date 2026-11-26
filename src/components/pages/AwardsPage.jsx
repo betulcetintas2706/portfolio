@@ -10,7 +10,7 @@ export default function AwardsPage() {
       <div className="awards-list">
         {awards.map((a, i) => (
           <div key={i} className="award-card">
-            <div className="award-emoji">{a.emoji}</div>
+            <div className="award-emoji"><img src="./icons/Awards.png" alt="" /></div>
             <div className="award-body">
               <div className="award-head">
                 <div className="award-title">{a.title}</div>
@@ -21,7 +21,7 @@ export default function AwardsPage() {
           </div>
         ))}
       </div>
-      <div className="open-to">✦ <a href={personalInfo.devpost} target="_blank" rel="noreferrer">See every project on Devpost</a></div>
+      <div className="open-to"><a href={personalInfo.devpost} target="_blank" rel="noreferrer">See every project on Devpost</a></div>
     </div>
   );
 }

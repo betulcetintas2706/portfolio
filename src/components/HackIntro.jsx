@@ -140,7 +140,7 @@ function Override({ onDone }) {
       {out.map((l) => <div key={l} className="hk-ok">{l}</div>)}
       {!ran.current && (
         <div className="hk-override-btns">
-          <button className="hk-go" onClick={() => run(val || 'sudo restore')}>{isPhone() ? '⌨ Run sudo restore' : '↵ Run'}</button>
+          <button className="hk-go" onClick={() => run(val || 'sudo restore')}>{isPhone() ? 'Run sudo restore' : 'Run'}</button>
         </div>
       )}
     </div>
@@ -149,14 +149,14 @@ function Override({ onDone }) {
 
 // The villain: a mischievous pickle hacker in a robe and bunny slippers.
 const TAUNTS = {
-  alert: ['hehe... your portfolio is mine now 🥒', 'I already took the résumé 😏', 'good luck getting it back'],
+  alert: ['hehe... your portfolio is mine now', 'I already took the résumé', 'good luck getting it back'],
   debug: ['my bugs are faster than you', 'ooh, that icon looks tasty', 'go little bugs, go!'],
-  rewire: ['you know logic gates?? 😳', "that circuit is MY circuit"],
-  override: ["you don't have root 😤", "don't you dare type that..."],
-  low: ['tick tock ⏰', 'almost mine... 🥒'],
-  hit: ['hey!! stop that 😠', 'my poor bug 😭', 'rude!!'],
-  dead: ['MWAHAHA too slow! 🥒', 'this desktop is pickle territory now'],
-  won: ["noooo! I'll be back... 🥒💨"],
+  rewire: ['wait, you know logic gates??', "that circuit is MY circuit"],
+  override: ["you don't have root", "don't you dare type that..."],
+  low: ['tick tock', 'almost mine...'],
+  hit: ['hey!! stop that', 'my poor bug', 'rude!!'],
+  dead: ['MWAHAHA too slow!', 'this desktop is pickle territory now'],
+  won: ["noooo! I'll be back..."],
 };
 
 function Villain({ mode, hit, low }) {
@@ -400,7 +400,7 @@ export default function HackIntro({ onDone }) {
             ))}
           </span>
           <div className="hack-bar"><i style={{ width: `${pct}%` }} /></div>
-          <span className={left <= 10 ? 'hk-low' : ''}>⏱ {Math.ceil(left)}s left</span>
+          <span className={left <= 10 ? 'hk-low' : ''}>{Math.ceil(left)}s left</span>
         </div>
       )}
 
@@ -412,8 +412,8 @@ export default function HackIntro({ onDone }) {
             {LINES.slice(0, shown).map((l) => <div key={l} className={l.startsWith('⚠') ? 'hack-red' : ''}>{l}</div>)}
             {shown >= LINES.length && (
               <div className="hack-cta">
-                <p>Help me save my portfolio! 🐛 → 🔌 → ⌨️</p>
-                <button className="hack-go" onClick={start}>⚔️ Fight back</button>
+                <p>Help me save my portfolio: debug, rewire, override.</p>
+                <button className="hack-go" onClick={start}>Fight back</button>
               </div>
             )}
             {shown < LINES.length && <span className="hack-caret">▋</span>}
@@ -424,7 +424,7 @@ export default function HackIntro({ onDone }) {
       {phase === 'debug' && (
         <>
           <div className="hk-stage-tag">Step 1 · Debug: squash the bugs before they run off with my stuff! ({squashed}/{BUGS})</div>
-          {splats.map((s) => <span key={`s${s.id}`} className="hack-splat" style={{ left: s.x, top: s.y }}>✦</span>)}
+          {splats.map((s) => <span key={`s${s.id}`} className="hack-splat" style={{ left: s.x, top: s.y }}>*</span>)}
           {bugs.map((b) => (
             <button key={b.id} className="hack-bug" onPointerDown={(e) => squash(b, e)} aria-label="Squash bug"
               style={{ left: b.x, top: b.y }}>
@@ -437,14 +437,14 @@ export default function HackIntro({ onDone }) {
 
       {phase === 'rewire' && (
         <div className="hack-term hk-panel">
-          <div className="hack-term-bar">🔌 Step 2 · Rewire the board</div>
+          <div className="hack-term-bar">Step 2 · Rewire the board</div>
           <div className="hack-term-body"><Circuit onSolved={() => setPhase('override')} /></div>
         </div>
       )}
 
       {phase === 'override' && (
         <div className="hack-term hk-panel">
-          <div className="hack-term-bar">⌨️ Step 3 · Override</div>
+          <div className="hack-term-bar">Step 3 · Override</div>
           <div className="hack-term-body"><Override onDone={win} /></div>
         </div>
       )}
@@ -459,9 +459,9 @@ export default function HackIntro({ onDone }) {
           <div className="hk-dead">
             <div className="hk-dead-title" data-text="SYSTEM COMPROMISED">SYSTEM COMPROMISED</div>
             <div className="hk-dead-sub">owner: <b>{name}</b></div>
-            <p>Time ran out. The bugs took everything 👾<br />betulcetintas.com belongs to them now.</p>
+            <p>Time ran out. The bugs took everything.<br />betulcetintas.com belongs to them now.</p>
             <div className="hack-end-btns hk-dead-btns">
-              <button className="hack-go" onClick={retry}>⚔️ Try again</button>
+              <button className="hack-go" onClick={retry}>Try again</button>
               <button className="hack-again" onClick={finish}>Restore from backup →</button>
             </div>
           </div>
@@ -480,8 +480,8 @@ export default function HackIntro({ onDone }) {
             <div className="hack-term-body">
               <div className="hk-owner-big">owner: <b className="hk-name-ok">{name}</b></div>
               <div className="hack-green">✓ bugs squashed · ✓ board rewired · ✓ admin restored</div>
-              <p>You saved my portfolio! 🎉 That was software, hardware and a terminal, which is pretty much what I do all day.</p>
-              <div className="hk-time">Saved in <b>{elapsed.toFixed(1)}s</b> ⚡ {best && (best.isNew ? <em>new best!</em> : <span>your best: {best.value.toFixed(1)}s</span>)}</div>
+              <p>You saved my portfolio! That was software, hardware and a terminal, which is pretty much what I do all day.</p>
+              <div className="hk-time">Saved in <b>{elapsed.toFixed(1)}s</b> · {best && (best.isNew ? <em>new best!</em> : <span>your best: {best.value.toFixed(1)}s</span>)}</div>
               <div className="hack-end-btns">
                 <button className="hack-go" onClick={finish}>Enter the site →</button>
               </div>

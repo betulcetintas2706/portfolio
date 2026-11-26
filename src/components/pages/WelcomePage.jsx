@@ -19,7 +19,7 @@ export default function WelcomePage({ showPage, simple }) {
             In a hurry? Skip to simple view →
           </button>
           <button className="skip-simple tour-start" onClick={() => window.dispatchEvent(new Event('start-tour'))}>
-            ✦ New here? Take a quick tour
+            New here? Take a quick tour
           </button>
         </div>
       )}

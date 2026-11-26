@@ -2029,3 +2029,5 @@ body.hack-dead #root > *:not(.hack):not(.term) { filter: hue-rotate(110deg) satu
   .hack-dead .hk-dead { top: 60%; }
   .hk-v-debug, .hk-v-rewire, .hk-v-override, .hk-v-won { bottom: 52px; width: 70px; }
 }
+.award-emoji img { width: 34px; height: 34px; display: block; filter: drop-shadow(0 2px 3px rgba(74,20,38,0.25)); }
+.cc-opt { font-size: 11px; }

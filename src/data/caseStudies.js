@@ -6,7 +6,7 @@ export const caseStudies = {
     id: 'meducine',
     title: 'Meducine',
     tagline: 'An AI health literacy app that explains your health in plain words, before it is too late.',
-    award: '🥇 1st Place · Harvard HSIL 2026 (Toronto Hub)',
+    award: '1st Place · Harvard HSIL 2026 (Toronto Hub)',
     icon: 'chat',
     meta: [
       { k: 'My role', v: 'Frontend engineer, 1 of 2 engineers' },
@@ -51,7 +51,7 @@ export const caseStudies = {
     id: 'nanotrade',
     title: 'NanoTrade',
     tagline: 'A computer chip that spots a market crash in 80 nanoseconds.',
-    award: '🥉 3rd Place · UofT IEEE IC Hackathon (ASIC)',
+    award: '3rd Place · UofT IEEE IC Hackathon (ASIC)',
     image: './nanotrade.png',
     video: 'https://player.vimeo.com/video/1167116687',
     meta: [

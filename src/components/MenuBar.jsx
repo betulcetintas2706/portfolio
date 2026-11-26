@@ -36,7 +36,7 @@ export default function MenuBar({ showPage, onSimple }) {
     <div className="menubar">
       <div className="menubar-logo" onClick={starClick} style={{ cursor: 'pointer' }}><MenuStarIcon /></div>
       {egg && (
-        <div className="easter-egg">Merhaba! 👋 You found it. Fun fact: NanoTrade spots a flash crash 27 billion times faster than the 2010 crash unfolded. ⚡</div>
+        <div className="easter-egg">Merhaba! You found it. Fun fact: NanoTrade spots a flash crash 27 billion times faster than the 2010 crash unfolded. ⚡</div>
       )}
       <div className="menubar-items">
         {items.map((item) => (

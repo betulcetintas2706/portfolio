@@ -29,7 +29,7 @@ export default function SimpleView({ onDesktop }) {
           {sections.map((s) => <button key={s.id} onClick={() => go(s.id)}>{s.label}</button>)}
           <a href={personalInfo.resume} target="_blank" rel="noreferrer">Résumé</a>
         </div>
-        <button className="simple-desktop-btn" onClick={onDesktop}>✦ Desktop view</button>
+        <button className="simple-desktop-btn" onClick={onDesktop}>Desktop view</button>
       </nav>
 
       <main className="simple-main">
@@ -59,7 +59,7 @@ export default function SimpleView({ onDesktop }) {
         ))}
 
         <footer className="simple-footer">
-          Want the fun version? <button onClick={onDesktop}>Open desktop view ✦</button>
+          Want the fun version? <button onClick={onDesktop}>Open desktop view</button>
         </footer>
       </main>
     </div>

@@ -263,7 +263,7 @@ export default function GoldMiner() {
       <canvas ref={canvasRef} width={W} height={H} className="gm-canvas" onPointerDown={press} />
       <div className="gm-bar">
         <span>↓ / Space / tap to drop the hook · Enter to start</span>
-        <button onClick={() => setMuted((m) => !m)}>{muted ? '🔇' : '🔊'}</button>
+        <button onClick={() => setMuted((m) => !m)}>{muted ? 'Sound off' : 'Sound on'}</button>
       </div>
       <div className="gm-note">Originally built in Verilog on a DE1-SoC FPGA with Sehreen Basara: 31-state FSM, VGA at 320×240, LFSR random placement.</div>
     </div>

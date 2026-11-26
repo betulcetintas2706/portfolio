@@ -65,7 +65,7 @@ export default function MobileHome({ showPage, onSimple }) {
           <div className="m-widget-text">
             <div className="m-hi">Hi, I'm <span>{personalInfo.name}</span>.</div>
             <div className="m-sub">Computer Engineering @ UofT · 5x hackathon winner</div>
-            <div className="m-chip">✦ Open to Summer 2027 internships</div>
+            <div className="m-chip">Open to Summer 2027 internships</div>
           </div>
           <img className="m-widget-cat" src="./stickers/cat-loaf.png" alt="" />
         </section>

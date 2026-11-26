@@ -134,7 +134,7 @@ export const projects = [
     featured: true,
     desc: "AI health literacy platform that turns complex medical information into plain, personal guidance, with a 60+ term dictionary, 26 specialty filters and text-to-speech. Won 1st at Harvard HSIL Toronto Hub (~7.2% acceptance), advanced to the HSIL Venture Building Bootcamp (top 120 teams globally), and was showcased at the AstraZeneca and Plan International Canada Faces of the Future reception.",
     tags: ["React Native", "Expo", "AI", "Health Tech"],
-    award: "🥇 Harvard HSIL 2026",
+    award: "Harvard HSIL 2026",
     icon: "chat",
   },
   {
@@ -167,7 +167,7 @@ export const projects = [
     links: [{ label: "GitHub", url: "https://github.com/akashngb/roots" }, { label: "Devpost", url: "https://devpost.com/software/hack-canada-2026" }, { label: "Demo", url: "https://vimeo.com/1171501862" }],
     desc: "AI settlement assistant for newcomers to Canada. WhatsApp onboarding, a personal task roadmap, voice-note replies in their language, a React dashboard, and a Playwright + Claude Vision agent that navigates government websites for the user. Placed against 600+ participants and 200+ projects.",
     tags: ["Node.js", "Twilio", "Gemini", "Playwright", "Claude Vision", "React", "TypeScript"],
-    award: "🥉 Hack Canada 2026 + Google Build with AI",
+    award: "Hack Canada 2026 + Google Build with AI",
     image: "./49th.png",
   },
   {
@@ -184,14 +184,14 @@ export const projects = [
     links: [{ label: "GitHub", url: "https://github.com/betulcetintas2706/ttsky-nanotrades" }, { label: "Website", url: "https://betulcetintas2706.github.io/websitenanotrade/" }, { label: "Devpost", url: "https://devpost.com/software/nanotrade" }, { label: "Demo", url: "https://vimeo.com/1167116687" }],
     desc: "Tiny Tapeout ASIC in Verilog with 5 RTL modules running 8 parallel market anomaly checks at 50 MHz with ~80 ns latency. Fit into 9,800 of 10,000 cells and cut false positives from 40% to 0.5% across 10,000+ simulations.",
     tags: ["Verilog", "ASIC", "SKY130", "Tiny Tapeout", "Cognichip"],
-    award: "🥉 UofT IC Hackathon (ASIC)",
+    award: "UofT IC Hackathon (ASIC)",
     image: "./nanotrade.png",
   },
   {
     title: "Comfy Cakes",
     desc: "Recreation of the Purble Place Comfy Cakes game on a DE1-SoC FPGA in Verilog. I own the game logic and control: FSMs, order generation and checking, scoring, timing and difficulty.",
     tags: ["Verilog", "FPGA", "DE1-SoC", "FSMs"],
-    award: "🛠 In Progress",
+    award: "In Progress",
     icon: "chip",
   },
   {
@@ -199,7 +199,7 @@ export const projects = [
     links: [{ label: "GitHub", url: "https://github.com/Vidhikalal/VYBE" }, { label: "Devpost", url: "https://devpost.com/software/vybe-l3ua1m" }],
     desc: "iOS app for Deaf and hard-of-hearing users that turns live music into real-time vibration: bass drives intensity, tempo drives pulse speed. Built with AVFoundation audio capture and Core Haptics, plus an Apple Watch companion app so you can feel it on your wrist.",
     tags: ["Swift", "SwiftUI", "Core Haptics", "AVFoundation", "watchOS"],
-    award: "🥈 Hackville 2026",
+    award: "Hackville 2026",
     image: "./vybe.png",
   },
   {

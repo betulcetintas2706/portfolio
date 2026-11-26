@@ -45,7 +45,7 @@ export default function AboutPage() {
         <p style={{ marginTop: 6 }}><strong>Coursework:</strong> {ed.coursework.join(' · ')}</p>
       </div>
 
-      <div className="open-to">✦ Open to Summer 2027 software, AI and hardware internships · <a href={personalInfo.resume} target="_blank" rel="noreferrer">View Résumé</a></div>
+      <div className="open-to">Open to Summer 2027 software, AI and hardware internships · <a href={personalInfo.resume} target="_blank" rel="noreferrer">View Résumé</a></div>
 
       <div className="about-stats">
         {about.stats.map((s) => (

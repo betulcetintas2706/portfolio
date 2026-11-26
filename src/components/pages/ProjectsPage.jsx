@@ -65,7 +65,7 @@ export default function ProjectsPage({ showPage, simple }) {
         <div className="section-title">My <span>Projects</span></div>
         <div className="section-sub">Things I've built from scratch</div>
       </div>
-      <div className="skill-category-title" style={{ margin: '4px 0 10px' }}>// ★ Featured Work</div>
+      <div className="skill-category-title" style={{ margin: '4px 0 10px' }}>// Featured Work</div>
       <div className="projects-grid">
         {featured.map((proj) => <ProjectCard key={proj.title} proj={proj} onCase={onCase} />)}
       </div>

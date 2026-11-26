@@ -26,16 +26,16 @@ const OPTIONS = {
     { id: 'none', label: 'None', c: null },
   ],
   topping: [
-    { id: 'cherries', label: '🍒' },
-    { id: 'sprinkles', label: '✨' },
-    { id: 'candles', label: '🕯️' },
-    { id: 'berries', label: '🍓' },
-    { id: 'none', label: '—' },
+    { id: 'cherries', label: 'Cherries' },
+    { id: 'sprinkles', label: 'Sprinkles' },
+    { id: 'candles', label: 'Candles' },
+    { id: 'berries', label: 'Berries' },
+    { id: 'none', label: 'None' },
   ],
 };
 const KEYS = ['shape', 'sponge', 'layers', 'frosting', 'topping'];
 const TITLES = { shape: 'Shape', sponge: 'Sponge', layers: 'Layers', frosting: 'Frosting', topping: 'Topping' };
-const CUSTOMERS = ['🐱 Mochi', '🥒 Mr. Pickle', '🐰 Bunny', '🧿 Nazar', '☕ Kahve', '🌷 Lale'];
+const CUSTOMERS = ['Mochi', 'Mr. Pickle', 'Bunny', 'Nazar', 'Kahve', 'Lale'];
 const ORDER_TIME = 40;
 
 const pick = (arr) => arr[Math.floor(Math.random() * arr.length)];
@@ -140,7 +140,7 @@ export default function ComfyCakes() {
   const label = (k, id) => {
     const o = opt(k, id);
     if (k === 'layers') return `${id} layer${id > 1 ? 's' : ''}`;
-    if (k === 'topping') return id === 'none' ? 'no topping' : { cherries: 'cherries 🍒', sprinkles: 'sprinkles ✨', candles: 'candles 🕯️', berries: 'strawberries 🍓' }[id];
+    if (k === 'topping') return id === 'none' ? 'no topping' : { cherries: 'cherries', sprinkles: 'sprinkles', candles: 'candles', berries: 'strawberries' }[id];
     if (k === 'frosting') return id === 'none' ? 'no frosting' : `${o.label.toLowerCase()} frosting`;
     return o.label.toLowerCase();
   };
@@ -158,17 +158,17 @@ export default function ComfyCakes() {
             ))}
           </div>
         </div>
-        <div className="cc-score"><b>{score}</b><span>points</span>{streak > 1 && <em>🔥 {streak} streak</em>}</div>
+        <div className="cc-score"><b>{score}</b><span>points</span>{streak > 1 && <em>{streak} in a row</em>}</div>
       </div>
 
       <div className="cc-stage">
         <div className={`cc-cake ${phase === 'baking' ? 'cc-baking' : ''}`}>
           <Cake cake={cake} size={210} />
         </div>
-        {phase === 'baking' && <div className="cc-oven">baking... 🔥</div>}
+        {phase === 'baking' && <div className="cc-oven">baking...</div>}
         {phase === 'result' && (
           <div className={`cc-result ${result.perfect ? 'ok' : 'meh'}`}>
-            <b>{result.perfect ? 'Perfect cake! ⭐' : `Almost! ${KEYS.length - result.wrong.length}/5 right`}</b>
+            <b>{result.perfect ? 'Perfect cake!' : `Almost! ${KEYS.length - result.wrong.length}/5 right`}</b>
             <span>+{result.pts} points{result.perfect && time > 0 ? ` (time bonus ${time * 5})` : ''}</span>
             <button onClick={next}>Next order →</button>
           </div>
@@ -189,7 +189,7 @@ export default function ComfyCakes() {
             </div>
           </div>
         ))}
-        <button className="cc-bake" onClick={bake} disabled={phase !== 'build'}>Bake it! 🎂</button>
+        <button className="cc-bake" onClick={bake} disabled={phase !== 'build'}>Bake it!</button>
       </div>
       <div className="gm-note">Inspired by Comfy Cakes, my FPGA project with Sehreen Basara.</div>
     </div>

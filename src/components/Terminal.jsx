@@ -96,7 +96,7 @@ export default function Terminal({ onClose, showPage }) {
     } else if (lc === 'experience') {
       experiences.forEach((e) => say(`  ${e.date.padEnd(22)} ${e.role} · ${e.company.split(' · ')[0]}`));
     } else if (lc === 'awards') {
-      awards.forEach((a) => say(`  ${a.emoji} ${a.title}, ${a.where} (${a.year})`));
+      awards.forEach((a) => say(`  · ${a.title}, ${a.where} (${a.year})`));
     } else if (lc === 'skills') {
       say('Languages:', 'accent');
       say('  ' + skills.languages.map((s) => s.name).join(' · '));
@@ -113,21 +113,21 @@ export default function Terminal({ onClose, showPage }) {
       say(`  github    ${contact.github}`);
       say(`  devpost   ${contact.devpost}`);
     } else if (lc === 'cat .secret') {
-      say('Merhaba! 👋 I grew up in Turkey, lived in Iraq, then moved to Canada at 13.', 'accent');
+      say('Merhaba! I grew up in Turkey, lived in Iraq, then moved to Canada at 13.', 'accent');
     } else if (lc === 'github' || lc === 'linkedin' || lc === 'devpost') {
       say(`Opening ${lc}...`, 'accent'); openUrl(contact[`${lc}Url`]);
     } else if (lc === 'tour') {
       say('Starting the tour...', 'accent'); onClose(); window.dispatchEvent(new Event('start-tour'));
     } else if (lc === 'hack' || lc === 'virus') {
-      say('Uh oh... 🐛', 'err'); setTimeout(() => window.dispatchEvent(new Event('start-hack')), 400);
+      say('Uh oh...', 'err'); setTimeout(() => window.dispatchEvent(new Event('start-hack')), 400);
     } else if (lc === 'clear' || lc === 'cls') {
       setLines([]); return;
     } else if (lc === 'exit' || lc === 'quit') {
       onClose(); return;
     } else if (lc.startsWith('sudo')) {
-      say('Permission granted ✨ Best command so far: hire betul', 'accent');
+      say('Permission granted. Best command so far: hire betul', 'accent');
     } else if (lc === 'hire betul' || lc === 'sudo hire betul') {
-      say("Yay! 🎉 Let's talk: " + contact.email, 'accent');
+      say("Yay! Let's talk: " + contact.email, 'accent');
     } else if (lc === 'pwd') {
       say('/home/betul/portfolio');
     } else if (lc === 'date') {
@@ -135,7 +135,7 @@ export default function Terminal({ onClose, showPage }) {
     } else if (lc === 'echo' || lc.startsWith('echo ')) {
       say(cmd.slice(5));
     } else if (lc === 'coffee' || lc === 'turkish coffee') {
-      say('☕ Brewing... careful, the grounds stay at the bottom.');
+      say('Brewing... careful, the grounds stay at the bottom.');
     } else {
       say(`command not found: ${cmd.split(/\s+/)[0]}. Type 'help' for the list.`, 'err');
     }
