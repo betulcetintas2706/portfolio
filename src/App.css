@@ -1514,3 +1514,12 @@ body.simple-mode { overflow: auto; }
 @keyframes hintBob { 0%,100% { transform: translateX(-50%) translateY(0); } 50% { transform: translateX(-50%) translateY(-5px); } }
 .window-body::-webkit-scrollbar { width: 8px; }
 .window-body::-webkit-scrollbar-thumb { background: var(--burgundy-300, #c98a9c); border-radius: 4px; }
+
+/* extras: match the antique desktop icons */
+.zip-icon, .fun-icon { font-family: 'Space Mono', monospace; font-size: 10px; color: var(--cream); text-shadow: 0 1px 4px rgba(0,0,0,0.8); }
+.zip-icon .zip-svg img { width: 48px; height: 48px; display: block; }
+.zip-svg { filter: drop-shadow(0 2px 4px rgba(0,0,0,0.4)); }
+.fun-icon img { width: 54px; height: 54px; image-rendering: auto; filter: drop-shadow(0 3px 5px rgba(0,0,0,0.45)); }
+.fun-icon:hover img { filter: drop-shadow(0 0 8px rgba(226,192,105,0.8)) drop-shadow(0 3px 5px rgba(0,0,0,0.45)); }
+.fun-icon span { background: rgba(58,14,28,0.55); padding: 1px 6px; border-radius: 4px; }
+@media (min-width: 769px) and (max-height: 820px) { .zip-icon .zip-svg img { width: 40px; height: 40px; } }

@@ -3,9 +3,9 @@ import { createPortal } from 'react-dom';
 import { TRACKS } from './widgets/MediaWidget';
 
 const ITEMS = [
-  { id: 'gallery', label: 'Gallery', img: './fun/gallery.png' },
-  { id: 'music', label: 'Music', img: './fun/music.png' },
-  { id: 'movies', label: 'Movies', img: './fun/movies.png' },
+  { id: 'gallery', label: 'Gallery', img: './fun/Gallery.png' },
+  { id: 'music', label: 'Music', img: './fun/Music.png' },
+  { id: 'movies', label: 'Movies', img: './fun/Movies.png' },
 ];
 
 const PHOTOS = [
@@ -16,23 +16,6 @@ const PHOTOS = [
 ];
 
 const MOVIES = [];
-
-function ZipIcon() {
-  return (
-    <svg viewBox="0 0 16 16" width="56" height="56" shapeRendering="crispEdges" aria-hidden="true">
-      <rect x="1" y="3" width="6" height="2" fill="#e88bb0" />
-      <rect x="1" y="4" width="14" height="10" fill="#f7b6cf" />
-      <rect x="1" y="4" width="14" height="1" fill="#fde1ec" />
-      <rect x="1" y="13" width="14" height="1" fill="#c25a84" />
-      <rect x="14" y="4" width="1" height="10" fill="#c25a84" />
-      <rect x="7" y="4" width="2" height="1" fill="#6b1f35" />
-      <rect x="7" y="6" width="2" height="1" fill="#6b1f35" />
-      <rect x="7" y="8" width="2" height="1" fill="#6b1f35" />
-      <rect x="6" y="9" width="4" height="3" fill="#e2c069" />
-      <rect x="7" y="10" width="2" height="1" fill="#6b1f35" />
-    </svg>
-  );
-}
 
 function RetroWindow({ title, onClose, z, onFocus, start, children }) {
   const [pos, setPos] = useState(start);
@@ -155,7 +138,7 @@ export default function Extras() {
     <>
       <div className={`extras${open ? ' open' : ''}`}>
         <button className="zip-icon" onClick={toggleZip} aria-expanded={open} title={open ? 'Zip it back up' : 'Open me'}>
-          <span className="zip-svg"><ZipIcon /></span>
+          <span className="zip-svg"><img src={open ? './fun/Extras.png' : './fun/Extras_Zip.png'} alt="" draggable="false" /></span>
           <span className="zip-label">{open ? 'extras' : 'extras.zip'}</span>
           {sparks > 0 && (
             <span key={sparks} className="sparks" aria-hidden="true">
