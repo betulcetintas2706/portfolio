@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import WelcomePage from './pages/WelcomePage';
 import AboutPage from './pages/AboutPage';
 import ExperiencePage from './pages/ExperiencePage';
@@ -19,6 +19,18 @@ const pages = {
 
 export default function Window({ activePage, showPage, title, windowBodyRef, minimized, setMinimized }) {
   const [maximized, setMaximized] = useState(false);
+  const [showHint, setShowHint] = useState(false);
+
+  // Show a "scroll for more" hint until the visitor scrolls.
+  useEffect(() => {
+    const el = windowBodyRef.current;
+    if (!el) return undefined;
+    const check = () => setShowHint(el.scrollHeight - el.clientHeight > 60 && el.scrollTop < 40);
+    const t = setTimeout(check, 400);
+    el.addEventListener('scroll', check, { passive: true });
+    window.addEventListener('resize', check);
+    return () => { clearTimeout(t); el.removeEventListener('scroll', check); window.removeEventListener('resize', check); };
+  }, [activePage, maximized, windowBodyRef]);
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const [isDragging, setIsDragging] = useState(false);
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
@@ -88,6 +100,14 @@ export default function Window({ activePage, showPage, title, windowBodyRef, min
       <div className="window-body" ref={windowBodyRef}>
         {PageComponent && <PageComponent showPage={showPage} />}
       </div>
+      <div className={`scroll-fade${showHint ? ' on' : ''}`} aria-hidden="true" />
+      <button
+        className={`scroll-hint${showHint ? ' on' : ''}`}
+        tabIndex={showHint ? 0 : -1}
+        onClick={() => windowBodyRef.current?.scrollBy({ top: windowBodyRef.current.clientHeight * 0.7, behavior: 'smooth' })}
+      >
+        scroll for more <span>↓</span>
+      </button>
     </div>
   );
 }
