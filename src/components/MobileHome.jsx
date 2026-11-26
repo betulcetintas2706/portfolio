@@ -14,8 +14,8 @@ const APPS = [
   { label: 'Music', img: './fun/Music.png', extra: 'music' },
   { label: 'Movies', img: './fun/Movies.png', extra: 'movies' },
   { label: 'Terminal', tile: 'term', terminal: true },
-  { label: 'Gold Miner', tile: 'game', emoji: '⛏️', extra: 'goldminer' },
-  { label: 'Comfy Cakes', tile: 'game', emoji: '🎂', extra: 'cakes' },
+  { label: 'Gold Miner', img: './fun/GoldMiner.png', extra: 'goldminer' },
+  { label: 'Comfy Cakes', img: './fun/ComfyCakes.png', extra: 'cakes' },
 ];
 
 const DOCK = ['Projects', 'Experience', 'Music', 'Contact'];

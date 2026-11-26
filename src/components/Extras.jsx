@@ -8,8 +8,8 @@ const ITEMS = [
   { id: 'gallery', label: 'Gallery', img: './fun/Gallery.png' },
   { id: 'music', label: 'Music', img: './fun/Music.png' },
   { id: 'movies', label: 'Movies', img: './fun/Movies.png' },
-  { id: 'goldminer', label: 'Gold Miner', tile: '⛏️' },
-  { id: 'cakes', label: 'Comfy Cakes', tile: '🎂' },
+  { id: 'goldminer', label: 'Gold Miner', img: './fun/GoldMiner.png' },
+  { id: 'cakes', label: 'Comfy Cakes', img: './fun/ComfyCakes.png' },
 ];
 
 const PHOTOS = [
