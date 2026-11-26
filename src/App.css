@@ -1376,3 +1376,11 @@ body.simple-mode { overflow: auto; }
   .simple-hero-links { justify-content: center; }
   .simple-desktop-btn { display: none; }
 }
+
+/* ===== Custom illustrated icons ===== */
+.dock-icon.has-img, .dock-item.active .dock-icon.has-img { background: none; border: none; padding: 0; overflow: visible; }
+.dock-icon.has-img img { width: 52px; height: 52px; display: block; filter: drop-shadow(0 3px 5px rgba(0,0,0,0.45)); user-select: none; }
+.dock-item.active .dock-icon.has-img img { filter: drop-shadow(0 0 6px rgba(226,192,105,0.85)) drop-shadow(0 3px 5px rgba(0,0,0,0.45)); }
+.nav-card-icon.has-img { background: none; width: 46px; height: 46px; }
+.nav-card-icon.has-img img { width: 46px; height: 46px; display: block; filter: drop-shadow(0 2px 3px rgba(74,20,38,0.25)); }
+@media (max-width: 768px) { .dock-icon.has-img img { width: 40px; height: 40px; } }

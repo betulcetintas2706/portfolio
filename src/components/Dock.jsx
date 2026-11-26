@@ -28,7 +28,7 @@ export default function Dock({ activePage, showPage }) {
       </svg>
       {dockItems.map((item, i) => {
         if (item === 'divider') return <div key={`div-${i}`} className="dock-divider" />;
-        const { page, Icon, label } = item;
+        const { page, label } = item;
         return (
           <div
             key={page}
@@ -36,7 +36,7 @@ export default function Dock({ activePage, showPage }) {
             onClick={() => showPage(page)}
           >
             <div className="dock-tooltip">{label}</div>
-            <div className="dock-icon"><Icon /></div>
+            <div className="dock-icon has-img"><img src={`./icons/${label}.png`} alt="" draggable="false" /></div>
             <div className="dock-dot" />
           </div>
         );
