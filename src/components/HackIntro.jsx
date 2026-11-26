@@ -293,7 +293,7 @@ function Villain({ mode, hit, low, sound }) {
     };
     const finish = () => { if (!cancelled) setTalking(false); };
     if (sound) {
-      clip = new Audio(`./voice/${key}-${i}.mp3`);
+      clip = new Audio(`./voice/${key}-${i}.mp3?v=betul`);
       clip.volume = 0.9;
       clip.onended = () => { musicMix(0.2); finish(); };
       clip.play().then(() => {
