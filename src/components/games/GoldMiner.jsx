@@ -99,7 +99,7 @@ export default function GoldMiner({ probe, ctl, active = true }) {
   const activeRef = useRef(active); activeRef.current = active;
 
   const g = useRef({
-    state: 'S_BACKGROUND', level: 1, money: 0, time: LEVEL_TIME, objs: [],
+    state: 'S_BACKGROUND', startPage: 'title', t: 0, level: 1, money: 0, time: LEVEL_TIME, objs: [],
     hookX: 160, dir: 1, ropeY: HOOK_Y, caught: null, reached: null, reachBottom: false,
     history: [], edge: null, keyT: {}, hitT: 0, doneT: 0, drawT: 0,
   });
@@ -131,9 +131,10 @@ export default function GoldMiner({ probe, ctl, active = true }) {
     const s = g.current;
     s.keyT[k] = performance.now();
     if (k === 'enter') {
-      if (s.state === 'S_BACKGROUND') { startRound(); sfx([[660, 0.08]]); }
+      if (s.state === 'S_BACKGROUND' && s.startPage === 'title') { s.startPage = 'enter'; sfx([[520, 0.06]]); }
+      else if (s.state === 'S_BACKGROUND') { startRound(); sfx([[660, 0.08]]); }
       else if (s.state === 'S_SUCCESS') { s.level = s.level === 3 ? 1 : s.level + 1; startRound(); sfx([[660, 0.08]]); }
-      else if (s.state === 'S_FAIL') { go('S_BACKGROUND'); s.level = 1; }
+      else if (s.state === 'S_FAIL') { go('S_BACKGROUND'); s.startPage = 'title'; s.level = 1; }
     } else if (k === 'down' && s.state === 'S_MOVE_HOOK') {
       go('S_RELEASE'); s.ropeY = HOOK_Y; s.reachBottom = false;
     }
@@ -145,6 +146,7 @@ export default function GoldMiner({ probe, ctl, active = true }) {
       if (!activeRef.current || e.metaKey || e.ctrlKey || e.altKey) return;
       if (/input|textarea/i.test(document.activeElement?.tagName || '')) return;
       if (e.key === 'Enter') { e.preventDefault(); pressRef.current('enter'); }
+      else if (g.current.state === 'S_BACKGROUND' && g.current.startPage === 'title' && e.key.length === 1) { e.preventDefault(); pressRef.current('enter'); }
       else if (e.key === 'ArrowDown' || e.key === ' ' || e.key === 's' || e.key === 'S') { e.preventDefault(); pressRef.current('down'); }
     };
     window.addEventListener('keydown', key);
@@ -192,8 +194,9 @@ export default function GoldMiner({ probe, ctl, active = true }) {
     };
 
     // our miner (a cat in a hard hat) standing on the grass
-    const drawMiner = () => {
-      const x = 168; const y = 22;
+    const drawMiner = (ox = 168, oy = 22, k = 1) => {
+      ctx.save(); ctx.translate(ox, oy); ctx.scale(k, k);
+      const x = 0; const y = 0;
       ctx.fillStyle = '#e2c069'; ctx.fillRect(x + 2, y, 16, 5); ctx.fillRect(x + 7, y - 3, 6, 3);
       ctx.fillStyle = '#fff3a8'; ctx.fillRect(x + 8, y - 2, 4, 2);
       ctx.fillStyle = '#4a4a4a'; ctx.fillRect(x + 2, y + 5, 16, 11); ctx.fillRect(x + 2, y + 2, 3, 3); ctx.fillRect(x + 15, y + 2, 3, 3);
@@ -203,6 +206,46 @@ export default function GoldMiner({ probe, ctl, active = true }) {
       ctx.fillStyle = '#8b2942'; ctx.fillRect(x + 4, y + 16, 12, 2);
       ctx.fillStyle = '#4a4a4a'; ctx.fillRect(x + 4, y + 18, 12, 9); ctx.fillRect(x + 4, y + 27, 4, 3); ctx.fillRect(x + 12, y + 27, 4, 3);
       ctx.fillStyle = '#ffffff'; ctx.fillRect(x + 7, y + 19, 6, 6);
+      ctx.restore();
+    };
+
+    // start screen 1: title badge on sand, like our board's first page
+    const titlePage = (t) => {
+      ctx.fillStyle = '#f0cf78'; ctx.fillRect(0, 0, W, H);
+      ctx.fillStyle = 'rgba(160,200,120,0.35)';
+      for (let i = 0; i < 160; i += 1) { const px = (i * 97) % W; const py = (i * 53) % H; ctx.fillRect(px, py, 2, 1); }
+      // stepped pixel badge
+      const cx = 92; const cy = 112; const r = 66;
+      for (let y = -r; y <= r; y += 3) for (let x = -r; x <= r; x += 3) {
+        const d = Math.hypot(x * 0.95, y * 1.05);
+        if (d > r) continue;
+        const edge = d > r - 5;
+        ctx.fillStyle = edge ? '#5f7a3a' : (x + y < -20 ? '#cdeea0' : '#f4d690');
+        ctx.fillRect(cx + x, cy + y, 3, 3);
+      }
+      // sparkle
+      const tw = 0.6 + Math.sin(t * 4) * 0.4;
+      ctx.fillStyle = `rgba(170,215,255,${tw})`;
+      ctx.fillRect(cx - 1, cy - 70, 3, 26); ctx.fillRect(cx - 12, cy - 58, 25, 3);
+      ctx.fillStyle = '#5d9ad8'; ctx.fillRect(cx - 4, cy - 61, 9, 9);
+      ctx.font = 'bold 30px VT323, monospace'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      ctx.fillStyle = '#d9a63a'; ctx.fillText('GOLD', cx + 2, cy - 12); ctx.fillText('MINER', cx + 2, cy + 18);
+      ctx.fillStyle = '#4e5a2c'; ctx.fillText('GOLD', cx, cy - 14); ctx.fillText('MINER', cx, cy + 16);
+      // our miner, waving
+      drawMiner(186, 58 + Math.sin(t * 3) * 2, 4.2);
+      ctx.font = '14px VT323, monospace'; ctx.fillStyle = Math.floor(t * 2) % 2 ? '#7a4a2a' : 'rgba(122,74,42,0.35)';
+      ctx.fillText('press any key', cx, H - 22);
+    };
+    // start screen 2: ENTER TO BEGIN on blue
+    const enterPage = (t) => {
+      const gr = ctx.createRadialGradient(W / 2, H / 2, 20, W / 2, H / 2, 220);
+      gr.addColorStop(0, '#3d63b8'); gr.addColorStop(1, '#1f3a7a');
+      ctx.fillStyle = gr; ctx.fillRect(0, 0, W, H);
+      ctx.font = 'bold 34px VT323, monospace'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      const glow = 0.75 + Math.sin(t * 5) * 0.25;
+      ctx.fillStyle = 'rgba(120,220,255,0.6)'; ctx.fillText('ENTER', W / 2 + 1, H / 2 - 32); ctx.fillText('BEGIN', W / 2 + 1, H / 2 + 34);
+      ctx.fillStyle = `rgba(255,255,255,${glow})`; ctx.fillText('ENTER', W / 2, H / 2 - 33); ctx.fillText('BEGIN', W / 2, H / 2 + 33);
+      ctx.fillStyle = 'rgba(200,200,210,0.55)'; ctx.fillText('TO', W / 2, H / 2);
     };
     const drawHook = (x, y) => {
       ctx.fillStyle = '#d9d9d9'; ctx.fillRect(x - 5, y, 10, 3);
@@ -270,8 +313,9 @@ export default function GoldMiner({ probe, ctl, active = true }) {
       }
 
       // draw
+      s.t += real;
       if (s.state === 'S_BACKGROUND') {
-        page('GOLD MINER', ['press ENTER to start', `grab $${GOAL} of gold in ${LEVEL_TIME} s`, 'DOWN drops the hook'], '#e2c069');
+        if (s.startPage === 'title') titlePage(s.t); else enterPage(s.t);
       } else if (s.state === 'S_SUCCESS') {
         page('YOU WIN!', [`MONEY $${s.money}`, s.level < 3 ? `ENTER for level ${s.level + 1}` : 'all 3 levels done!', s.level < 3 ? 'the hook gets faster' : 'ENTER to play again'], '#9be37a');
       } else if (s.state === 'S_FAIL') {
