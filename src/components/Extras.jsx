@@ -100,12 +100,12 @@ const MORE = [];
 
 
 const MOVIES = [
-  { title: 'From', note: 'series · 2022' },
-  { title: 'Manifest', note: 'series · 2018' },
-  { title: 'Into the Night', note: 'series · 2020' },
-  { title: 'Interstellar', note: 'film · 2014' },
-  { title: 'Silo', note: 'series · 2023' },
-  { title: 'Lupin', note: 'series · 2021' },
+  { title: 'From', note: 'series · 2022', yt: 'pDHqAj4eJcM' },
+  { title: 'Manifest', note: 'series · 2018', yt: '0wkMl-igRio' },
+  { title: 'Into the Night', note: 'series · 2020', yt: 'ZGosoC7q_po' },
+  { title: 'Interstellar', note: 'film · 2014', yt: 'zSWdZVtXT7E' },
+  { title: 'Silo', note: 'series · 2023', yt: '8ZYhuvIv1pA' },
+  { title: 'Lupin', note: 'series · 2021', yt: 'ga0iTWXCGa0' },
 ];
 
 function RetroWindow({ title, onClose, z, onFocus, start, children, width }) {
@@ -238,25 +238,38 @@ function Music() {
   );
 }
 
+// Trailers play through YouTube's own embedded player (official uploads).
 function Movies() {
-  if (!MOVIES.length) {
-    return (
-      <div className="movies-empty">
-        <img className="reel" src="./fun/Movies.png" alt="" />
-        <p>Coming soon</p>
-        <small>my favorite films are on their way</small>
-      </div>
-    );
-  }
+  const [cur, setCur] = useState(0);
+  const m = MOVIES[cur];
+  useEffect(() => { window.dispatchEvent(new Event('trailer-playing')); }, [cur]);
   return (
-    <div className="film-strip">
-      {MOVIES.map((m) => (
-        <div key={m.title} className="film-frame">
-          {m.poster && <img src={m.poster} alt="" />}
-          <span>{m.title}</span>
-          {m.note && <small>{m.note}</small>}
-        </div>
-      ))}
+    <div className="mv">
+      <div className="mv-screen">
+        <iframe
+          key={m.yt}
+          src={`https://www.youtube-nocookie.com/embed/${m.yt}?rel=0&modestbranding=1&playsinline=1`}
+          title={`${m.title} trailer`}
+          allow="accelerometer; encrypted-media; gyroscope; picture-in-picture; fullscreen"
+          allowFullScreen
+        />
+      </div>
+      <div className="mv-now"><b>{m.title}</b><span>{m.note} · official trailer</span></div>
+      <div className="mv-list" role="list">
+        {MOVIES.map((x, i) => (
+          <button key={x.title} role="listitem" className={`mv-item${i === cur ? ' on' : ''}`} onClick={() => setCur(i)}>
+            <span className="mv-num">{String(i + 1).padStart(2, '0')}</span>
+            <span className="mv-title">{x.title}</span>
+            <small>{x.note}</small>
+            <span className="mv-play" aria-hidden="true">{i === cur ? '▶' : '›'}</span>
+          </button>
+        ))}
+      </div>
+      <div className="mv-ctl">
+        <button onClick={() => setCur((cur - 1 + MOVIES.length) % MOVIES.length)}>◀◀ prev</button>
+        <span>{cur + 1} / {MOVIES.length}</span>
+        <button onClick={() => setCur((cur + 1) % MOVIES.length)}>next ▶▶</button>
+      </div>
     </div>
   );
 }
@@ -285,7 +298,7 @@ function GameShell({ id, view, setView, active }) {
 }
 
 const BODIES = { gallery: Gallery, music: Music, movies: Movies };
-const WIDTHS = { goldminer: 680, cakes: 680, gallery: 520 };
+const WIDTHS = { goldminer: 680, cakes: 680, gallery: 520, movies: 560 };
 const INSPECT_WIDTHS = { goldminer: 1010, cakes: 1010 };
 const TITLES = { gallery: 'Gallery', music: 'Music', movies: 'Movies', goldminer: 'Gold Miner', cakes: 'Comfy Cakes' };
 
