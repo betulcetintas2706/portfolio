@@ -8,6 +8,8 @@ import DesktopWidgets from './components/DesktopWidgets';
 import Stickers from './components/Stickers';
 import SimpleView from './components/SimpleView';
 import Tour from './components/Tour';
+import Terminal from './components/Terminal';
+import MobileHome from './components/MobileHome';
 
 function startSimple() {
   try {
@@ -18,16 +20,28 @@ function startSimple() {
 }
 
 export default function App() {
-  const [activePage, setActivePage] = useState('home'); // start with welcome window
+  const [activePage, setActivePage] = useState(() => (window.innerWidth <= 768 ? null : 'home')); // phones start on the home screen
   const [minimized, setMinimized] = useState(false);
   const [simple, setSimple] = useState(startSimple);
   const [touring, setTouring] = useState(false);
+  const [term, setTerm] = useState(false);
   const windowBodyRef = useRef(null);
 
   useEffect(() => {
     try { localStorage.setItem('view', simple ? 'simple' : 'desktop'); } catch { /* ignore */ }
     document.body.classList.toggle('simple-mode', simple);
   }, [simple]);
+
+  useEffect(() => {
+    const open = () => setTerm(true);
+    const key = (e) => {
+      const typing = /input|textarea/i.test(document.activeElement?.tagName || '');
+      if (e.key === '`' && !typing) { e.preventDefault(); setTerm((t) => !t); }
+    };
+    window.addEventListener('open-terminal', open);
+    window.addEventListener('keydown', key);
+    return () => { window.removeEventListener('open-terminal', open); window.removeEventListener('keydown', key); };
+  }, []);
 
   useEffect(() => {
     const start = () => { setMinimized(true); setTouring(true); };
@@ -59,6 +73,7 @@ export default function App() {
           <DesktopWidgets />
         </div>
       </div>
+      <MobileHome showPage={showPage} onSimple={() => setSimple(true)} />
       <Stickers />
       <DesktopIcons activePage={activePage} showPage={showPage} />
       <Window
@@ -70,6 +85,7 @@ export default function App() {
         setMinimized={setMinimized}
       />
       <Dock activePage={activePage} showPage={showPage} />
+      {term && <Terminal onClose={() => setTerm(false)} showPage={showPage} />}
       {touring && (
         <Tour
           onClose={() => { setTouring(false); setMinimized(false); }}

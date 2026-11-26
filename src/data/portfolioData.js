@@ -294,4 +294,7 @@ export const pageTitles = {
   skills: "Skills & Tools",
   contact: "Contact",
   awards: "Awards",
+  "case-meducine": "Meducine · case study",
+  "case-nanotrade": "NanoTrade · case study",
+  "case-iris": "IRIS · case study",
 };

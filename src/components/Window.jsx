@@ -6,6 +6,7 @@ import ProjectsPage from './pages/ProjectsPage';
 import SkillsPage from './pages/SkillsPage';
 import ContactPage from './pages/ContactPage';
 import AwardsPage from './pages/AwardsPage';
+import CaseStudyPage from './pages/CaseStudyPage';
 
 const pages = {
   home: WelcomePage,
@@ -37,7 +38,8 @@ export default function Window({ activePage, showPage, title, windowBodyRef, min
 
   if (!activePage) return null;
 
-  const PageComponent = pages[activePage];
+  const caseId = activePage.startsWith('case-') ? activePage.slice(5) : null;
+  const PageComponent = caseId ? CaseStudyPage : pages[activePage];
 
   const handlePointerDown = (e) => {
     // Prevent dragging if the user is clicking on the control buttons
@@ -98,7 +100,7 @@ export default function Window({ activePage, showPage, title, windowBodyRef, min
         <div className="window-title">{title}</div>
       </div>
       <div className="window-body" ref={windowBodyRef}>
-        {PageComponent && <PageComponent showPage={showPage} />}
+        {PageComponent && <PageComponent showPage={showPage} caseId={caseId} />}
       </div>
       <div className={`scroll-fade${showHint ? ' on' : ''}`} aria-hidden="true" />
       <button

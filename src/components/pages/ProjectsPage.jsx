@@ -1,7 +1,11 @@
 import { projects, personalInfo } from '../../data/portfolioData';
+import { useState } from 'react';
 import { projectIconMap } from '../Icons';
+import { caseForProject } from '../../data/caseStudies';
+import { CaseStudy } from './CaseStudyPage';
 
-function ProjectCard({ proj }) {
+function ProjectCard({ proj, onCase }) {
+  const caseId = caseForProject[proj.title];
   const IconComp = projectIconMap[proj.icon];
   return (
     <div className="project-card">
@@ -15,6 +19,9 @@ function ProjectCard({ proj }) {
       <div className="project-body">
         <div className="project-title">{proj.title}</div>
         <div className="project-desc">{proj.desc}</div>
+        {caseId && onCase && (
+          <button className="case-open" onClick={() => onCase(caseId)}>Read the case study →</button>
+        )}
         <div className="exp-tags" style={{ marginBottom: 10 }}>
           {proj.tags.map((tag) => (
             <span key={tag} className="tag">{tag}</span>
@@ -37,7 +44,12 @@ function ProjectCard({ proj }) {
   );
 }
 
-export default function ProjectsPage() {
+export default function ProjectsPage({ showPage, simple }) {
+  const [inline, setInline] = useState(null);
+  const onCase = (id) => {
+    if (simple) setInline(id);
+    else showPage(`case-${id}`);
+  };
   const featured = projects.filter((p) => p.featured);
   const rest = projects.filter((p) => !p.featured);
   return (
@@ -48,8 +60,13 @@ export default function ProjectsPage() {
       </div>
       <div className="skill-category-title" style={{ margin: '4px 0 10px' }}>// ★ Featured Work</div>
       <div className="projects-grid">
-        {featured.map((proj) => <ProjectCard key={proj.title} proj={proj} />)}
+        {featured.map((proj) => <ProjectCard key={proj.title} proj={proj} onCase={onCase} />)}
       </div>
+      {simple && inline && (
+        <div className="case-inline">
+          <CaseStudy id={inline} compact onOpen={setInline} onBack={() => setInline(null)} />
+        </div>
+      )}
       <div className="skill-category-title" style={{ margin: '22px 0 10px' }}>// More Projects</div>
       <div className="projects-grid">
         {rest.map((proj) => <ProjectCard key={proj.title} proj={proj} />)}

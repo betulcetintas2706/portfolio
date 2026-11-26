@@ -128,6 +128,12 @@ export default function Extras() {
   const [wins, setWins] = useState([]); // ids in z order
   const [sparks, setSparks] = useState(0);
 
+  useEffect(() => {
+    const onOpen = (e) => setWins((w) => [...w.filter((x) => x !== e.detail), e.detail]);
+    window.addEventListener('open-extra', onOpen);
+    return () => window.removeEventListener('open-extra', onOpen);
+  }, []);
+
   const toggleZip = () => { setOpen((o) => !o); setSparks((n) => n + 1); };
   const launch = (id) => setWins((w) => [...w.filter((x) => x !== id), id]);
   const close = (id) => setWins((w) => w.filter((x) => x !== id));
