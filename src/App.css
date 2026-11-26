@@ -705,6 +705,8 @@ body {
 .project-card:nth-child(4) .project-thumb { background: linear-gradient(135deg, var(--burgundy-600), #7a2035); }
 .project-card:nth-child(5) .project-thumb { background: linear-gradient(135deg, var(--burgundy-700), var(--burgundy-500)); }
 .project-card:nth-child(6) .project-thumb { background: linear-gradient(135deg, var(--burgundy-800), var(--burgundy-600)); }
+.project-thumb { background: linear-gradient(135deg, var(--burgundy-700), var(--burgundy-500)); }
+.project-card .project-thumb:has(img) { background: none; }
 
 .project-body { padding: 14px; }
 
@@ -724,7 +726,7 @@ body {
 }
 
 .project-links {
-  display: flex; gap: 8px;
+  display: flex; gap: 8px; flex-wrap: wrap;
 }
 
 .project-link {

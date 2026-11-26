@@ -29,9 +29,11 @@ export default function ProjectsPage() {
                   ))}
                 </div>
                 <div className="project-links">
-                  <a className="project-link" href={proj.link || personalInfo.github} target="_blank" rel="noreferrer" style={{ textDecoration: 'none' }}>
-                    {proj.link ? 'Devpost' : 'GitHub'}
-                  </a>
+                  {(proj.links || [{ label: 'GitHub', url: personalInfo.github }]).map((l) => (
+                    <a key={l.label} className="project-link" href={l.url} target="_blank" rel="noreferrer" style={{ textDecoration: 'none' }}>
+                      {l.label}
+                    </a>
+                  ))}
                   {proj.award && (
                     <span className="project-link outline" style={{ borderColor: 'var(--gold)', color: 'var(--gold)' }}>
                       {proj.award}
