@@ -13,16 +13,12 @@ export default function ExperiencePage() {
             <div className="timeline-dot" />
             <div className="exp-card">
               <div className="exp-header">
-                <div className="exp-role">{exp.role}</div>
+                <div className="exp-role">{exp.role}{/intern/i.test(exp.role) && <span className="type-badge">internship</span>}{/present/i.test(exp.date) && <span className="type-badge live"><b />current</span>}</div>
                 <div className="exp-date">{exp.date}</div>
               </div>
               <div className="exp-company">{exp.company}</div>
               <div className="exp-desc">{exp.desc}</div>
-              <div className="exp-tags">
-                {exp.tags.map((tag) => (
-                  <span key={tag} className="tag">{tag}</span>
-                ))}
-              </div>
+              <div className="stack-line">{exp.tags.map((t) => t.toLowerCase()).join(' · ')}</div>
             </div>
           </div>
         ))}

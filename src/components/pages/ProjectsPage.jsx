@@ -4,6 +4,16 @@ import { projectIconMap } from '../Icons';
 import { caseForProject } from '../../data/caseStudies';
 import { CaseStudy } from './CaseStudyPage';
 
+const FILTERS = ['All', 'AI', 'Hardware', 'iOS', 'Full Stack'];
+const has = (p, words) => p.tags.concat(p.title).some((t) => words.some((w) => t.toLowerCase().includes(w)));
+const inFilter = (p, f) => {
+  if (f === 'All') return true;
+  if (f === 'AI') return has(p, ['ai', 'gemini', 'claude', 'computer vision', 'agent', 'adk']);
+  if (f === 'Hardware') return has(p, ['verilog', 'fpga', 'asic', 'esp32', 'micro:bit', 'sensors']);
+  if (f === 'iOS') return has(p, ['swift', 'react native', 'watchos']);
+  return has(p, ['react', 'node', 'fastapi', 'supabase', 'typescript']);
+};
+
 const PLAYABLE = { 'Gold Miner (FPGA Game)': 'goldminer', 'Comfy Cakes': 'cakes' };
 
 function ProjectCard({ proj, onCase }) {
@@ -29,15 +39,11 @@ function ProjectCard({ proj, onCase }) {
         {caseId && onCase && (
           <button className="case-open" onClick={() => onCase(caseId)}>Read the case study →</button>
         )}
-        <div className="exp-tags" style={{ marginBottom: 10 }}>
-          {proj.tags.map((tag) => (
-            <span key={tag} className="tag">{tag}</span>
-          ))}
-        </div>
+        <div className="stack-line">{proj.tags.map((t) => t.toLowerCase()).join(' · ')}</div>
         <div className="project-links">
           {(proj.links || [{ label: 'GitHub', url: personalInfo.github }]).map((l) => (
             <a key={l.label} className="project-link" href={l.url} target="_blank" rel="noreferrer" style={{ textDecoration: 'none' }}>
-              {l.label}
+              {l.label} <span className="arrow">↗</span>
             </a>
           ))}
           {proj.award && (
@@ -57,15 +63,23 @@ export default function ProjectsPage({ showPage, simple }) {
     if (simple) setInline(id);
     else showPage(`case-${id}`);
   };
-  const featured = projects.filter((p) => p.featured);
-  const rest = projects.filter((p) => !p.featured);
+  const [filter, setFilter] = useState('All');
+  const featured = projects.filter((p) => p.featured && inFilter(p, filter));
+  const rest = projects.filter((p) => !p.featured && inFilter(p, filter));
   return (
     <div className="page active">
       <div className="section-header">
         <div className="section-title">My <span>Projects</span></div>
         <div className="section-sub">Things I've built from scratch</div>
       </div>
-      <div className="skill-category-title" style={{ margin: '4px 0 10px' }}>// Featured Work</div>
+      <div className="filter-tabs" role="tablist">
+        {FILTERS.map((f) => (
+          <button key={f} role="tab" aria-selected={filter === f} className={filter === f ? 'on' : ''} onClick={() => setFilter(f)}>
+            {f}<span>{projects.filter((p) => inFilter(p, f)).length}</span>
+          </button>
+        ))}
+      </div>
+      {featured.length > 0 && <div className="skill-category-title" style={{ margin: '4px 0 10px' }}>// Featured Work</div>}
       <div className="projects-grid">
         {featured.map((proj) => <ProjectCard key={proj.title} proj={proj} onCase={onCase} />)}
       </div>

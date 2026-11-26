@@ -10,6 +10,20 @@ const navCards = [
   { page: 'contact', img: 'Contact', Icon: PhoneIcon, title: 'Contact', desc: "Let's work together" },
 ];
 
+const K = (t) => <span className="tk-k">{t}</span>;
+const S = (t) => <span className="tk-s">{t}</span>;
+const N = (t) => <span className="tk-n">{t}</span>;
+const C = (t) => <span className="tk-c">{t}</span>;
+const F = (t) => <span className="tk-f">{t}</span>;
+const CODE = [
+  <>{K('class')} {F('Betul')}(Engineer):</>,
+  <>{'    '}focus   = [{S('"AI agents"')}, {S('"ASIC / FPGA"')}, {S('"iOS"')}]</>,
+  <>{'    '}shipped = [{S('"Meducine"')}, {S('"NanoTrade"')}, {S('"IRIS"')}, {S('"49th"')}]</>,
+  <>{'    '}roles   = {N('6')}   {C('# fintech, health tech, data, startups')}</>,
+  <>{'    '}awards  = {N('5')}   {C('# incl. 1st @ Harvard HSIL 2026')}</>,
+  <>{'    '}open_to = {S('"Summer 2027 internships"')}</>,
+];
+
 export default function WelcomePage({ showPage, simple }) {
   return (
     <div className="page active welcome-page">
@@ -31,13 +45,19 @@ export default function WelcomePage({ showPage, simple }) {
 
       <div className="hero-tagline">{personalInfo.headline}</div>
 
-      <div className="status-card">
-        <div className="status-title">// Current Status</div>
-        <ul className="status-list">
-          {personalInfo.status.map((line) => (
-            <li key={line}><span className="status-check">✓</span>{line}</li>
-          ))}
-        </ul>
+      <div className="hero-chips">
+        <span>AI &amp; Hardware Engineer</span><i>·</i><span>5x Hackathon Winner</span><i>·</i><span>CompE @ UofT</span>
+      </div>
+
+      <div className="code-card" aria-label="Current status">
+        <div className="code-head">
+          <span className="code-dots"><i /><i /><i /></span>
+          <span className="code-file">status.py</span>
+          <span className="code-live"><b />live</span>
+        </div>
+        <pre className="code-body">{CODE.map((ln, i) => (
+          <div key={i} className="code-line"><span className="ln">{i + 1}</span><span>{ln}</span></div>
+        ))}<div className="code-line"><span className="ln">{CODE.length + 1}</span><span className="caret">▍</span></div></pre>
       </div>
 
       <div className="cta-row">

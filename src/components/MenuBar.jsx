@@ -52,7 +52,8 @@ export default function MenuBar({ showPage, onSimple }) {
         <a href="https://github.com/betulcetintas2706" target="_blank" rel="noopener noreferrer">GitHub</a>
         <a href="https://devpost.com/betulcetintas2706" target="_blank" rel="noopener noreferrer">Devpost</a>
         <a href="https://www.linkedin.com/in/betul-cetintas/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
-        <span>{time}</span>
+        <span className="sys-status" title="All systems running"><b />online · v2.6 · YYZ</span>
+        <span className="mono-time">{time}</span>
       </div>
     </div>
   );

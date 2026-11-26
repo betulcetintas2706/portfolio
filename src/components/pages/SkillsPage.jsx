@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { skills } from '../../data/portfolioData';
+import { devicon } from '../../lib/devicons';
 
 export default function SkillsPage() {
   const barsRef = useRef(null);
@@ -28,7 +29,7 @@ export default function SkillsPage() {
           <div className="skill-bars">
             {skills.languages.map((lang) => (
               <div key={lang.name} className="skill-bar-row">
-                <div className="skill-name">{lang.name}</div>
+                <div className="skill-name">{devicon(lang.name) && <img className="devicon" src={devicon(lang.name)} alt="" loading="lazy" onError={(e) => e.currentTarget.remove()} />}{lang.name}</div>
                 <div className="skill-track">
                   <div className="skill-fill" data-width={`${lang.pct}%`} style={{ width: `${lang.pct}%` }} />
                 </div>
@@ -42,7 +43,7 @@ export default function SkillsPage() {
             <div className="skill-category-title">{cat.title}</div>
             <div className="skills-chips">
               {cat.chips.map((chip) => (
-                <span key={chip} className="skill-chip">{chip}</span>
+                <span key={chip} className="skill-chip">{devicon(chip) && <img className="devicon" src={devicon(chip)} alt="" loading="lazy" onError={(e) => e.currentTarget.remove()} />}{chip}</span>
               ))}
             </div>
           </div>

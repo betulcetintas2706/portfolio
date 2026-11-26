@@ -97,7 +97,7 @@ export default function Window({ activePage, showPage, title, windowBodyRef, min
           <button className="tl tl-green" title={maximized ? 'Exit full size' : 'Full size'} aria-label="Toggle full size"
             onClick={() => setMaximized((m) => !m)}>{maximized ? '−' : '+'}</button>
         </div>
-        <div className="window-title">{title}</div>
+        <div className="window-title"><span className="win-path">~/{(activePage || "").replace("case-", "case-studies/").replace("home", "welcome")}</span><span className="win-name">{title}</span></div>
       </div>
       <div className="window-body" ref={windowBodyRef}>
         {PageComponent && <PageComponent showPage={showPage} caseId={caseId} />}
