@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 
 // Official YouTube uploads, played through the YouTube embed player.
 export const TRACKS = [
+  { id: 'DDgswnI2AbA', title: "Sen İstanbul'sun", artist: "Gökhan Türkmen" },
   { id: 'Gj96YZv8aew', title: 'Cinnamon Girl', artist: 'Lana Del Rey - NFR!' },
   { id: 'fUMgxgQaQcQ', title: 'Mariners Apartment Complex', artist: 'Lana Del Rey - NFR!' },
   { id: '69m34vsjjsU', title: 'Happiness is a butterfly', artist: 'Lana Del Rey - NFR!' },
@@ -22,7 +23,6 @@ export const TRACKS = [
   { id: 'FAsUKmOjDdI', title: "Sebebi Yar", artist: "BLOK3" },
   { id: 'gD3SqwOJ9Sc', title: "NAFİLE", artist: "ERAY067, Mansur" },
   { id: 'GfxcnX7XWfg', title: "Jungle", artist: "A Boogie Wit da Hoodie" },
-  { id: 'DDgswnI2AbA', title: "Sen İstanbul'sun", artist: "Gökhan Türkmen" },
   { id: 'm-gADGCCLmw', title: "Ama Başaramadım", artist: "Burak Bulut" },
   { id: 'Pl7--yxZjng', title: "Çok Yazık", artist: "Çağan Şengül" },
   { id: '0YLA25D31wk', title: "ZEHİRLİ GÜL", artist: "BLOK3" },
