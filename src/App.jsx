@@ -7,6 +7,7 @@ import Dock from './components/Dock';
 import DesktopWidgets from './components/DesktopWidgets';
 import Stickers from './components/Stickers';
 import SimpleView from './components/SimpleView';
+import Extras from './components/Extras';
 
 function startSimple() {
   try {
@@ -52,6 +53,7 @@ export default function App() {
         </div>
       </div>
       <Stickers />
+      <Extras />
       <DesktopIcons activePage={activePage} showPage={showPage} />
       <Window
         activePage={activePage}

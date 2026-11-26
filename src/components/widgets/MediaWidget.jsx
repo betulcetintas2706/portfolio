@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 
 // Official YouTube uploads, played through the YouTube embed player.
-const TRACKS = [
+export const TRACKS = [
   { id: 'Gj96YZv8aew', title: 'Cinnamon Girl', artist: 'Lana Del Rey - NFR!' },
   { id: 'fUMgxgQaQcQ', title: 'Mariners Apartment Complex', artist: 'Lana Del Rey - NFR!' },
   { id: '69m34vsjjsU', title: 'Happiness is a butterfly', artist: 'Lana Del Rey - NFR!' },
@@ -85,6 +85,30 @@ export default function MediaWidget() {
   }, [playing]);
 
   useEffect(() => () => { if (playerRef.current) playerRef.current.destroy(); }, []);
+
+  // Let the Music window pick songs and show what's playing.
+  useEffect(() => {
+    window.dispatchEvent(new CustomEvent('track-state', { detail: { idx, playing } }));
+  }, [idx, playing]);
+  useEffect(() => {
+    const onPick = (e) => {
+      const i = e.detail;
+      wantPlay.current = true;
+      ensurePlayer().then((p) => {
+        if (i === idxRef.current) p.playVideo(); else load(i, true);
+      });
+    };
+    const onToggle = () => toggle();
+    const onAsk = () => window.dispatchEvent(new CustomEvent('track-state', { detail: { idx: idxRef.current, playing } }));
+    window.addEventListener('play-track', onPick);
+    window.addEventListener('toggle-track', onToggle);
+    window.addEventListener('ask-track', onAsk);
+    return () => {
+      window.removeEventListener('play-track', onPick);
+      window.removeEventListener('toggle-track', onToggle);
+      window.removeEventListener('ask-track', onAsk);
+    };
+  });
 
   const seek = (e) => {
     const p = playerRef.current;
