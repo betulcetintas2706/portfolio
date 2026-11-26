@@ -159,10 +159,26 @@ const TAUNTS = {
   won: ["noooo! I'll be back..."],
 };
 
-function Villain({ mode, hit, low }) {
+const MOUTHS = ['closed', 'mid', 'open', 'wide'].map((k) => `./stickers/pickle-talk-${k}.png`);
+if (typeof window !== 'undefined') MOUTHS.forEach((src) => { const i = new Image(); i.src = src; });
+
+let voiceCache = null;
+function pickVoice() {
+  if (voiceCache || !window.speechSynthesis) return voiceCache;
+  const vs = window.speechSynthesis.getVoices().filter((v) => /^en/i.test(v.lang));
+  const pref = ['Fred', 'Junior', 'Albert', 'Ralph', 'Google UK English Male', 'Daniel', 'Alex'];
+  voiceCache = pref.map((n) => vs.find((v) => v.name.includes(n))).find(Boolean) || vs[0] || null;
+  return voiceCache;
+}
+
+function Villain({ mode, hit, low, sound }) {
   const [i, setI] = useState(0);
+  const [typed, setTyped] = useState('');
+  const [talking, setTalking] = useState(false);
+  const [mouth, setMouth] = useState(0);
   const key = hit ? 'hit' : low && mode !== 'dead' && mode !== 'won' ? 'low' : mode;
   const lines = TAUNTS[key] || [];
+  const line = lines[i] || '';
   useEffect(() => { setI(0); }, [key]);
   const bubbleRef = useRef(null);
   const [shift, setShift] = useState({ x: 0, below: false });
@@ -184,22 +200,59 @@ function Villain({ mode, hit, low }) {
       setShift((p) => (Math.abs(p.x - dx) > 1 || p.below !== needBelow ? { x: dx, below: needBelow } : p));
     };
     fit();
-    const id = setInterval(fit, 300); // the villain moves and sways, so keep checking
+    const id = setInterval(fit, 300);
     window.addEventListener('resize', fit);
     return () => { clearInterval(id); window.removeEventListener('resize', fit); };
   }, [key, i, mode]);
   useEffect(() => {
     if (lines.length < 2) return undefined;
-    const id = setInterval(() => setI((n) => (n + 1) % lines.length), 2600);
+    const id = setInterval(() => setI((n) => (n + 1) % lines.length), 3400);
     return () => clearInterval(id);
   }, [key, lines.length]);
+
+  // say the line: typewriter text + voice + moving mouth
+  useEffect(() => {
+    if (!line) return undefined;
+    setTyped(''); setTalking(true);
+    let n = 0;
+    const typer = setInterval(() => { n += 1; setTyped(line.slice(0, n)); if (n >= line.length) clearInterval(typer); }, 38);
+    let done = setTimeout(() => setTalking(false), Math.max(900, line.length * 62));
+    const synth = window.speechSynthesis;
+    if (sound && synth) {
+      try {
+        synth.cancel();
+        const u = new SpeechSynthesisUtterance(line.replace(/\.\.\./g, ',').replace(/MWAHAHA/i, 'mwa ha ha ha'));
+        const v = pickVoice(); if (v) u.voice = v;
+        u.pitch = 1.7; u.rate = 1.08; u.volume = 0.9;
+        u.onstart = () => { clearTimeout(done); setTalking(true); };
+        u.onend = () => setTalking(false);
+        u.onerror = () => { done = setTimeout(() => setTalking(false), 300); };
+        synth.speak(u);
+      } catch { /* speech not available */ }
+    }
+    return () => { clearInterval(typer); clearTimeout(done); };
+  }, [line, sound]);
+
+  useEffect(() => () => { try { window.speechSynthesis?.cancel(); } catch { /* ignore */ } }, []);
+
+  // flap the mouth while talking
+  useEffect(() => {
+    if (!talking) return undefined;
+    const id = setInterval(() => setMouth((m) => {
+      let n = Math.floor(Math.random() * 4);
+      if (n === m) n = (n + 1) % 4;
+      return n;
+    }), 95);
+    return () => clearInterval(id);
+  }, [talking]);
+
   return (
-    <div className={`hk-villain hk-v-${mode}${hit ? ' hk-v-hit' : ''}`} aria-hidden="true">
-      {lines[i] && (
+    <div className={`hk-villain hk-v-${mode}${hit ? ' hk-v-hit' : ''}${talking ? ' hk-talking' : ''}`} aria-hidden="true">
+      {line && (
         <div ref={bubbleRef} className={`hk-bubble${shift.below ? ' hk-bubble-below' : ''}`} key={`${key}${i}`}
-          style={{ '--dx': `${shift.x}px` }}>{lines[i]}</div>
+          style={{ '--dx': `${shift.x}px` }}>{typed}<span className="hk-bubble-ghost">{line.slice(typed.length)}</span></div>
       )}
-      <img src="./stickers/pickle-hacker.png" alt="" draggable="false" />
+      <img src={talking ? MOUTHS[mouth] : './stickers/pickle-hacker.png'} alt="" draggable="false" />
     </div>
   );
 }
@@ -222,6 +275,13 @@ export default function HackIntro({ onDone }) {
   const lootRef = useRef([]);
   const startRef = useRef(0);
   const [hit, setHit] = useState(false);
+  const [sound, setSound] = useState(() => { try { return localStorage.getItem('pickleSound') !== 'off'; } catch { return true; } });
+  const toggleSound = () => setSound((v) => {
+    const nv = !v;
+    try { localStorage.setItem('pickleSound', nv ? 'on' : 'off'); } catch { /* ignore */ }
+    if (!nv) { try { window.speechSynthesis?.cancel(); } catch { /* ignore */ } }
+    return nv;
+  });
   const hitT = useRef(null);
 
   const level = { alert: 1, debug: 1 - (squashed / BUGS) * 0.45, rewire: 0.5, override: 0.25, won: 0, dead: 1.6 }[phase];
@@ -389,7 +449,8 @@ export default function HackIntro({ onDone }) {
     <div className={`hack hack-${phase}`} role="dialog" aria-label="Save the site mini game">
       <div className="hack-scan" aria-hidden="true" />
       <button className="hack-skip" onClick={finish}>Skip intro →</button>
-      <Villain mode={phase} hit={hit && phase === 'debug'} low={left <= 10 && phase !== 'alert'} />
+      <button className="hk-sound" onClick={toggleSound} aria-pressed={sound}>{sound ? 'Sound on' : 'Sound off'}</button>
+      <Villain mode={phase} hit={hit && phase === 'debug'} low={left <= 10 && phase !== 'alert'} sound={sound} />
 
       {phase !== 'alert' && phase !== 'won' && phase !== 'dead' && (
         <div className="hack-hud">

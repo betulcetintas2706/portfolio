@@ -2090,3 +2090,10 @@ body.hack-dead #root > *:not(.hack):not(.term) { filter: hue-rotate(110deg) satu
 .devicon { width: 15px; height: 15px; margin-right: 6px; vertical-align: -3px; }
 .skill-chip { display: inline-flex; align-items: center; }
 .skill-name { white-space: nowrap; min-width: 150px; display: inline-flex; align-items: center; }
+/* talking pickle */
+.hk-bubble-ghost { visibility: hidden; }
+.hk-talking img { animation: hkTalkBob 0.22s ease-in-out infinite alternate; }
+@keyframes hkTalkBob { to { transform: translateY(-2px) rotate(-0.6deg); } }
+.hk-sound { position: absolute; top: 12px; right: 128px; z-index: 3; background: rgba(253,246,240,0.18); color: #fdf6f0; border: 1px solid rgba(253,246,240,0.4); border-radius: 999px; padding: 6px 12px; font-family: 'JetBrains Mono', monospace; font-size: 11px; cursor: pointer; }
+.hk-sound[aria-pressed="false"] { opacity: 0.6; }
+@media (max-width: 768px) { .hk-sound { top: auto; bottom: 108px; right: 12px; } .hack .hack-skip { left: 38% !important; } }
