@@ -12,7 +12,6 @@ const ITEMS = [
 ];
 
 const BABIES = [
-  { src: './cats.jpg', cap: 'the girls' },
   { src: './gallery/babies/baby-01.jpg', cap: 'looking up' },
   { src: './gallery/babies/baby-02.jpg', cap: 'on the landing' },
   { src: './gallery/babies/baby-03.jpg', cap: 'unimpressed' },
@@ -41,7 +40,7 @@ const MORE = [
   { src: './rug.png', cap: 'home' },
   { src: './quote-bg.jpg', cap: 'words to live by' },
 ];
-const PHOTOS = [...BABIES, ...MORE];
+
 
 const MOVIES = [];
 
@@ -82,33 +81,56 @@ function RetroWindow({ title, onClose, z, onFocus, start, children, width }) {
 }
 
 function Gallery() {
+  const [album, setAlbum] = useState(null); // null = top level, 'babies' = inside the folder
   const [big, setBig] = useState(null);
+  const list = album === 'babies' ? BABIES : MORE;
+
   if (big !== null) {
-    const p = PHOTOS[big];
+    const p = list[big];
     return (
       <div className="gal-big">
         <img src={p.src} alt={p.cap} />
         <div className="gal-nav">
-          <button onClick={() => setBig((big - 1 + PHOTOS.length) % PHOTOS.length)}>◀</button>
-          <span>{p.cap} · {big + 1}/{PHOTOS.length}</span>
-          <button onClick={() => setBig((big + 1) % PHOTOS.length)}>▶</button>
+          <button onClick={() => setBig((big - 1 + list.length) % list.length)}>◀</button>
+          <span>{p.cap} · {big + 1}/{list.length}</span>
+          <button onClick={() => setBig((big + 1) % list.length)}>▶</button>
         </div>
-        <button className="retro-btn" onClick={() => setBig(null)}>back to all</button>
+        <button className="retro-btn" onClick={() => setBig(null)}>{album === 'babies' ? 'back to my babies' : 'back to all'}</button>
       </div>
     );
   }
-  const tile = (p, i) => (
-    <button key={p.src} className="polaroid" style={{ '--r': `${(i % 2 ? 1 : -1) * (1.5 + (i % 3))}deg` }} onClick={() => setBig(i)}>
+
+  const tile = (p, i, onClick) => (
+    <button key={p.src} className="polaroid" style={{ '--r': `${(i % 2 ? 1 : -1) * (1.5 + (i % 3))}deg` }} onClick={onClick}>
       <img src={p.src} alt={p.cap} loading="lazy" />
       <span>{p.cap}</span>
     </button>
   );
+
+  if (album === 'babies') {
+    return (
+      <div className="gal">
+        <div className="gal-path">
+          <button onClick={() => setAlbum(null)}>← Gallery</button>
+          <span>/ my babies</span>
+          <small>{BABIES.length} photos</small>
+        </div>
+        <div className="gal-grid">{BABIES.map((p, i) => tile(p, i, () => setBig(i)))}</div>
+      </div>
+    );
+  }
+
   return (
     <div className="gal">
-      <div className="gal-album">my babies <small>{BABIES.length} photos</small></div>
-      <div className="gal-grid">{BABIES.map((p, i) => tile(p, i))}</div>
-      <div className="gal-album">around me</div>
-      <div className="gal-grid">{MORE.map((p, i) => tile(p, BABIES.length + i))}</div>
+      <div className="gal-grid">
+        <button className="polaroid gal-folder" style={{ '--r': '-2deg' }} onClick={() => setAlbum('babies')} aria-label={`Open my babies, ${BABIES.length} photos`}>
+          <span className="gal-stack" aria-hidden="true"><i /><i /></span>
+          <img src="./cats.jpg" alt="" />
+          <span>my babies</span>
+          <em>{BABIES.length} photos</em>
+        </button>
+        {MORE.map((p, i) => tile(p, i + 1, () => setBig(i)))}
+      </div>
     </div>
   );
 }

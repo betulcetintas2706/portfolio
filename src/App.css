@@ -2649,3 +2649,13 @@ body.hack-dead #root > *:not(.hack):not(.term) { filter: hue-rotate(110deg) satu
 .gal-album small { font-family: 'Space Mono', monospace; font-style: normal; font-size: 10.5px; color: var(--burgundy-400); margin-left: 8px; }
 .gal .gal-grid { grid-template-columns: repeat(3, 1fr); }
 @media (max-width: 768px) { .gal { max-height: none; } .gal .gal-grid { grid-template-columns: 1fr 1fr; } }
+.gal-path { display: flex; align-items: baseline; gap: 8px; margin: 2px 4px 12px; font-family: 'Lora', serif; font-style: italic; font-size: 19px; color: var(--burgundy-800); }
+.gal-path button { background: none; border: none; cursor: pointer; padding: 0; font: inherit; font-style: normal; font-family: 'Space Mono', monospace; font-size: 12px; color: var(--burgundy-500); }
+.gal-path button:hover { color: var(--burgundy-800); }
+.gal-path small { font-family: 'Space Mono', monospace; font-style: normal; font-size: 10.5px; color: var(--burgundy-400); margin-left: auto; }
+.gal-folder { position: relative; }
+.gal-folder em { display: block; font-family: 'Space Mono', monospace; font-style: normal; font-size: 10px; color: var(--burgundy-400); }
+.gal-stack i { position: absolute; inset: 0; background: #fff; box-shadow: 2px 3px 6px rgba(0,0,0,0.2); z-index: -1; }
+.gal-stack i:first-child { transform: rotate(5deg) translate(4px, 2px); }
+.gal-stack i:last-child { transform: rotate(-4deg) translate(-3px, 3px); }
+.gal-folder { isolation: isolate; }
