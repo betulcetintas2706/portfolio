@@ -2724,3 +2724,4 @@ body.hack-dead #root > *:not(.hack):not(.term) { filter: hue-rotate(110deg) satu
   .xp-date br { display: none; }
   .xp-date { display: inline; }
 }
+.window.window-wide:has(.page.xp) { background: var(--win-bg); }
