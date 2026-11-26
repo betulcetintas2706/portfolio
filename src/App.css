@@ -1270,3 +1270,19 @@ body {
   max-width: 90vw; text-align: center; animation: eggIn 0.3s ease-out;
 }
 @keyframes eggIn { from { opacity: 0; transform: translate(-50%, -8px); } to { opacity: 1; transform: translate(-50%, 0); } }
+
+/* ===== Decorative stickers (draggable) ===== */
+.stickers-layer { position: fixed; inset: 0; z-index: 50; pointer-events: none; }
+.sticker {
+  position: absolute; width: auto; pointer-events: auto; cursor: grab;
+  filter: drop-shadow(0 6px 10px rgba(0,0,0,0.45));
+  transition: transform 0.2s ease; touch-action: none; user-select: none;
+  animation: stickerFloat 5s ease-in-out infinite;
+}
+.sticker:hover { transform: scale(1.08) rotate(-3deg); }
+.sticker:active { cursor: grabbing; }
+.sticker.flat { animation: none; filter: drop-shadow(0 3px 6px rgba(0,0,0,0.35)); opacity: 0.95; }
+.sticker.swing { transform-origin: top center; animation: stickerSwing 3.5s ease-in-out infinite; }
+@keyframes stickerFloat { 0%, 100% { margin-top: 0; } 50% { margin-top: -5px; } }
+@keyframes stickerSwing { 0%, 100% { rotate: -6deg; } 50% { rotate: 6deg; } }
+@media (max-width: 768px) { .stickers-layer { display: none; } }

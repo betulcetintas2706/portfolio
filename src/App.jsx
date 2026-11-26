@@ -5,6 +5,7 @@ import DesktopIcons from './components/DesktopIcons';
 import Window from './components/Window';
 import Dock from './components/Dock';
 import DesktopWidgets from './components/DesktopWidgets';
+import Stickers from './components/Stickers';
 
 export default function App() {
   const [activePage, setActivePage] = useState('home'); // start with welcome window
@@ -25,6 +26,7 @@ export default function App() {
           <DesktopWidgets />
         </div>
       </div>
+      <Stickers />
       <DesktopIcons activePage={activePage} showPage={showPage} />
       <Window
         activePage={activePage}
