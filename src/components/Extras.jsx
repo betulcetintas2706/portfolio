@@ -105,6 +105,7 @@ const MOVIES = [
   { title: 'Into the Night', note: 'series · 2020' },
   { title: 'Interstellar', note: 'film · 2014' },
   { title: 'Silo', note: 'series · 2023' },
+  { title: 'Lupin', note: 'series · 2021' },
 ];
 
 function RetroWindow({ title, onClose, z, onFocus, start, children, width }) {
