@@ -49,6 +49,20 @@ export const experiences = [
     tags: ["Next.js", "WebGL", "SwiftUI", "iOS"],
   },
   {
+    role: "Distributor & Operations Lead",
+    date: "Nov 2025 – Present",
+    company: "Eruslu Sağlık Ürünleri · Toronto, ON",
+    desc: "Leading distribution and operations in Canada for the Sleepy Easy Clean household cleaning brand, including building and running the Sleepy Easy Clean website.",
+    tags: ["Operations", "Business Development", "Web"],
+  },
+  {
+    role: "Judge",
+    date: "Summer 2026",
+    company: "Youth Impact Challenge (YIC) 2026 Summer Challenge",
+    desc: "Reviewed and judged youth-led startup ideas tackling social and environmental challenges.",
+    tags: ["Judging", "Entrepreneurship", "Social Impact"],
+  },
+  {
     role: "Data Engineering Intern",
     date: "Jan 2026 – Sep 2026",
     company: "Alephic Labs · San Francisco, CA (Remote)",
@@ -88,7 +102,7 @@ export const experiences = [
 export const projects = [
   {
     title: "Meducine",
-    desc: "AI health literacy app that turns confusing medical language into plain words, with a 60+ term dictionary, 26 specialty filters and text-to-speech. Shipped 6 iOS builds and demoed to AstraZeneca and Plan International.",
+    desc: "AI health literacy platform that turns complex medical information into plain, personal guidance, with a 60+ term dictionary, 26 specialty filters and text-to-speech. Won 1st at Harvard HSIL Toronto Hub (~7.2% acceptance), advanced to the HSIL Venture Building Bootcamp (top 120 teams globally), and was showcased at the AstraZeneca and Plan International Canada Faces of the Future reception.",
     tags: ["React Native", "Expo", "AI", "Health Tech"],
     award: "🥇 Harvard HSIL 2026",
     icon: "chat",
@@ -103,7 +117,7 @@ export const projects = [
   {
     title: "IRIS",
     links: [{ label: "Devpost", url: "https://devpost.com/software/iris-de1z3t" }, { label: "Demo", url: "https://vimeo.com/1178189406" }],
-    desc: "AI lab assistant on safety glasses: an ESP32-S3 camera watches the experiment, confirms finished steps and flags errors, while students ask questions by voice. Python FastAPI backend with Gemini 2.5 Flash, Overshoot vision and ElevenLabs voice, plus a SwiftUI iOS app with Auth0.",
+    desc: "AI lab assistant on safety glasses: an ESP32-S3 camera watches the experiment, confirms finished steps and flags errors, while students ask questions by voice. Python FastAPI backend with Gemini 2.5 Flash, Overshoot vision and ElevenLabs voice, plus a SwiftUI iOS app with Auth0. Sponsored by Overshoot (YC W26); ActualFood offered to support it after the hackathon.",
     tags: ["SwiftUI", "ESP32-S3", "FastAPI", "Gemini", "ElevenLabs", "Auth0"],
     award: "YHack Spring 2026",
     image: "./iris.png",
@@ -119,7 +133,7 @@ export const projects = [
   {
     title: "49th",
     links: [{ label: "GitHub", url: "https://github.com/akashngb/roots" }, { label: "Devpost", url: "https://devpost.com/software/hack-canada-2026" }, { label: "Demo", url: "https://vimeo.com/1171501862" }],
-    desc: "AI settlement assistant for newcomers to Canada. WhatsApp onboarding, a personal task roadmap, voice-note replies in their language, a React dashboard, and a Playwright + Claude Vision agent that navigates government websites for the user.",
+    desc: "AI settlement assistant for newcomers to Canada. WhatsApp onboarding, a personal task roadmap, voice-note replies in their language, a React dashboard, and a Playwright + Claude Vision agent that navigates government websites for the user. Placed against 600+ participants and 200+ projects.",
     tags: ["Node.js", "Twilio", "Gemini", "Playwright", "Claude Vision", "React", "TypeScript"],
     award: "🥉 Hack Canada 2026 + Google Build with AI",
     image: "./49th.png",
@@ -136,7 +150,7 @@ export const projects = [
     title: "NanoTrade",
     links: [{ label: "GitHub", url: "https://github.com/betulcetintas2706/ttsky-nanotrades" }, { label: "Website", url: "https://betulcetintas2706.github.io/websitenanotrade/" }, { label: "Devpost", url: "https://devpost.com/software/nanotrade" }, { label: "Demo", url: "https://vimeo.com/1167116687" }],
     desc: "Tiny Tapeout ASIC in Verilog with 5 RTL modules running 8 parallel market anomaly checks at 50 MHz with ~80 ns latency. Fit into 9,800 of 10,000 cells and cut false positives from 40% to 0.5% across 10,000+ simulations.",
-    tags: ["Verilog", "ASIC", "SKY130", "Tiny Tapeout", "OpenLane"],
+    tags: ["Verilog", "ASIC", "SKY130", "Tiny Tapeout", "Cognichip"],
     award: "🥉 UofT IC Hackathon (ASIC)",
     image: "./nanotrade.png",
   },
@@ -150,10 +164,38 @@ export const projects = [
   {
     title: "VYBE",
     links: [{ label: "GitHub", url: "https://github.com/Vidhikalal/VYBE" }, { label: "Devpost", url: "https://devpost.com/software/vybe-l3ua1m" }],
-    desc: "iOS app for Deaf and hard-of-hearing users that turns live music into real-time vibration: bass drives intensity, tempo drives pulse speed. Built with AVFoundation audio capture and Core Haptics.",
-    tags: ["Swift", "SwiftUI", "Core Haptics", "AVFoundation"],
+    desc: "iOS app for Deaf and hard-of-hearing users that turns live music into real-time vibration: bass drives intensity, tempo drives pulse speed. Built with AVFoundation audio capture and Core Haptics, plus an Apple Watch companion app so you can feel it on your wrist.",
+    tags: ["Swift", "SwiftUI", "Core Haptics", "AVFoundation", "watchOS"],
     award: "🥈 Hackville 2026",
     image: "./vybe.png",
+  },
+  {
+    title: "Gold Miner (FPGA Game)",
+    desc: "Minecraft-themed Gold Miner arcade game built fully in hardware in Verilog on the DE1-SoC. 31-state control FSM plus sub-FSMs, five custom RAM modules, pixel-level collision detection, 320×240 VGA graphics, a 45-second HEX timer, PS/2 keyboard controls, LFSR object placement and win/fail audio.",
+    tags: ["Verilog", "FPGA", "DE1-SoC", "FSMs", "VGA"],
+    award: "ECE241 Final Project",
+    icon: "chip",
+  },
+  {
+    title: "Mental Health Pop-up Space",
+    desc: "Client-focused design project for the UofT Engineering Library: designing a mental health pop-up space for students (APS112, Engineering Strategies & Practice II).",
+    tags: ["Engineering Design", "Client Project", "Teamwork"],
+    award: "UofT ESP II",
+    icon: "globe",
+  },
+  {
+    title: "Bahen Courtyard Food Initiative",
+    desc: "Led a team designing sustainable food solutions for the Bahen Courtyard at UofT (Engineering Strategies & Practice I).",
+    tags: ["Sustainability", "Project Lead", "Design"],
+    award: "UofT ESP I · Lead",
+    icon: "globe",
+  },
+  {
+    title: "Micro:bit Heartbeat Monitor",
+    desc: "Led a project building a wearable heartbeat monitor on the Micro:bit.",
+    tags: ["Micro:bit", "Sensors", "Wearables"],
+    award: "Project Lead",
+    icon: "music",
   },
   {
     title: "AI Trash Bin Sorter",
