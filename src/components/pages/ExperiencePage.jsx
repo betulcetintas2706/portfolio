@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { experiences, personalInfo } from '../../data/portfolioData';
 import { caseForProject } from '../../data/caseStudies';
 import { actions } from '../../lib/actions';
@@ -6,8 +5,6 @@ import { actions } from '../../lib/actions';
 // Timeline layout. All text comes from experiences in portfolioData.js:
 // the first sentence becomes the summary, the rest become bullets, and
 // numbers are highlighted.
-
-const SHOWN = 3;
 
 function parse(exp) {
   const parts = exp.company.split(' · ');
@@ -61,9 +58,6 @@ function Role({ exp }) {
 }
 
 export default function ExperiencePage() {
-  const [more, setMore] = useState(false);
-  const top = experiences.slice(0, SHOWN);
-  const rest = experiences.slice(SHOWN);
   return (
     <div className="page active xp">
       <header className="xp-top">
@@ -78,11 +72,7 @@ export default function ExperiencePage() {
         </div>
       </header>
       <div className="xp-line">
-        {top.map((e) => <Role key={e.role + e.company} exp={e} />)}
-        <button className="xp-more" onClick={() => setMore((m) => !m)} aria-expanded={more}>
-          <span className={more ? 'open' : ''}>⌄</span> {more ? 'Hide earlier experience' : `Earlier experience (${rest.length})`}
-        </button>
-        {more && rest.map((e) => <Role key={e.role + e.company} exp={e} />)}
+        {experiences.map((e) => <Role key={e.role + e.company} exp={e} />)}
       </div>
     </div>
   );
