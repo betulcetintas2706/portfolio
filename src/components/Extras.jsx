@@ -195,7 +195,7 @@ function Gallery() {
         </button>
         <button className="polaroid gal-folder" style={{ '--r': '-1.5deg' }} onClick={() => setAlbum('people')} aria-label={`Open my people, ${PEOPLE.length} photos`}>
           <span className="gal-stack" aria-hidden="true"><i /><i /></span>
-          <img src={PEOPLE[13].src} alt="" />
+          <img src={PEOPLE[20].src} alt="" />
           <span>my people</span>
           <em>{PEOPLE.length} photos</em>
         </button>
