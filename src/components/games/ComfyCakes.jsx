@@ -1,292 +1,330 @@
 import { useEffect, useRef, useState } from 'react';
+import { FONT } from './cakesFont';
 
-// A cake decorating mini game in the spirit of Betül's Comfy Cakes FPGA project.
-// A customer orders a cake, you build it to match, then bake it.
+// Comfy Cakes, rebuilt in the browser from Betül and Sehreen's DE1-SoC project.
+// The logic follows the Verilog one to one:
+//   game_fsm.v       IDLE -> NEW_ORDER -> RUN -> JUDGE -> RESULT -> ... GAME_OVER
+//   game_datapath.v  8-bit order/cake {topping, frosting, batter, shape},
+//                    stations by cake_x, 90 s BCD timer, BCD score, 3 strikes,
+//                    level up every 3 correct cakes (40/50/67/100 px per second)
+//   lfsr8.v          taps 8,6,5,4, seed A5, shifting every 50 MHz clock
+//   menu_control.v   title -> any key -> how to play -> Enter
+//   tone_gen.v       660 + 880 Hz for a correct cake, 220 Hz buzz for a wrong one
+// The art is the project's own background, sprite ROM images and 8x8 font.
 
-const OPTIONS = {
-  shape: [
-    { id: 'round', label: 'Round' },
-    { id: 'square', label: 'Square' },
-    { id: 'heart', label: 'Heart' },
-  ],
-  sponge: [
-    { id: 'vanilla', label: 'Vanilla', c: '#f3d9a4', d: '#dcbc7c' },
-    { id: 'chocolate', label: 'Chocolate', c: '#7a4a2a', d: '#5e3820' },
-    { id: 'strawberry', label: 'Strawberry', c: '#f2a5c4', d: '#d9819f' },
-  ],
-  layers: [
-    { id: 1, label: '1' },
-    { id: 2, label: '2' },
-    { id: 3, label: '3' },
-  ],
-  frosting: [
-    { id: 'pink', label: 'Pink', c: '#f7b6cf' },
-    { id: 'white', label: 'White', c: '#fffaf3' },
-    { id: 'choc', label: 'Choco', c: '#4a2a18' },
-    { id: 'none', label: 'None', c: null },
-  ],
-  topping: [
-    { id: 'cherries', label: 'Cherries' },
-    { id: 'sprinkles', label: 'Sprinkles' },
-    { id: 'candles', label: 'Candles' },
-    { id: 'berries', label: 'Berries' },
-    { id: 'none', label: 'None' },
-  ],
+const W = 640;
+const H = 480;
+const X_END = 288;
+const STATIONS = [
+  { id: 'PAN', l: 40, r: 79 },
+  { id: 'BATTER', l: 100, r: 139 },
+  { id: 'FROST', l: 160, r: 199 },
+  { id: 'TOP', l: 220, r: 259 },
+];
+const SPEED = [40, 50, 67, 100]; // conveyor pixels per second, by level
+const TIME_START = 90;
+const HOLD_SECONDS = 2;
+const LANE_Y = 224;
+const PANEL = { x: 24, y: 64 };
+const HUD = { x: 396, y: 8, fg: '#92dbff', bg: '#242449' };
+
+const SHAPES = ['', 'round', 'square', 'heart'];
+const BATTERS = ['', 'vanilla', 'chocolate', 'strawberry'];
+const FROSTS = ['none', 'vanilla', 'chocolate', 'strawberry'];
+const TOPS = ['none', 'sprinkles', 'cherry', 'candles'];
+
+// cake byte helpers: {topping[7:6], frosting[5:4], batter[3:2], shape[1:0]}
+const f = (c) => ({ shape: c & 3, batter: (c >> 2) & 3, frost: (c >> 4) & 3, top: (c >> 6) & 3 });
+const bits8 = (c) => {
+  const s = c.toString(2).padStart(8, '0');
+  return `${s.slice(0, 2)} ${s.slice(2, 4)} ${s.slice(4, 6)} ${s.slice(6)}`;
 };
-const KEYS = ['shape', 'sponge', 'layers', 'frosting', 'topping'];
-const TITLES = { shape: 'Shape', sponge: 'Sponge', layers: 'Layers', frosting: 'Frosting', topping: 'Topping' };
-const CUSTOMERS = ['Mochi', 'Mr. Pickle', 'Bunny', 'Nazar', 'Kahve', 'Lale'];
-const ORDER_TIME = 40;
 
-const pick = (arr) => arr[Math.floor(Math.random() * arr.length)];
-const newOrder = () => ({
-  who: pick(CUSTOMERS),
-  ...Object.fromEntries(KEYS.map((k) => [k, pick(OPTIONS[k]).id])),
-});
-const blank = () => ({ shape: 'round', sponge: 'vanilla', layers: 1, frosting: 'none', topping: 'none' });
-const opt = (k, id) => OPTIONS[k].find((o) => o.id === id);
+// lfsr8.v: shifts every 50 MHz clock, period 255. The value you get depends on
+// exactly when you press a key, which is what makes the orders random.
+const SEED = 0xa5;
+function lfsrStep(q) { const fb = ((q >> 7) ^ (q >> 5) ^ (q >> 4) ^ (q >> 3)) & 1; return ((q << 1) | fb) & 0xff; }
+const LFSR_TABLE = (() => { const t = [SEED]; for (let i = 1; i < 255; i += 1) t.push(lfsrStep(t[i - 1])); return t; })();
 
-function topPath(shape, cx, cy, w) {
-  const h = w * 0.28;
-  if (shape === 'square') return `M${cx - w / 2},${cy + h / 2} L${cx - w / 2 + h * 0.7},${cy - h / 2} L${cx + w / 2 - h * 0.7},${cy - h / 2} L${cx + w / 2},${cy + h / 2} Z`;
-  if (shape === 'heart') {
-    const s = w / 2;
-    return `M${cx},${cy + h * 0.35} C${cx - s * 1.1},${cy - h * 0.2} ${cx - s * 0.55},${cy - h * 1.35} ${cx},${cy - h * 0.6} C${cx + s * 0.55},${cy - h * 1.35} ${cx + s * 1.1},${cy - h * 0.2} ${cx},${cy + h * 0.35} Z`;
-  }
-  return null;
-}
+const STATION_OF = (x) => (STATIONS.find((s) => x >= s.l && x <= s.r)?.id) || 'NONE';
+const bcd = (n) => String(n).padStart(2, '0');
 
-export function Cake({ cake, size = 200 }) {
-  const sp = opt('sponge', cake.sponge);
-  const fr = opt('frosting', cake.frosting);
-  const n = cake.layers;
-  const cx = 100;
-  const base = 150;
-  const tierH = 26;
-  const tiers = Array.from({ length: n }, (_, i) => ({ w: 130 - i * 26, y: base - i * tierH }));
-  const top = tiers[n - 1];
-  const topY = top.y - tierH;
-  const rx = cake.shape === 'square' ? 2 : 10;
-
-  return (
-    <svg viewBox="0 0 200 190" width={size} height={size * 0.95} className="cake-svg" aria-hidden="true">
-      <ellipse cx={cx} cy={base + 6} rx={82} ry={10} fill="#e9dfe9" />
-      <ellipse cx={cx} cy={base + 3} rx={76} ry={7} fill="#fff" stroke="#e2c069" />
-      {tiers.map((t, i) => (
-        <g key={i}>
-          <rect x={cx - t.w / 2} y={t.y - tierH} width={t.w} height={tierH} rx={rx} fill={sp.c} stroke={sp.d} />
-          {fr.c && <rect x={cx - t.w / 2} y={t.y - tierH} width={t.w} height={8} rx={rx} fill={fr.c} />}
-          {fr.c && [0.2, 0.45, 0.7].map((p) => (
-            <ellipse key={p} cx={cx - t.w / 2 + t.w * p + 6} cy={t.y - tierH + 8} rx={4} ry={5} fill={fr.c} />
-          ))}
-        </g>
-      ))}
-      {/* top face shows the shape */}
-      {cake.shape === 'round'
-        ? <ellipse cx={cx} cy={topY} rx={top.w / 2} ry={top.w * 0.13} fill={fr.c || sp.c} stroke={fr.c ? 'rgba(0,0,0,0.08)' : sp.d} />
-        : <path d={topPath(cake.shape, cx, topY, top.w)} fill={fr.c || sp.c} stroke={fr.c ? 'rgba(0,0,0,0.1)' : sp.d} />}
-      {/* toppings */}
-      {cake.topping === 'cherries' && [-0.25, 0, 0.25].map((p) => (
-        <g key={p}><line x1={cx + p * top.w} y1={topY - 4} x2={cx + p * top.w + 4} y2={topY - 14} stroke="#3c6b2a" strokeWidth="1.5" /><circle cx={cx + p * top.w} cy={topY - 3} r={5} fill="#c4162a" /></g>
-      ))}
-      {cake.topping === 'berries' && [-0.22, 0.05, 0.28].map((p) => (
-        <g key={p}><path d={`M${cx + p * top.w - 5},${topY - 6} Q${cx + p * top.w},${topY + 6} ${cx + p * top.w + 5},${topY - 6} Z`} fill="#e23b4e" /><rect x={cx + p * top.w - 3} y={topY - 8} width={6} height={2} fill="#3c8a2a" /></g>
-      ))}
-      {cake.topping === 'candles' && [-0.2, 0, 0.2].map((p) => (
-        <g key={p}><rect x={cx + p * top.w - 2} y={topY - 18} width={4} height={16} fill="#8b2942" /><ellipse cx={cx + p * top.w} cy={topY - 22} rx={3} ry={5} fill="#ffcf4a" className="cake-flame" /></g>
-      ))}
-      {cake.topping === 'sprinkles' && Array.from({ length: 14 }, (_, i) => (
-        <rect key={i} x={cx - top.w * 0.38 + ((i * 37) % (top.w * 0.76))} y={topY - 4 + ((i * 13) % 8)} width={4} height={1.6}
-          transform={`rotate(${(i * 47) % 180} ${cx - top.w * 0.38 + ((i * 37) % (top.w * 0.76))} ${topY - 3 + ((i * 13) % 8)})`}
-          fill={['#e2c069', '#5ee0e6', '#c4162a', '#7ac74f', '#fff'][i % 5]} />
-      ))}
-    </svg>
-  );
-}
-
-// State diagram for the inspector (browser version of the game logic).
+// State diagram of game_fsm.v for the inspector
 export const CAKE_SPEC = {
   name: 'ComfyCakes',
-  view: '380 246',
+  view: '380 236',
   stepHint: 'Advance the game clock by 0.5 seconds',
   states: [
-    { id: 'NEW_ORDER', label: 'NEW ORDER', x: 45, y: 50 },
-    { id: 'BUILD', label: 'BUILD', x: 190, y: 50 },
-    { id: 'BAKE', label: 'BAKE', x: 335, y: 50 },
-    { id: 'CHECK', label: 'CHECK', x: 335, y: 135 },
-    { id: 'PERFECT', label: 'PERFECT', x: 190, y: 135 },
-    { id: 'MISS', label: 'MISS', x: 190, y: 220 },
+    { id: 'IDLE', label: 'IDLE', x: 55, y: 42 },
+    { id: 'NEW_ORDER', label: 'NEW_ORDER', x: 190, y: 42 },
+    { id: 'RUN', label: 'RUN', x: 325, y: 42 },
+    { id: 'JUDGE', label: 'JUDGE', x: 325, y: 126 },
+    { id: 'RESULT', label: 'RESULT', x: 190, y: 126 },
+    { id: 'GAME_OVER', label: 'GAME_OVER', x: 55, y: 210 },
   ],
   edges: [
-    { from: 'NEW_ORDER', to: 'BUILD', label: 'load order' },
-    { from: 'BUILD', to: 'BUILD', d: 'M176,37 C170,8 210,8 204,37', label: 'SW change', lx: 190, ly: 12 },
-    { from: 'BUILD', to: 'BAKE', label: 'KEY0 / t=0' },
-    { from: 'BAKE', to: 'CHECK', label: 'oven done', lx: 352, ly: 96 },
-    { from: 'CHECK', to: 'PERFECT', label: 'match=11111', lx: 262, ly: 152 },
-    { from: 'CHECK', to: 'MISS', label: 'else', lx: 280, ly: 186 },
-    { from: 'PERFECT', to: 'NEW_ORDER', label: 'next', lx: 112, ly: 100 },
-    { from: 'MISS', to: 'NEW_ORDER', d: 'M153,220 C60,222 40,150 45,65', label: 'next', lx: 70, ly: 196 },
+    { from: 'IDLE', to: 'NEW_ORDER', label: 'act_start' },
+    { from: 'NEW_ORDER', to: 'RUN', label: 'load_target' },
+    { from: 'RUN', to: 'JUDGE', label: 'at_end', lx: 346, ly: 88 },
+    { from: 'JUDGE', to: 'RESULT', label: 'match?' },
+    { from: 'RESULT', to: 'NEW_ORDER', label: 'hold_zero', lx: 220, ly: 88 },
+    { from: 'RESULT', to: 'GAME_OVER', label: '3 strikes', lx: 140, ly: 176 },
+    { from: 'RUN', to: 'GAME_OVER', d: 'M362,52 C380,236 220,226 92,212', label: 'time_zero', lx: 300, ly: 214 },
+    { from: 'GAME_OVER', to: 'IDLE', label: 'act_start', lx: 82, ly: 128 },
   ],
-  note: 'This panel shows the browser recreation. On the DE1-SoC the same logic is written in Verilog: FSMs, order generation and checking, scoring and timing, with switches and keys as inputs.',
+  captions: [{ x: 55, y: 14, text: 'title → how to play' }],
+  note: 'This is the same game logic as our Verilog (game_fsm.v and game_datapath.v), running in the browser with the project art. On the DE1-SoC it runs at 50 MHz with a PS/2 keyboard, VGA and the audio codec.',
   board: null,
 };
 
-// field encodings used for the register view
-const ENC = {
-  shape: { bits: 2, list: OPTIONS.shape.map((o) => o.id) },
-  sponge: { bits: 2, list: OPTIONS.sponge.map((o) => o.id) },
-  layers: { bits: 2, list: OPTIONS.layers.map((o) => o.id) },
-  frosting: { bits: 2, list: OPTIONS.frosting.map((o) => o.id) },
-  topping: { bits: 3, list: OPTIONS.topping.map((o) => o.id) },
-};
-const bin = (n, w) => n.toString(2).padStart(w, '0');
-const code = (k, id) => bin(ENC[k].list.indexOf(id), ENC[k].bits);
-const encode = (c) => KEYS.map((k) => code(k, c[k])).join(' ');
+function beep(ac, freq, dur, at = 0) {
+  const t = ac.currentTime + at;
+  const o = ac.createOscillator(); const g = ac.createGain();
+  o.type = 'square'; o.frequency.value = freq;
+  g.gain.setValueAtTime(0.06, t); g.gain.setValueAtTime(0.06, t + dur - 0.01); g.gain.linearRampToValueAtTime(0, t + dur);
+  o.connect(g); g.connect(ac.destination); o.start(t); o.stop(t + dur);
+}
 
-export default function ComfyCakes({ probe, ctl }) {
-  const [order, setOrder] = useState(newOrder);
-  const [cake, setCake] = useState(blank);
-  const [phase, setPhase] = useState('build'); // neworder | build | baking | checking | result
-  const [result, setResult] = useState(null);
-  const [score, setScore] = useState(0);
-  const [streak, setStreak] = useState(0);
-  const [time, setTime] = useState(ORDER_TIME);
+export default function ComfyCakes({ probe, ctl, active = true }) {
+  const canvasRef = useRef(null);
+  const [muted, setMuted] = useState(false);
+  const [page, setPage] = useState('title'); // for the hint line under the canvas
+  const mutedRef = useRef(false); mutedRef.current = muted;
+  const activeRef = useRef(active); activeRef.current = active;
+  const audioRef = useRef(null);
 
-  // one game clock drives everything, so the inspector can pause, slow and step it
-  const eng = useRef({ phase: 'build', left: ORDER_TIME, wait: 0, swT: 0, swKey: null, keyT: 0, st: 'BUILD', edge: null });
-  const live = useRef({});
-  live.current = { order, cake, time, score, streak, result };
+  const g = useRef({
+    state: 'IDLE', instructions: false,
+    target: 0, cake: 0, cakeX: 0, score: 0, strikes: 0, time: TIME_START, level: 0, streak: 0,
+    lastOk: false, hold: 0, moveAcc: 0, secAcc: 0, born: performance.now(),
+    keyT: {}, moveT: 0, secT: 0, history: [], edge: null,
+  });
 
-  const go = (ph, wait = 0) => { eng.current.phase = ph; eng.current.wait = wait; setPhase(ph); };
-
-  const finishCheck = () => {
-    const { order: o, cake: c } = live.current;
-    const wrong = KEYS.filter((k) => o[k] !== c[k]);
-    const perfect = wrong.length === 0;
-    const t = Math.ceil(eng.current.left);
-    const pts = perfect ? 100 + t * 5 : Math.max(0, (KEYS.length - wrong.length) * 10);
-    setScore((x) => x + pts);
-    setStreak((x) => (perfect ? x + 1 : 0));
-    setResult({ wrong, perfect, pts, t });
-    go('result');
+  const sound = (ok) => {
+    if (mutedRef.current) return;
+    try {
+      if (!audioRef.current) audioRef.current = new (window.AudioContext || window.webkitAudioContext)();
+      const ac = audioRef.current; ac.resume();
+      if (ok) { beep(ac, 660, 0.12); beep(ac, 880, 0.12, 0.12); } else beep(ac, 220, 0.35);
+    } catch { /* no audio */ }
   };
 
-  const advance = (dt) => {
-    const e = eng.current;
-    if (e.phase === 'build') {
-      e.left = Math.max(0, e.left - dt);
-      setTime(Math.ceil(e.left));
-      if (e.left <= 0) go('baking', 1.6);
-    } else if (e.phase === 'baking') {
-      e.wait -= dt; if (e.wait <= 0) go('checking', 0.5);
-    } else if (e.phase === 'checking') {
-      e.wait -= dt; if (e.wait <= 0) finishCheck();
-    } else if (e.phase === 'neworder') {
-      e.wait -= dt; if (e.wait <= 0) go('build');
+  const lfsr = () => {
+    const cycles = Math.floor((performance.now() - g.current.born) * 50000);
+    return LFSR_TABLE[cycles % 255];
+  };
+
+  const go = (to) => {
+    const s = g.current;
+    s.history = [...s.history, [s.state, to]].slice(-8);
+    s.edge = `${s.state}>${to}`;
+    s.state = to;
+  };
+
+  // NEW_ORDER and JUDGE last one clock in hardware, so they run straight through
+  const newOrder = () => {
+    const s = g.current;
+    go('NEW_ORDER');
+    const r = lfsr();
+    const shape = (r & 3) || 1; const batter = ((r >> 2) & 3) || 1;
+    s.target = (r & 0xf0) | (batter << 2) | shape;
+    s.cake = 0; s.cakeX = 0; s.moveAcc = 0;
+    go('RUN');
+  };
+  const judge = () => {
+    const s = g.current;
+    go('JUDGE');
+    const match = s.cake === s.target;
+    if (match) {
+      s.score = Math.min(99, s.score + 1);
+      if (s.streak === 2) { s.streak = 0; s.level = Math.min(3, s.level + 1); } else s.streak += 1;
+    } else s.strikes = Math.min(3, s.strikes + 1);
+    s.lastOk = match; s.hold = HOLD_SECONDS;
+    sound(match);
+    go('RESULT');
+  };
+
+  const clearGame = () => {
+    const s = g.current;
+    Object.assign(s, { score: 0, strikes: 0, time: TIME_START, level: 0, streak: 0, lastOk: false, cake: 0, cakeX: 0 });
+  };
+
+  // key handling = key_map.v + menu_control.v
+  const key = (k) => {
+    const s = g.current;
+    s.keyT[k] = performance.now();
+    const start = k === 'Enter';
+    if (s.state === 'IDLE') {
+      if (!s.instructions) { s.instructions = true; setPage('howto'); return; }
+      if (start) { clearGame(); newOrder(); setPage('play'); }
+      return;
+    }
+    if (s.state === 'GAME_OVER') {
+      if (start) { go('IDLE'); s.instructions = false; clearGame(); setPage('title'); }
+      return;
+    }
+    if (s.state === 'RUN' && /^[0-3]$/.test(k)) {
+      const opt = Number(k);
+      const st = STATION_OF(s.cakeX);
+      if (st === 'PAN' && opt) s.cake = (s.cake & ~3) | opt;
+      else if (st === 'BATTER' && opt) s.cake = (s.cake & ~12) | (opt << 2);
+      else if (st === 'FROST') s.cake = (s.cake & ~48) | (opt << 4);
+      else if (st === 'TOP') s.cake = (s.cake & ~192) | (opt << 6);
     }
   };
+  const keyRef = useRef(key); keyRef.current = key;
 
-  const tick = useRef(null);
-  tick.current = () => {
-    const c = ctl?.current || {};
-    if (c.paused) { if (c.step) { c.step -= 1; advance(0.5); } }
-    else advance(c.slow ? 0.025 : 0.1);
-    report();
-  };
   useEffect(() => {
-    const id = setInterval(() => tick.current(), 100);
-    return () => clearInterval(id);
+    const down = (e) => {
+      if (!activeRef.current || e.metaKey || e.ctrlKey || e.altKey) return;
+      if (/input|textarea/i.test(document.activeElement?.tagName || '')) return;
+      const k = e.key === 'Enter' ? 'Enter' : /^[0-3]$/.test(e.key) ? e.key : 'other';
+      if (k !== 'other' || g.current.state === 'IDLE') {
+        if (k === 'Enter' || k !== 'other') e.preventDefault();
+        keyRef.current(k);
+      }
+    };
+    window.addEventListener('keydown', down);
+    return () => window.removeEventListener('keydown', down);
   }, []);
 
-  const bake = () => { eng.current.keyT = performance.now(); if (eng.current.phase === 'build') go('baking', 1.6); };
-  const choose = (k, id) => { eng.current.swT = performance.now(); eng.current.swKey = k; setCake({ ...cake, [k]: id }); };
+  useEffect(() => {
+    const cv = canvasRef.current; const ctx = cv.getContext('2d');
+    ctx.imageSmoothingEnabled = false;
+    const img = (src) => { const i = new Image(); i.src = src; return i; };
+    const bg = img('./games/cakes/background.png');
+    const title = img('./games/cakes/title_screen.png');
+    const howto = img('./games/cakes/instructions_screen.png');
+    const sheet = img('./games/cakes/sprites.png');
 
-  const report = () => {
-    if (!probe) return;
-    const e = eng.current;
-    const { order: o, cake: c, score: sc, streak: sk, result: r } = live.current;
-    const st = { neworder: 'NEW_ORDER', build: 'BUILD', baking: 'BAKE', checking: 'CHECK', result: r?.perfect ? 'PERFECT' : 'MISS' }[e.phase];
-    const nowMs = performance.now();
-    const swLit = nowMs - e.swT < 260;
-    if (st !== e.st) { e.edge = `${e.st}>${st}`; e.st = st; }
-    else if (st === 'BUILD' && swLit) e.edge = 'BUILD>BUILD';
-    probe.current = {
-      state: st,
-      edge: e.edge,
-      inputs: [
-        ...KEYS.map((k) => ({ id: k, kind: 'switch', label: k, bits: code(k, c[k]), on: swLit && e.swKey === k, title: `${TITLES[k]} switches` })),
-        { id: 'key0', kind: 'key', label: 'KEY0 bake', on: nowMs - e.keyT < 260, title: 'push button that starts baking' },
-        { id: 'tz', kind: 'sig', label: 't_zero', on: e.left <= 0, title: 'order timer ran out' },
-      ],
-      regs: [
-        { name: 'order_reg', bits: encode(o), wide: true },
-        { name: 'cake_reg', bits: encode(c), wide: true },
-        { name: 'match', bits: KEYS.map((k) => (o[k] === c[k] ? '1' : '0')).join(''), wide: true },
-        { name: 'timer', value: `${Math.ceil(e.left)}s` },
-        { name: 'score', value: sc },
-        { name: 'streak', value: sk },
-      ],
+    const spr = (id, x, y, scale) => ctx.drawImage(sheet, id * 32, 0, 32, 32, x, y, 32 * scale, 32 * scale);
+    // cake_blitter.v: plate -> base -> frosting -> topping, skipping absent layers
+    const drawCake = (c, x, y, scale) => {
+      const { shape, batter, frost, top } = f(c);
+      spr(0, x, y, scale);
+      if (shape) spr(shape * 4 + batter, x, y, scale);
+      if (shape && frost) spr(16 + shape * 4 + frost, x, y, scale);
+      if (top) spr(16 + top, x, y, scale);
     };
-  };
+    // hud_digits.v: 13 cells of 8x8 glyphs, 2x on screen
+    const drawHud = (s) => {
+      const cells = [10, Math.floor(s.time / 10), s.time % 10, 15, 11, Math.floor(s.score / 10), s.score % 10, 15, 12, s.strikes, 15, 13, s.level + 1];
+      cells.forEach((gl, i) => {
+        const glyph = FONT[gl];
+        const cx = HUD.x + i * 18;
+        for (let r = 0; r < 8; r += 1) for (let c = 0; c < 8; c += 1) {
+          ctx.fillStyle = glyph[r * 8 + c] === '1' ? HUD.fg : HUD.bg;
+          ctx.fillRect(cx + c * 2, HUD.y + r * 2, 2, 2);
+        }
+      });
+    };
 
-  const next = () => { setOrder(newOrder()); setCake(blank()); setResult(null); setTime(ORDER_TIME); eng.current.left = ORDER_TIME; go('neworder', 0.6); };
-  const label = (k, id) => {
-    const o = opt(k, id);
-    if (k === 'layers') return `${id} layer${id > 1 ? 's' : ''}`;
-    if (k === 'topping') return id === 'none' ? 'no topping' : { cherries: 'cherries', sprinkles: 'sprinkles', candles: 'candles', berries: 'strawberries' }[id];
-    if (k === 'frosting') return id === 'none' ? 'no frosting' : `${o.label.toLowerCase()} frosting`;
-    return o.label.toLowerCase();
-  };
+    let raf; let last = performance.now();
+    const loop = (now) => {
+      const real = Math.min(0.1, (now - last) / 1000); last = now;
+      const c = ctl?.current || {};
+      let dt = real;
+      if (c.paused) { if (c.step) { c.step -= 1; dt = 0.5; } else dt = 0; } else if (c.slow) dt = real * 0.25;
+      const s = g.current;
+
+      // rate dividers: sec_tick (1 Hz) and move_tick (level speed)
+      if (dt > 0) {
+        s.secAcc += dt;
+        let secTicks = 0;
+        while (s.secAcc >= 1) { s.secAcc -= 1; secTicks += 1; s.secT = now; }
+        if (s.state === 'RUN') {
+          for (let i = 0; i < secTicks && s.time > 0; i += 1) s.time -= 1;
+          if (s.time === 0) { go('GAME_OVER'); setPage('over'); }
+          else {
+            s.moveAcc += dt * SPEED[s.level];
+            while (s.moveAcc >= 1 && s.cakeX < X_END) { s.moveAcc -= 1; s.cakeX += 1; s.moveT = now; }
+            if (s.cakeX === X_END) judge();
+          }
+        } else if (s.state === 'RESULT') {
+          for (let i = 0; i < secTicks && s.hold > 0; i += 1) s.hold -= 1;
+          if (s.hold === 0) {
+            if (s.strikes === 3) { go('GAME_OVER'); setPage('over'); } else newOrder();
+          }
+        }
+      }
+
+      // draw
+      if (s.state === 'IDLE') {
+        const pic = s.instructions ? howto : title;
+        if (pic.complete) ctx.drawImage(pic, 0, 0, W, H);
+      } else {
+        if (bg.complete) ctx.drawImage(bg, 0, 0, W, H);
+        if (sheet.complete) {
+          const px = Math.max(0, Math.min(544, 2 * s.cakeX - 16));
+          drawCake(s.cake, px, LANE_Y, 3);
+          if (s.state === 'RESULT' || s.state === 'GAME_OVER') spr(s.state === 'RESULT' && s.lastOk ? 1 : 2, PANEL.x, PANEL.y, 2);
+          else drawCake(s.target, PANEL.x, PANEL.y, 2);
+        }
+        drawHud(s);
+      }
+
+      if (probe) {
+        const lit = (t) => now - (t || 0) < 200;
+        const st = STATION_OF(s.cakeX);
+        probe.current = {
+          state: s.state,
+          edge: s.edge,
+          history: s.history,
+          inputs: [
+            { id: 'enter', kind: 'key', label: 'Enter', on: lit(s.keyT.Enter), title: 'act_start' },
+            ...['1', '2', '3', '0'].map((k) => ({ id: `k${k}`, kind: 'key', label: k, on: lit(s.keyT[k]), title: k === '0' ? 'option 0: no frosting or topping' : `option ${k}` })),
+            { id: 'mt', kind: 'sig', label: 'move_tick', on: s.state === 'RUN' && lit(s.moveT), title: 'conveyor rate divider' },
+            { id: 'st', kind: 'sig', label: 'sec_tick', on: lit(s.secT), title: '1 Hz rate divider' },
+            { id: 'ae', kind: 'sig', label: 'at_end', on: s.cakeX === X_END, title: 'cake reached the box' },
+            { id: 'm', kind: 'sig', label: 'match', on: s.cake === s.target && s.target !== 0, title: 'cake == target' },
+            { id: 'tz', kind: 'sig', label: 'time_zero', on: s.time === 0, title: 'timer at 00' },
+            { id: 'os', kind: 'sig', label: 'out_of_strikes', on: s.strikes === 3, title: 'strikes == 3' },
+          ],
+          regs: [
+            { name: 'target', bits: bits8(s.target), wide: true },
+            { name: 'cake', bits: bits8(s.cake), wide: true },
+            { name: 'cake_x', value: s.cakeX },
+            { name: 'station', value: st === 'NONE' ? '-' : st },
+            { name: 'time_bcd', value: bcd(s.time) },
+            { name: 'score_bcd', value: bcd(s.score) },
+            { name: 'strikes', value: s.strikes },
+            { name: 'level', value: `${s.level} (${SPEED[s.level]} px/s)` },
+            { name: 'lfsr8', value: `0x${lfsr().toString(16).toUpperCase().padStart(2, '0')}` },
+            { name: 'hold', value: s.hold },
+          ],
+        };
+      }
+      raf = requestAnimationFrame(loop);
+    };
+    raf = requestAnimationFrame(loop);
+    return () => cancelAnimationFrame(raf);
+  }, []);
+
+  const s = g.current;
+  const order = f(s.target);
+  const hint = {
+    title: 'Press any key (or tap) to continue',
+    howto: 'Press Enter to start',
+    play: 'At each station press 1, 2 or 3 (top, middle, bottom). 0 = no frosting or topping.',
+    over: 'Game over. Press Enter to go back to the title.',
+  }[page];
 
   return (
-    <div className="cc">
-      <div className="cc-top">
-        <div className="cc-order">
-          <div className="cc-order-head"><b>Order for {order.who}</b><span className={time <= 10 && phase === 'build' ? 'cc-hurry' : ''}>⏱ {time}s</span></div>
-          <div className="cc-order-list">
-            {KEYS.map((k) => (
-              <span key={k} className={`cc-chip${result && result.wrong.includes(k) ? ' cc-bad' : ''}${result && !result.wrong.includes(k) ? ' cc-good' : ''}`}>
-                {label(k, order[k])}
-              </span>
-            ))}
-          </div>
-        </div>
-        <div className="cc-score"><b>{score}</b><span>points</span>{streak > 1 && <em>{streak} in a row</em>}</div>
-      </div>
-
-      <div className="cc-stage">
-        <div className={`cc-cake ${phase === 'baking' || phase === 'checking' ? 'cc-baking' : ''}`}>
-          <Cake cake={cake} size={210} />
-        </div>
-        {phase === 'baking' && <div className="cc-oven">baking...</div>}
-        {phase === 'checking' && <div className="cc-oven">checking the order...</div>}
-        {phase === 'neworder' && <div className="cc-oven">next customer...</div>}
-        {phase === 'result' && (
-          <div className={`cc-result ${result.perfect ? 'ok' : 'meh'}`}>
-            <b>{result.perfect ? 'Perfect cake!' : `Almost! ${KEYS.length - result.wrong.length}/5 right`}</b>
-            <span>+{result.pts} points{result.perfect && result.t > 0 ? ` (time bonus ${result.t * 5})` : ''}</span>
-            <button onClick={next}>Next order →</button>
-          </div>
-        )}
-      </div>
-
-      <div className={`cc-controls ${phase !== 'build' ? 'cc-locked' : ''}`}>
-        {KEYS.map((k) => (
-          <div key={k} className="cc-row">
-            <span className="cc-row-title">{TITLES[k]}</span>
-            <div className="cc-opts">
-              {OPTIONS[k].map((o) => (
-                <button key={o.id} className={`cc-opt${cake[k] === o.id ? ' on' : ''}`} onClick={() => choose(k, o.id)}
-                  style={o.c ? { '--sw': o.c } : undefined} disabled={phase !== 'build'}>
-                  {o.c && <i className="cc-swatch" />}{o.label}
-                </button>
-              ))}
-            </div>
-          </div>
+    <div className="cc2">
+      <canvas
+        ref={canvasRef} width={W} height={H} className="cc2-canvas"
+        onPointerDown={() => { if (g.current.state === 'IDLE') key(g.current.instructions ? 'Enter' : 'other'); }}
+        aria-label={`Comfy Cakes. ${hint}${s.target ? ` Order: ${SHAPES[order.shape]} ${BATTERS[order.batter]} cake, ${FROSTS[order.frost]} frosting, ${TOPS[order.top]} topping.` : ''}`}
+      />
+      <div className="cc2-keys" aria-label="Keyboard">
+        {['1', '2', '3', '0'].map((k) => (
+          <button key={k} className="cc2-key" onPointerDown={(e) => { e.preventDefault(); key(k); }}>{k}</button>
         ))}
-        <button className="cc-bake" onClick={bake} disabled={phase !== 'build'}>Bake it!</button>
+        <button className="cc2-key cc2-enter" onPointerDown={(e) => { e.preventDefault(); key('Enter'); }}>Enter</button>
+        <button className="cc2-mute" onClick={() => setMuted((m) => !m)}>{muted ? 'Sound off' : 'Sound on'}</button>
       </div>
-      <div className="gm-note">Inspired by Comfy Cakes, my FPGA project with Sehreen Basara.</div>
+      <div className="gm-bar"><span>{hint}</span></div>
+      <div className="gm-note">Built in Verilog on a DE1-SoC FPGA with Sehreen Basara. Same rules and art as our board version.</div>
     </div>
   );
 }

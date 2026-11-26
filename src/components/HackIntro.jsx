@@ -171,6 +171,47 @@ function audio() {
     return babbleCtx;
   } catch { return null; }
 }
+// Background theme for the hack game: a looping chiptune, mixed under the
+// pickle's voice. Uses the same audio context, so it starts after the first click.
+const LOOP_LEN = 14.1176; // 8 bars at 136 bpm
+const music = { src: null, gain: null, buf: null, lead: 0, loading: null, want: false };
+function loadTheme(ac) {
+  if (music.buf) return Promise.resolve(music.buf);
+  if (!music.loading) {
+    music.loading = fetch('./voice/hack-theme.mp3').then((r) => r.arrayBuffer()).then((b) => ac.decodeAudioData(b)).then((buf) => {
+      const d = buf.getChannelData(0); let i = 0;
+      while (i < d.length && Math.abs(d[i]) < 1e-4) i += 1; // skip encoder padding
+      music.lead = i / buf.sampleRate; music.buf = buf; return buf;
+    });
+  }
+  return music.loading;
+}
+function musicStart() {
+  music.want = true;
+  const ac = audio(); if (!ac || ac.state !== 'running' || music.src) return;
+  loadTheme(ac).then((buf) => {
+    if (!music.want || music.src) return;
+    const src = ac.createBufferSource(); src.buffer = buf; src.loop = true;
+    src.loopStart = music.lead; src.loopEnd = Math.min(buf.duration, music.lead + LOOP_LEN);
+    const g = ac.createGain(); g.gain.setValueAtTime(0, ac.currentTime); g.gain.linearRampToValueAtTime(0.2, ac.currentTime + 1.2);
+    src.connect(g); g.connect(ac.destination); src.start(0, music.lead);
+    music.src = src; music.gain = g;
+  }).catch(() => {});
+}
+function musicStop(fade = 0.8) {
+  music.want = false;
+  const ac = babbleCtx; if (!music.src || !ac) return;
+  const { src, gain } = music; const t = ac.currentTime;
+  gain.gain.cancelScheduledValues(t); gain.gain.setValueAtTime(gain.gain.value, t); gain.gain.linearRampToValueAtTime(0, t + fade);
+  try { src.stop(t + fade + 0.05); } catch { /* ignore */ }
+  music.src = null; music.gain = null;
+}
+function musicMix(vol, rate) {
+  const ac = babbleCtx; if (!ac || !music.src) return;
+  if (vol != null) music.gain.gain.setTargetAtTime(vol, ac.currentTime, 0.12);
+  if (rate != null) music.src.playbackRate.setTargetAtTime(rate, ac.currentTime, 0.4);
+}
+
 // unlock audio on any click, tap or key press. Capture phase so game
 // handlers that stop the event can't block it. Keeps trying until running.
 if (typeof window !== 'undefined') {
@@ -254,8 +295,9 @@ function Villain({ mode, hit, low, sound }) {
     if (sound) {
       clip = new Audio(`./voice/${key}-${i}.mp3`);
       clip.volume = 0.9;
-      clip.onended = finish;
+      clip.onended = () => { musicMix(0.2); finish(); };
       clip.play().then(() => {
+        musicMix(0.07);
         const d = (clip.duration || line.length * 0.06) * 1000;
         type(d * 0.85);
       }).catch(() => {
@@ -267,7 +309,7 @@ function Villain({ mode, hit, low, sound }) {
     }
     return () => {
       cancelled = true; clearInterval(typer); clearTimeout(stopT);
-      if (clip) { clip.onended = null; clip.pause(); }
+      if (clip) { clip.onended = null; clip.pause(); musicMix(0.2); }
     };
   }, [line, sound, key, i, replay]);
 
@@ -319,8 +361,21 @@ export default function HackIntro({ onDone }) {
   });
   const hitT = useRef(null);
 
+  // background music: on while sound is on, fades out when the intro ends
+  useEffect(() => {
+    if (!sound) { musicStop(0.3); return undefined; }
+    musicStart();
+    const ready = () => musicStart();
+    window.addEventListener('pickle-audio-ready', ready);
+    return () => window.removeEventListener('pickle-audio-ready', ready);
+  }, [sound]);
+  useEffect(() => () => musicStop(1.2), []);
+
   const level = { alert: 1, debug: 1 - (squashed / BUGS) * 0.45, rewire: 0.5, override: 0.25, won: 0, dead: 1.6 }[phase];
   const left = Math.max(0, LIMIT - elapsed);
+  // music speeds up when time is running out, drags when the pickle wins
+  const tempo = phase === 'dead' ? 0.82 : phase === 'won' ? 1 : left <= 10 && phase !== 'alert' ? 1.12 : 1;
+  useEffect(() => { musicMix(null, tempo); }, [tempo]);
 
   const restoreAll = () => {
     document.querySelectorAll('.hack-stolen, .hack-fall').forEach((el) => {

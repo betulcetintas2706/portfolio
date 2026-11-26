@@ -1,224 +1,224 @@
 import { useEffect, useRef, useState } from 'react';
 
-// Browser version of the Gold Miner game Betül and Sehreen built in Verilog
-// on the DE1-SoC. Same idea: a swinging hook, gold adds points, rocks take
-// points away, 45 seconds per level and a score goal. Drawn at 320x240 like
-// the original VGA output, then scaled up.
+// Gold Miner, rebuilt in the browser from Betül and Sehreen's ECE241 project
+// (Verilog on the DE1-SoC). It follows the project slides:
+//   Control FSM   S_background -ENTER-> S_draw_bg -> S_draw_objects -> S_move_hook
+//                 -down-> S_release -> S_pull_back -> S_update_score -> S_check_score
+//                 -> S_move_hook | S_success | S_fail_page
+//   Move hook     the hook slides left and right (we simplified the original
+//                 angle swing to left-right movement); speed set by the level
+//   Release       drops straight down drawing the rope, stops on an object or the bottom
+//   Pull back     speed depends on what was caught (nothing, medium, large)
+//   Score         +200 large gold, +50 medium gold, -20 large rock, -10 medium rock,
+//                 3-digit BCD
+//   Timer         45 seconds on the HEX display; time_done ends the round
+// Screen is 320x240 like the VGA output, with the colours we saw on the board.
 
 const W = 320;
 const H = 240;
-const ORIGIN = { x: 160, y: 40 };
+const HOOK_Y = 44;
+const GOAL = 200;
 const LEVEL_TIME = 45;
+const HOOK_SPEED = [0, 55, 85, 120];   // px/s for levels 1..3
+const DROP_SPEED = 110;
+const PULL_SPEED = { none: 160, GM: 75, RM: 75, GL: 32, RL: 32 };
+const VALUE = { GL: 200, GM: 50, RL: -20, RM: -10 };
+const SIZE = { GL: 10, GM: 6, RL: 10, RM: 7 };
+const TYPE_NAME = { GL: 'large gold', GM: 'medium gold', RL: 'large rock', RM: 'medium rock' };
 
-const KINDS = {
-  gold: { r: 7, value: 50, pull: 2.6, color: '#f5c542', ore: '#8d8d8d' },
-  bigGold: { r: 14, value: 250, pull: 0.9, color: '#f5c542', ore: '#7a7a7a' },
-  diamond: { r: 6, value: 400, pull: 3.4, color: '#5ee0e6', ore: '#6f6f6f' },
-  rock: { r: 11, value: -30, pull: 0.7, color: null, ore: '#6b6b6b' },
-};
+// object RAM: the layout from our board demo (centre x, centre y, type)
+const OBJECTS = [
+  [187, 66, 'RM'], [106, 91, 'RL'], [102, 135, 'GM'], [262, 133, 'GM'], [103, 160, 'RM'],
+  [226, 158, 'RL'], [300, 159, 'GL'], [183, 180, 'GM'], [105, 186, 'RL'], [296, 200, 'RM'], [221, 222, 'GM'],
+];
 
-// 16-bit LFSR, like the hardware version used for random placement.
-function makeLfsr(seed) {
-  let s = seed & 0xffff || 0xace1;
-  const next = () => {
-    const bit = ((s >> 0) ^ (s >> 2) ^ (s >> 3) ^ (s >> 5)) & 1;
-    s = (s >> 1) | (bit << 15);
-    return s / 0xffff;
-  };
-  next.reg = () => s;
-  return next;
-}
-
-function makeLevel(level) {
-  const rnd = makeLfsr(Date.now() + level * 7919);
-  const counts = {
-    gold: 5 + level,
-    bigGold: 2 + Math.floor(level / 2),
-    diamond: level >= 2 ? Math.min(level - 1, 3) : 0,
-    rock: 3 + level * 2,
-  };
-  const objs = [];
-  Object.entries(counts).forEach(([kind, n]) => {
-    for (let i = 0; i < n; i += 1) {
-      const k = KINDS[kind];
-      for (let tries = 0; tries < 40; tries += 1) {
-        const x = 14 + rnd() * (W - 28);
-        const y = 78 + rnd() * (H - 92);
-        if (objs.every((o) => Math.hypot(o.x - x, o.y - y) > o.r + k.r + 4)) {
-          objs.push({ kind, x, y, r: k.r });
-          break;
-        }
-      }
-    }
-  });
-  return {
-    lfsr: rnd.reg(),
-    level,
-    goal: 300 + (level - 1) * 350,
-    time: LEVEL_TIME,
-    objs,
-    swingSpeed: 1.6 + level * 0.25,
-  };
-}
-
-function beep(ctxRef, freq, dur = 0.12, type = 'square', vol = 0.05) {
-  try {
-    if (!ctxRef.current) ctxRef.current = new (window.AudioContext || window.webkitAudioContext)();
-    const ac = ctxRef.current;
-    const o = ac.createOscillator();
-    const g = ac.createGain();
-    o.type = type; o.frequency.value = freq;
-    g.gain.setValueAtTime(vol, ac.currentTime);
-    g.gain.exponentialRampToValueAtTime(0.0001, ac.currentTime + dur);
-    o.connect(g); g.connect(ac.destination);
-    o.start(); o.stop(ac.currentTime + dur);
-  } catch { /* no audio */ }
-}
-
-function tune(ctxRef, notes) {
-  notes.forEach(([f, d], i) => setTimeout(() => beep(ctxRef, f, d, 'square', 0.05), i * 130));
-}
-
-// State diagram for the inspector. This is the browser version's state
-// machine; the FPGA build has a 31-state control FSM with sub-FSMs.
 export const GOLD_SPEC = {
   name: 'GoldMiner',
-  view: '360 252',
+  view: '380 272',
   stepHint: 'Advance the game by 0.1 seconds',
-  groups: [{ x: 8, y: 40, w: 252, h: 206, label: 'PLAY · 45 s timer' }],
   states: [
-    { id: 'IDLE', label: 'IDLE', x: 70, y: 16 },
-    { id: 'SWING', label: 'SWING', x: 70, y: 76 },
-    { id: 'EXTEND', label: 'EXTEND', x: 196, y: 76 },
-    { id: 'RETRACT', label: 'RETRACT', x: 70, y: 150 },
-    { id: 'REEL', label: 'REEL IN', x: 196, y: 150 },
-    { id: 'SCORE', label: 'ADD SCORE', x: 196, y: 220 },
-    { id: 'WIN', label: 'LEVEL CLEAR', x: 314, y: 100 },
-    { id: 'GAME_OVER', label: 'GAME OVER', x: 314, y: 196 },
+    { id: 'S_BACKGROUND', label: 'BACKGROUND', x: 95, y: 16 },
+    { id: 'S_DRAW_BG', label: 'DRAW_BG', x: 95, y: 56 },
+    { id: 'S_DRAW_OBJECTS', label: 'DRAW_OBJECTS', x: 95, y: 96 },
+    { id: 'S_MOVE_HOOK', label: 'MOVE_HOOK', x: 95, y: 140 },
+    { id: 'S_RELEASE', label: 'RELEASE', x: 285, y: 140 },
+    { id: 'S_PULL_BACK', label: 'PULL_BACK', x: 285, y: 182 },
+    { id: 'S_UPDATE_SCORE', label: 'UPDATE_SCORE', x: 285, y: 224 },
+    { id: 'S_CHECK_SCORE', label: 'CHECK_SCORE', x: 95, y: 224 },
+    { id: 'S_SUCCESS', label: 'SUCCESS', x: 45, y: 260 },
+    { id: 'S_FAIL', label: 'FAIL_PAGE', x: 165, y: 260 },
   ],
   edges: [
-    { from: 'IDLE', to: 'SWING', label: 'start', lx: 94, ly: 39 },
-    { from: 'SWING', to: 'EXTEND', label: 'drop' },
-    { from: 'EXTEND', to: 'REEL', label: 'hit', lx: 212, ly: 116 },
-    { from: 'EXTEND', to: 'RETRACT', label: 'miss', lx: 140, ly: 110 },
-    { from: 'RETRACT', to: 'SWING', label: 'at top', lx: 96, ly: 116 },
-    { from: 'REEL', to: 'SCORE', label: 'at top', lx: 222, ly: 188 },
-    { from: 'SCORE', to: 'SWING', d: 'M159,220 C40,236 10,120 33,82', label: '+value', lx: 54, ly: 214 },
-    { from: 'PLAY', to: 'WIN', d: 'M260,122 L278,108' },
-    { from: 'PLAY', to: 'GAME_OVER', d: 'M260,170 L278,186' },
+    { from: 'S_BACKGROUND', to: 'S_DRAW_BG', label: 'ENTER', lx: 118, ly: 40 },
+    { from: 'S_DRAW_BG', to: 'S_DRAW_OBJECTS', label: '_done', lx: 116, ly: 80 },
+    { from: 'S_DRAW_OBJECTS', to: 'S_MOVE_HOOK', label: '_done', lx: 116, ly: 122 },
+    { from: 'S_MOVE_HOOK', to: 'S_RELEASE', label: 'go_down' },
+    { from: 'S_RELEASE', to: 'S_PULL_BACK', label: 'hit / bottom', lx: 334, ly: 165 },
+    { from: 'S_PULL_BACK', to: 'S_UPDATE_SCORE', label: 'at top', lx: 314, ly: 207 },
+    { from: 'S_UPDATE_SCORE', to: 'S_CHECK_SCORE', label: '_done' },
+    { from: 'S_CHECK_SCORE', to: 'S_MOVE_HOOK', label: 'keep going', lx: 128, ly: 186 },
+    { from: 'S_CHECK_SCORE', to: 'S_SUCCESS', d: 'M80,237 L58,247', label: 'goal met', lx: 40, ly: 240 },
+    { from: 'S_CHECK_SCORE', to: 'S_FAIL', d: 'M110,237 L150,247', label: 'time_done', lx: 152, ly: 240 },
+    { from: 'S_MOVE_HOOK', to: 'S_CHECK_SCORE', d: 'M58,152 C30,175 30,205 58,218', label: 'time_done', lx: 26, ly: 184 },
   ],
-  captions: [{ x: 314, y: 74, text: 't=0, score ≥ goal' }, { x: 314, y: 126, text: '↺ next level' }, { x: 314, y: 170, text: 't=0, score < goal' }, { x: 314, y: 222, text: '↺ retry' }],
-  note: 'This panel shows the browser recreation. The original runs in Verilog on a DE1-SoC FPGA with a 31-state control FSM, five RAM modules, a HEX timer and PS/2 keyboard input.',
+  captions: [{ x: 300, y: 262, text: 'ENTER → next level / restart' }],
+  note: 'The original is Verilog on a DE1-SoC: a control FSM with move hook, release, pull back and score update sub-FSMs, object RAMs, a 45 second HEX timer, PS/2 or KEY input and win/fail audio. This browser version follows the same states and rules.',
   board: null,
 };
 
-const STATE_OF = (s) => {
-  if (s.screen === 'title') return 'IDLE';
-  if (s.screen === 'win') return 'WIN';
-  if (s.screen === 'over') return 'GAME_OVER';
-  if (s.scoreT > 0) return 'SCORE';
-  if (s.hook === 'swing') return 'SWING';
-  if (s.hook === 'extend') return 'EXTEND';
-  return s.caught ? 'REEL' : 'RETRACT';
-};
+function playTune(ac, notes) {
+  let t = ac.currentTime;
+  notes.forEach(([freq, dur]) => {
+    const o = ac.createOscillator(); const g = ac.createGain();
+    o.type = 'square'; o.frequency.value = freq;
+    g.gain.setValueAtTime(0.05, t); g.gain.linearRampToValueAtTime(0, t + dur);
+    o.connect(g); g.connect(ac.destination); o.start(t); o.stop(t + dur);
+    t += dur;
+  });
+}
 
-export default function GoldMiner({ probe, ctl }) {
+// 7-segment patterns for the HEX display (a b c d e f g)
+const SEG = ['1111110', '0110000', '1101101', '1111001', '0110011', '1011011', '1011111', '1110000', '1111111', '1111011'];
+function Hex({ d }) {
+  const s = SEG[d] || '0000000';
+  return (
+    <svg viewBox="0 0 20 34" className="gm-hex-digit" aria-hidden="true">
+      {[['M4,2 H16', 0], ['M17,4 V16', 1], ['M17,18 V30', 2], ['M4,32 H16', 3], ['M3,18 V30', 4], ['M3,4 V16', 5], ['M4,17 H16', 6]].map(([p, i]) => (
+        <path key={i} d={p} className={s[i] === '1' ? 'on' : ''} />
+      ))}
+    </svg>
+  );
+}
+
+export default function GoldMiner({ probe, ctl, active = true }) {
   const canvasRef = useRef(null);
   const audioRef = useRef(null);
   const [muted, setMuted] = useState(false);
-  const mutedRef = useRef(false);
-  mutedRef.current = muted;
+  const [timeShown, setTimeShown] = useState(LEVEL_TIME);
+  const mutedRef = useRef(false); mutedRef.current = muted;
+  const activeRef = useRef(active); activeRef.current = active;
+
   const g = useRef({
-    screen: 'title', // title | play | win | over
-    lvl: null, score: 0, angle: 0, t: 0,
-    hook: 'swing', len: 18, caught: null, flash: null, best: 0, scoreT: 0,
-    keyT: 0, enterT: 0, tapT: 0, hitT: 0, topT: 0, st: 'IDLE', edge: null,
+    state: 'S_BACKGROUND', level: 1, money: 0, time: LEVEL_TIME, objs: [],
+    hookX: 160, dir: 1, ropeY: HOOK_Y, caught: null, reached: null, reachBottom: false,
+    history: [], edge: null, keyT: {}, hitT: 0, doneT: 0, drawT: 0,
   });
 
-  const sfx = (f, d, type) => { if (!mutedRef.current) beep(audioRef, f, d, type); };
-  const song = (n) => { if (!mutedRef.current) tune(audioRef, n); };
-
-  const startLevel = (level, keepScore) => {
-    const s = g.current;
-    s.lvl = makeLevel(level);
-    if (!keepScore) s.score = 0;
-    s.screen = 'play'; s.hook = 'swing'; s.len = 18; s.caught = null; s.t = 0;
+  const sfx = (notes) => {
+    if (mutedRef.current) return;
+    try {
+      if (!audioRef.current) audioRef.current = new (window.AudioContext || window.webkitAudioContext)();
+      audioRef.current.resume(); playTune(audioRef.current, notes);
+    } catch { /* no audio */ }
   };
 
-  const press = (src = 'key') => {
+  const go = (to) => {
     const s = g.current;
-    const now = performance.now();
-    if (src === 'enter') s.enterT = now; else if (src === 'tap') s.tapT = now; else s.keyT = now;
-    if (s.screen === 'title' || s.screen === 'over') { startLevel(1, false); sfx(660, 0.08); return; }
-    if (s.screen === 'win') { startLevel(s.lvl.level + 1, true); sfx(660, 0.08); return; }
-    if (s.screen === 'play' && s.hook === 'swing') { s.hook = 'extend'; sfx(220, 0.05); }
+    s.history = [...s.history, [s.state, to]].slice(-8);
+    s.edge = `${s.state}>${to}`;
+    s.state = to;
   };
+
+  const startRound = () => {
+    const s = g.current;
+    go('S_DRAW_BG');
+    s.drawT = 0.25; // drawing the background and objects takes a moment on screen
+    s.objs = OBJECTS.map(([x, y, type], i) => ({ id: i, x, y, type, r: SIZE[type] }));
+    s.money = 0; s.time = LEVEL_TIME; s.hookX = 160; s.dir = 1; s.ropeY = HOOK_Y; s.caught = null; s.reached = null;
+  };
+
+  const press = (k) => {
+    const s = g.current;
+    s.keyT[k] = performance.now();
+    if (k === 'enter') {
+      if (s.state === 'S_BACKGROUND') { startRound(); sfx([[660, 0.08]]); }
+      else if (s.state === 'S_SUCCESS') { s.level = s.level === 3 ? 1 : s.level + 1; startRound(); sfx([[660, 0.08]]); }
+      else if (s.state === 'S_FAIL') { go('S_BACKGROUND'); s.level = 1; }
+    } else if (k === 'down' && s.state === 'S_MOVE_HOOK') {
+      go('S_RELEASE'); s.ropeY = HOOK_Y; s.reachBottom = false;
+    }
+  };
+  const pressRef = useRef(press); pressRef.current = press;
 
   useEffect(() => {
     const key = (e) => {
+      if (!activeRef.current || e.metaKey || e.ctrlKey || e.altKey) return;
       if (/input|textarea/i.test(document.activeElement?.tagName || '')) return;
-      if (['ArrowDown', ' ', 'Enter', 's', 'S'].includes(e.key)) { e.preventDefault(); press(e.key === 'Enter' ? 'enter' : 'key'); }
+      if (e.key === 'Enter') { e.preventDefault(); pressRef.current('enter'); }
+      else if (e.key === 'ArrowDown' || e.key === ' ' || e.key === 's' || e.key === 'S') { e.preventDefault(); pressRef.current('down'); }
     };
     window.addEventListener('keydown', key);
     return () => window.removeEventListener('keydown', key);
-  });
+  }, []);
+
+  const tap = () => {
+    const s = g.current.state;
+    pressRef.current(s === 'S_MOVE_HOOK' ? 'down' : 'enter');
+  };
 
   useEffect(() => {
     const cv = canvasRef.current;
     const ctx = cv.getContext('2d');
     ctx.imageSmoothingEnabled = false;
 
-    // Pre-render the dirt background once.
-    const bg = document.createElement('canvas');
-    bg.width = W; bg.height = H;
+    // background RAM: sky, clouds, grass and the dirt (crimson, like our board's colours)
+    const bg = document.createElement('canvas'); bg.width = W; bg.height = H;
     const b = bg.getContext('2d');
-    b.fillStyle = '#f6d7e2'; b.fillRect(0, 0, W, 50);
-    for (let i = 0; i < 6; i += 1) { b.fillStyle = 'rgba(255,255,255,0.7)'; b.fillRect(20 + i * 55, 8 + (i % 2) * 6, 22, 6); b.fillRect(24 + i * 55, 4 + (i % 2) * 6, 12, 4); }
-    b.fillStyle = '#5c8a3a'; b.fillRect(0, 50, W, 6);
-    b.fillStyle = '#4a7230'; for (let x = 0; x < W; x += 4) if ((x / 4) % 3 === 0) b.fillRect(x, 56, 4, 3);
-    b.fillStyle = '#7a4a2a'; b.fillRect(0, 56, W, H - 56);
-    let seed = 1234;
-    const r = () => { seed = (seed * 1664525 + 1013904223) % 4294967296; return seed / 4294967296; };
-    for (let i = 0; i < 900; i += 1) {
-      b.fillStyle = r() > 0.5 ? '#6a3f22' : '#8a5a34';
-      b.fillRect(Math.floor(r() * W / 4) * 4, 59 + Math.floor(r() * (H - 59) / 4) * 4, 4, 4);
-    }
+    b.fillStyle = '#7fd0f7'; b.fillRect(0, 0, W, 50);
+    let seed = 7;
+    const rnd = () => { seed = (seed * 1103515245 + 12345) & 0x7fffffff; return seed / 0x7fffffff; };
+    [[30, 14, 46], [120, 8, 40], [205, 18, 52], [265, 6, 38]].forEach(([x, y, w]) => {
+      for (let i = 0; i < 70; i += 1) {
+        const px = x + Math.floor(rnd() * w); const py = y + Math.floor(rnd() * 12 * (1 - Math.abs(px - x - w / 2) / w));
+        b.fillStyle = rnd() > 0.4 ? '#eaf6ff' : '#c4e6fa'; b.fillRect(px, py, 3, 2);
+      }
+    });
+    b.fillStyle = '#21c44a'; b.fillRect(0, 50, W, 7);
+    for (let x = 0; x < W; x += 4) { b.fillStyle = rnd() > 0.5 ? '#178a35' : '#2fe05a'; b.fillRect(x, 50 + Math.floor(rnd() * 5), 4, 2); }
+    const grad = b.createLinearGradient(0, 57, 0, H); grad.addColorStop(0, '#9e2045'); grad.addColorStop(1, '#b9285a');
+    b.fillStyle = grad; b.fillRect(0, 57, W, H - 57);
 
-    const drawBlock = (o) => {
-      const k = KINDS[o.kind];
-      const s = o.r * 2; const x = Math.round(o.x - o.r); const y = Math.round(o.y - o.r);
-      ctx.fillStyle = k.ore; ctx.fillRect(x, y, s, s);
-      ctx.fillStyle = 'rgba(0,0,0,0.25)'; ctx.fillRect(x, y + s - 2, s, 2); ctx.fillRect(x + s - 2, y, 2, s);
-      ctx.fillStyle = 'rgba(255,255,255,0.18)'; ctx.fillRect(x, y, s, 2);
-      if (k.color) {
-        const step = Math.max(3, Math.floor(s / 4));
-        ctx.fillStyle = k.color;
-        for (let i = 0; i < 4; i += 1) for (let j = 0; j < 4; j += 1) {
-          if ((i * 3 + j * 5 + o.kind.length) % 3 === 0) ctx.fillRect(x + 1 + i * step, y + 1 + j * step, Math.max(2, step - 1), Math.max(2, step - 1));
-        }
-      } else {
-        ctx.fillStyle = '#5a5a5a';
-        for (let i = 0; i < s; i += 5) ctx.fillRect(x + ((i * 7) % s), y + i, 4, 3);
+    const blob = (o, x, y) => {
+      const gold = o.type[0] === 'G';
+      const r = o.r;
+      for (let dy = -r; dy <= r; dy += 2) for (let dx = -r; dx <= r; dx += 2) {
+        const d = (dx * dx) / (r * r) + (dy * dy * 1.3) / (r * r);
+        if (d > 1) continue;
+        let c;
+        if (gold) c = dy < -r * 0.3 ? '#f1e45a' : d > 0.6 ? '#7ccf4a' : (dx + dy) % 4 === 0 ? '#e8a640' : '#e9df50';
+        else c = dy < -r * 0.3 ? '#78a8f0' : d > 0.7 ? '#3d66c6' : '#5b8ae0';
+        ctx.fillStyle = c; ctx.fillRect(Math.round(x + dx), Math.round(y + dy), 2, 2);
       }
     };
 
-    const drawCat = () => {
-      const x = ORIGIN.x - 10; const y = ORIGIN.y - 24;
-      ctx.fillStyle = '#e2c069'; ctx.fillRect(x + 2, y, 16, 5); ctx.fillRect(x + 7, y - 3, 6, 3); // helmet
-      ctx.fillStyle = '#fff3a8'; ctx.fillRect(x + 8, y - 2, 4, 2); // lamp
-      ctx.fillStyle = '#4a4a4a'; ctx.fillRect(x + 2, y + 5, 16, 11); // head
-      ctx.fillRect(x + 2, y + 2, 3, 3); ctx.fillRect(x + 15, y + 2, 3, 3); // ears
+    // our miner (a cat in a hard hat) standing on the grass
+    const drawMiner = () => {
+      const x = 168; const y = 22;
+      ctx.fillStyle = '#e2c069'; ctx.fillRect(x + 2, y, 16, 5); ctx.fillRect(x + 7, y - 3, 6, 3);
+      ctx.fillStyle = '#fff3a8'; ctx.fillRect(x + 8, y - 2, 4, 2);
+      ctx.fillStyle = '#4a4a4a'; ctx.fillRect(x + 2, y + 5, 16, 11); ctx.fillRect(x + 2, y + 2, 3, 3); ctx.fillRect(x + 15, y + 2, 3, 3);
       ctx.fillStyle = '#ffffff'; ctx.fillRect(x + 6, y + 10, 8, 6);
-      ctx.fillStyle = '#e2c069'; ctx.fillRect(x + 5, y + 8, 3, 2); ctx.fillRect(x + 12, y + 8, 3, 2); // eyes
+      ctx.fillStyle = '#e2c069'; ctx.fillRect(x + 5, y + 8, 3, 2); ctx.fillRect(x + 12, y + 8, 3, 2);
       ctx.fillStyle = '#f2a5c4'; ctx.fillRect(x + 9, y + 12, 2, 1);
-      ctx.fillStyle = '#8b2942'; ctx.fillRect(x + 4, y + 16, 12, 2); // collar
-      ctx.fillStyle = '#2f6fd6'; ctx.fillRect(x + 9, y + 18, 2, 2); // evil eye charm
+      ctx.fillStyle = '#8b2942'; ctx.fillRect(x + 4, y + 16, 12, 2);
+      ctx.fillStyle = '#4a4a4a'; ctx.fillRect(x + 4, y + 18, 12, 9); ctx.fillRect(x + 4, y + 27, 4, 3); ctx.fillRect(x + 12, y + 27, 4, 3);
+      ctx.fillStyle = '#ffffff'; ctx.fillRect(x + 7, y + 19, 6, 6);
     };
-
-    const text = (s, x, y, size = 16, color = '#fff', align = 'center') => {
+    const drawHook = (x, y) => {
+      ctx.fillStyle = '#d9d9d9'; ctx.fillRect(x - 5, y, 10, 3);
+      ctx.fillRect(x - 6, y + 2, 3, 6); ctx.fillRect(x + 3, y + 2, 3, 6);
+      ctx.fillStyle = '#c0392b'; ctx.fillRect(x - 2, y - 3, 4, 3);
+    };
+    const text = (s, x, y, size, color, align = 'left') => {
       ctx.font = `${size}px VT323, monospace`; ctx.textAlign = align; ctx.textBaseline = 'middle';
-      ctx.fillStyle = 'rgba(0,0,0,0.55)'; ctx.fillText(s, x + 1, y + 1);
       ctx.fillStyle = color; ctx.fillText(s, x, y);
+    };
+    const page = (title, lines, tone) => {
+      ctx.drawImage(bg, 0, 0);
+      ctx.fillStyle = 'rgba(30,6,14,0.82)'; ctx.fillRect(36, 70, W - 72, 128);
+      ctx.strokeStyle = tone; ctx.lineWidth = 2; ctx.strokeRect(37, 71, W - 74, 126);
+      text(title, W / 2, 96, 30, tone, 'center');
+      lines.forEach((l, i) => text(l, W / 2, 128 + i * 18, 16, '#fdf6f0', 'center'));
     };
 
     let raf; let last = performance.now();
@@ -226,122 +226,101 @@ export default function GoldMiner({ probe, ctl }) {
       const real = Math.min(0.05, (now - last) / 1000); last = now;
       const c = ctl?.current || {};
       let dt = real;
-      if (c.paused) {
-        if (c.step) { c.step -= 1; dt = 0.1; } else dt = 0;
-      } else if (c.slow) dt = real * 0.25;
+      if (c.paused) { if (c.step) { c.step -= 1; dt = 0.1; } else dt = 0; } else if (c.slow) dt = real * 0.25;
       const s = g.current;
-      s.t += dt;
-      if (s.scoreT > 0) s.scoreT -= dt;
+      const playing = ['S_MOVE_HOOK', 'S_RELEASE', 'S_PULL_BACK', 'S_UPDATE_SCORE'].includes(s.state);
 
-      if (s.screen === 'play' && dt > 0) {
-        const L = s.lvl;
-        L.time -= dt;
-        if (s.hook === 'swing') {
-          s.angle = Math.sin(s.t * L.swingSpeed) * 1.22;
-        } else if (s.hook === 'extend') {
-          s.len += 170 * dt;
-          const tx = ORIGIN.x + Math.sin(s.angle) * s.len;
-          const ty = ORIGIN.y + Math.cos(s.angle) * s.len;
-          const hit = L.objs.find((o) => Math.abs(o.x - tx) < o.r + 2 && Math.abs(o.y - ty) < o.r + 2);
-          if (hit) { s.hitT = performance.now(); s.caught = hit; L.objs = L.objs.filter((o) => o !== hit); s.hook = 'retract'; sfx(hit.kind === 'rock' ? 140 : 440, 0.06); }
-          else if (tx < 0 || tx > W || ty > H) s.hook = 'retract';
-        } else if (s.hook === 'retract') {
-          const pull = s.caught ? KINDS[s.caught.kind].pull : 4;
-          s.len -= 60 * pull * dt;
-          if (s.caught) {
-            s.caught.x = ORIGIN.x + Math.sin(s.angle) * (s.len + s.caught.r);
-            s.caught.y = ORIGIN.y + Math.cos(s.angle) * (s.len + s.caught.r);
-          }
-          if (s.len <= 18) {
-            s.len = 18; s.hook = 'swing'; s.topT = performance.now();
-            if (s.caught) {
-              s.scoreT = 0.45;
-              const v = KINDS[s.caught.kind].value;
-              s.score = Math.max(0, s.score + v);
-              s.flash = { v, t: 1 };
-              if (v > 0) song([[880, 0.07], [1175, 0.09]]); else sfx(110, 0.15, 'sawtooth');
-              s.caught = null;
-            }
+      if (dt > 0) {
+        if (s.state === 'S_DRAW_BG' || s.state === 'S_DRAW_OBJECTS') {
+          s.drawT -= dt;
+          if (s.drawT <= 0) {
+            s.doneT = now;
+            if (s.state === 'S_DRAW_BG') { go('S_DRAW_OBJECTS'); s.drawT = 0.25; } else go('S_MOVE_HOOK');
           }
         }
-        if (L.time <= 0) {
-          L.time = 0;
-          if (s.score >= L.goal) { s.screen = 'win'; song([[523, 0.1], [659, 0.1], [784, 0.1], [1047, 0.2]]); }
-          else { s.screen = 'over'; s.best = Math.max(s.best, s.score); song([[392, 0.15], [330, 0.15], [262, 0.3]]); }
+        if (playing) {
+          s.time = Math.max(0, s.time - dt);
+          if (s.time === 0 && s.state === 'S_MOVE_HOOK') { go('S_CHECK_SCORE'); }
         }
-        if (s.flash) { s.flash.t -= dt; if (s.flash.t <= 0) s.flash = null; }
-      }
-
-      // report to the inspector
-      if (probe) {
-        const st = STATE_OF(s);
-        if (st !== s.st) {
-          s.edge = st === 'WIN' || st === 'GAME_OVER' ? `PLAY>${st}` : `${s.st}>${st}`;
-          s.st = st;
+        if (s.state === 'S_MOVE_HOOK') {
+          s.hookX += s.dir * HOOK_SPEED[s.level] * dt;
+          if (s.hookX > W - 10) { s.hookX = W - 10; s.dir = -1; }
+          if (s.hookX < 10) { s.hookX = 10; s.dir = 1; }
+        } else if (s.state === 'S_RELEASE') {
+          s.ropeY += DROP_SPEED * dt;
+          const tip = s.ropeY + 8;
+          const hit = s.objs.find((o) => Math.abs(o.x - s.hookX) <= o.r + 2 && Math.abs(o.y - tip) <= o.r);
+          if (hit) {
+            s.caught = hit; s.reached = hit.type; s.objs = s.objs.filter((o) => o !== hit); s.hitT = now;
+            go('S_PULL_BACK'); sfx([[hit.type[0] === 'G' ? 520 : 180, 0.06]]);
+          } else if (tip >= H - 2) { s.reachBottom = true; s.reached = null; go('S_PULL_BACK'); }
+        } else if (s.state === 'S_PULL_BACK') {
+          s.ropeY -= PULL_SPEED[s.caught ? s.caught.type : 'none'] * dt;
+          if (s.caught) { s.caught.x = s.hookX; s.caught.y = s.ropeY + 10 + s.caught.r; }
+          if (s.ropeY <= HOOK_Y) { s.ropeY = HOOK_Y; go('S_UPDATE_SCORE'); }
+        } else if (s.state === 'S_UPDATE_SCORE') {
+          if (s.caught) { s.money = Math.max(0, Math.min(999, s.money + VALUE[s.caught.type])); if (VALUE[s.caught.type] > 0) sfx([[880, 0.07], [1175, 0.09]]); }
+          s.caught = null;
+          go('S_CHECK_SCORE');
+        } else if (s.state === 'S_CHECK_SCORE') {
+          if (s.money >= GOAL) { go('S_SUCCESS'); sfx([[523, 0.12], [659, 0.12], [784, 0.12], [1047, 0.3]]); }
+          else if (s.time <= 0) { go('S_FAIL'); sfx([[392, 0.18], [330, 0.18], [262, 0.4]]); }
+          else go('S_MOVE_HOOK');
         }
-        const nowMs = performance.now();
-        const lit = (t) => nowMs - t < 220;
-        const L = s.lvl;
-        probe.current = {
-          state: st,
-          edge: s.edge,
-          inputs: [
-            { id: 'down', kind: 'key', label: '↓ / Space', on: lit(s.keyT), title: 'drop the hook (PS/2 keyboard on the board)' },
-            { id: 'enter', kind: 'key', label: 'Enter', on: lit(s.enterT), title: 'start or continue' },
-            { id: 'tap', kind: 'key', label: 'Tap', on: lit(s.tapT), title: 'mouse or touch' },
-            { id: 'hit', kind: 'sig', label: 'collide', on: lit(s.hitT), title: 'hook touched an object' },
-            { id: 'top', kind: 'sig', label: 'at_top', on: lit(s.topT), title: 'hook back at the cart' },
-            { id: 'tz', kind: 'sig', label: 't_zero', on: !!L && L.time <= 0, title: 'level timer reached zero' },
-          ],
-          regs: [
-            { name: 'score', value: s.score },
-            { name: 'goal', value: L ? L.goal : '-' },
-            { name: 'timer', value: L ? `0:${String(Math.ceil(L.time)).padStart(2, '0')}` : '0:45' },
-            { name: 'level', value: L ? L.level : '-' },
-            { name: 'angle', value: `${Math.round((s.angle * 180) / Math.PI)}°` },
-            { name: 'hook_len', value: Math.round(s.len) },
-            { name: 'caught', value: s.caught ? s.caught.kind.replace('bigGold', 'big gold') : 'none' },
-            { name: 'lfsr', value: L ? `0x${L.lfsr.toString(16).toUpperCase().padStart(4, '0')}` : '0xACE1' },
-          ],
-        };
       }
 
       // draw
-      ctx.drawImage(bg, 0, 0);
-      if (s.lvl) s.lvl.objs.forEach(drawBlock);
-
-      if (s.screen === 'play') {
-        const tx = ORIGIN.x + Math.sin(s.angle) * s.len;
-        const ty = ORIGIN.y + Math.cos(s.angle) * s.len;
-        ctx.strokeStyle = '#2b1a10'; ctx.lineWidth = 1;
-        ctx.beginPath(); ctx.moveTo(ORIGIN.x, ORIGIN.y); ctx.lineTo(tx, ty); ctx.stroke();
-        if (s.caught) drawBlock(s.caught);
-        ctx.save(); ctx.translate(tx, ty); ctx.rotate(-s.angle);
-        ctx.fillStyle = '#cfcfcf'; ctx.fillRect(-5, 0, 10, 2); ctx.fillRect(-5, 0, 2, 6); ctx.fillRect(3, 0, 2, 6);
-        ctx.restore();
+      if (s.state === 'S_BACKGROUND') {
+        page('GOLD MINER', ['press ENTER to start', `grab $${GOAL} of gold in ${LEVEL_TIME} s`, 'DOWN drops the hook'], '#e2c069');
+      } else if (s.state === 'S_SUCCESS') {
+        page('YOU WIN!', [`MONEY $${s.money}`, s.level < 3 ? `ENTER for level ${s.level + 1}` : 'all 3 levels done!', s.level < 3 ? 'the hook gets faster' : 'ENTER to play again'], '#9be37a');
+      } else if (s.state === 'S_FAIL') {
+        page("TIME'S UP", [`MONEY $${s.money} / GOAL $${GOAL}`, 'press ENTER to try again'], '#ff8fa3');
+      } else {
+        ctx.drawImage(bg, 0, 0);
+        const shown = s.state === 'S_DRAW_BG' ? [] : s.objs;
+        shown.forEach((o) => blob(o, o.x, o.y));
+        drawMiner();
+        if (s.state !== 'S_DRAW_BG' && s.state !== 'S_DRAW_OBJECTS') {
+          if (s.ropeY > HOOK_Y) { ctx.fillStyle = '#111'; ctx.fillRect(Math.round(s.hookX), HOOK_Y, 1, Math.round(s.ropeY - HOOK_Y)); }
+          drawHook(Math.round(s.hookX), Math.round(s.ropeY));
+          if (s.caught) blob(s.caught, s.caught.x, s.caught.y);
+        }
+        text('MONEY $', 6, 10, 14, '#111'); text(String(s.money), 76, 10, 14, '#e0242f');
+        text('GOAL  $', 6, 26, 14, '#111'); text(String(GOAL), 76, 26, 14, '#e0242f');
+        text('LEVEL', W - 20, 30, 14, '#111', 'right'); text(String(s.level), W - 8, 30, 14, '#e0242f', 'right');
       }
-      drawCat();
 
-      // HUD
-      if (s.lvl) {
-        text(`$${s.score}`, 8, 12, 16, '#fff3a8', 'left');
-        text(`GOAL ${s.lvl.goal}`, 8, 28, 13, '#ffffff', 'left');
-        text(`LV ${s.lvl.level}`, W - 8, 28, 13, '#ffffff', 'right');
-        const tl = Math.ceil(s.lvl.time);
-        text(`0:${String(tl).padStart(2, '0')}`, W - 8, 12, 16, tl <= 10 ? '#ff8fa3' : '#fff3a8', 'right');
+      const shownTime = Math.ceil(s.time);
+      setTimeShown((t) => (t === shownTime ? t : shownTime));
+
+      if (probe) {
+        const lit = (t) => now - (t || 0) < 220;
+        probe.current = {
+          state: s.state,
+          edge: s.edge,
+          history: s.history,
+          inputs: [
+            { id: 'enter', kind: 'key', label: 'Enter', on: lit(s.keyT.enter), title: 'go_enter' },
+            { id: 'down', kind: 'key', label: '↓ Down', on: lit(s.keyT.down), title: 'go_down' },
+            { id: 'done', kind: 'sig', label: '_done', on: lit(s.doneT), title: 'a drawing module finished' },
+            { id: 'touch', kind: 'sig', label: 'check_for_touch', on: lit(s.hitT), title: 'hook tip found an object in ram_type' },
+            { id: 'bottom', kind: 'sig', label: 'reach_bottom', on: s.state === 'S_PULL_BACK' && s.reachBottom, title: 'rope hit the bottom' },
+            { id: 'td', kind: 'sig', label: 'time_done', on: s.time <= 0 && s.state !== 'S_BACKGROUND', title: '45 s timer finished' },
+          ],
+          regs: [
+            { name: 'money (BCD)', value: String(s.money).padStart(3, '0') },
+            { name: 'goal', value: GOAL },
+            { name: 'timer', value: `${Math.floor(shownTime / 10)}${shownTime % 10}` },
+            { name: 'levels[1:0]', value: s.level.toString(2).padStart(2, '0') },
+            { name: 'hook_x', value: Math.round(s.hookX) },
+            { name: 'hook_y', value: Math.round(s.ropeY) },
+            { name: 'type_reached', value: s.reached ? `${s.reached} · ${TYPE_NAME[s.reached]}` : 'none', wide: true },
+            { name: 'pull_back speed', value: `${PULL_SPEED[s.caught ? s.caught.type : 'none']} px/s` },
+            { name: 'objects in RAM', value: s.objs.length },
+          ],
+        };
       }
-      if (s.flash) text(`${s.flash.v > 0 ? '+' : ''}${s.flash.v}`, ORIGIN.x + 30, ORIGIN.y - 10 - (1 - s.flash.t) * 12, 16, s.flash.v > 0 ? '#fff3a8' : '#ff8fa3');
-
-      const panel = (lines) => {
-        ctx.fillStyle = 'rgba(30,6,14,0.78)'; ctx.fillRect(40, 70, W - 80, 120);
-        ctx.strokeStyle = '#e2c069'; ctx.strokeRect(40.5, 70.5, W - 81, 119);
-        lines.forEach(([str, size, color], i) => text(str, W / 2, 92 + i * 22, size, color));
-      };
-      const blink = Math.floor(s.t * 2) % 2 === 0;
-      if (s.screen === 'title') panel([['GOLD MINER', 28, '#e2c069'], ['grab gold, avoid rocks', 14, '#fdf6f0'], ['45 seconds per level', 14, '#fdf6f0'], [blink ? 'press ENTER or tap to start' : '', 14, '#f2a5c4']]);
-      if (s.screen === 'win') panel([[`LEVEL ${s.lvl.level} CLEAR!`, 24, '#e2c069'], [`score ${s.score}`, 16, '#fdf6f0'], ['next level: more rocks', 14, '#fdf6f0'], [blink ? 'press ENTER or tap' : '', 14, '#f2a5c4']]);
-      if (s.screen === 'over') panel([["TIME'S UP", 24, '#ff8fa3'], [`score ${s.score} / goal ${s.lvl.goal}`, 16, '#fdf6f0'], [`best ${s.best}`, 14, '#e2c069'], [blink ? 'press ENTER or tap to retry' : '', 14, '#f2a5c4']]);
-
       raf = requestAnimationFrame(loop);
     };
     raf = requestAnimationFrame(loop);
@@ -350,12 +329,17 @@ export default function GoldMiner({ probe, ctl }) {
 
   return (
     <div className="gm">
-      <canvas ref={canvasRef} width={W} height={H} className="gm-canvas" onPointerDown={() => press('tap')} />
-      <div className="gm-bar">
-        <span>↓ / Space / tap to drop the hook · Enter to start</span>
-        <button onClick={() => setMuted((m) => !m)}>{muted ? 'Sound off' : 'Sound on'}</button>
+      <canvas ref={canvasRef} width={W} height={H} className="gm-canvas" onPointerDown={tap} />
+      <div className="gm-board">
+        <div className="gm-hex" aria-label={`Timer ${timeShown} seconds`}>
+          <Hex d={Math.floor(timeShown / 10)} /><Hex d={timeShown % 10} />
+        </div>
+        <div className="gm-bar">
+          <span>Enter to start · ↓ / Space / tap drops the hook</span>
+          <button onClick={() => setMuted((m) => !m)}>{muted ? 'Sound off' : 'Sound on'}</button>
+        </div>
       </div>
-      <div className="gm-note">Originally built in Verilog on a DE1-SoC FPGA with Sehreen Basara: 31-state FSM, VGA at 320×240, LFSR random placement.</div>
+      <div className="gm-note">Large gold +200 · medium gold +50 · large rock −20 · medium rock −10. Built in Verilog on a DE1-SoC with Sehreen Basara.</div>
     </div>
   );
 }

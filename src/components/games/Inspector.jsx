@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 // "See how it works" panel shown beside a game. The game writes what it is
 // doing into probe.current every frame; this panel reads it a few times a
@@ -76,14 +76,22 @@ export default function Inspector({ spec, probe, ctl }) {
   const [paused, setPaused] = useState(false);
   const [slow, setSlow] = useState(false);
   const [trail, setTrail] = useState([]);
+  const trailLast = useRef(null);
 
   useEffect(() => {
     let prev = probe.current?.state;
+    let seen = 0;
     const id = setInterval(() => {
       const p = probe.current;
       if (!p) return;
       setSnap({ ...p });
-      if (p.state !== prev) {
+      if (p.history) {
+        // the game logs every transition, including one-clock states
+        if (p.history.length !== seen || p.history[p.history.length - 1] !== trailLast.current) {
+          seen = p.history.length; trailLast.current = p.history[p.history.length - 1];
+          setTrail(p.history.slice().reverse().slice(0, 6).map(([from, to], i) => ({ from, to, k: `${seen}-${i}-${from}-${to}` })));
+        }
+      } else if (p.state !== prev) {
         const from = prev; prev = p.state;
         setTrail((t) => [{ from, to: p.state, k: Date.now() + Math.random() }, ...t].slice(0, 6));
       }

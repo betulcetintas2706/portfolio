@@ -138,7 +138,7 @@ function Movies() {
 const GAMES = { goldminer: { Game: GoldMiner, spec: GOLD_SPEC }, cakes: { Game: ComfyCakes, spec: CAKE_SPEC } };
 
 // Play · See how it works
-function GameShell({ id, view, setView }) {
+function GameShell({ id, view, setView, active }) {
   const probe = useRef(null);
   const ctl = useRef({ paused: false, slow: false, step: 0 });
   const { Game, spec } = GAMES[id];
@@ -151,7 +151,7 @@ function GameShell({ id, view, setView }) {
         <button role="tab" aria-selected={inspect} className={inspect ? 'on' : ''} onClick={() => setView('inspect')}>See how it works</button>
       </div>
       <div className="gshell-row">
-        <div className="gshell-game"><Game probe={probe} ctl={ctl} /></div>
+        <div className="gshell-game"><Game probe={probe} ctl={ctl} active={active} /></div>
         {inspect && <Inspector spec={spec} probe={probe} ctl={ctl} />}
       </div>
     </div>
@@ -159,7 +159,7 @@ function GameShell({ id, view, setView }) {
 }
 
 const BODIES = { gallery: Gallery, music: Music, movies: Movies };
-const WIDTHS = { goldminer: 680, cakes: 600 };
+const WIDTHS = { goldminer: 680, cakes: 680 };
 const INSPECT_WIDTHS = { goldminer: 1010, cakes: 1010 };
 const TITLES = { gallery: 'Gallery', music: 'Music', movies: 'Movies', goldminer: 'Gold Miner', cakes: 'Comfy Cakes' };
 
@@ -188,7 +188,7 @@ export default function Extras() {
     music: { x: Math.round(window.innerWidth * 0.44), y: Math.round(window.innerHeight * 0.22) },
     movies: { x: Math.round(window.innerWidth * 0.52), y: Math.round(window.innerHeight * 0.18) },
     goldminer: { x: Math.max(16, Math.round(window.innerWidth / 2 - 340)), y: Math.max(40, Math.round(window.innerHeight / 2 - 330)) },
-    cakes: { x: Math.max(16, Math.round(window.innerWidth / 2 - 300)), y: Math.max(40, Math.round(window.innerHeight / 2 - 340)) },
+    cakes: { x: Math.max(16, Math.round(window.innerWidth / 2 - 340)), y: Math.max(40, Math.round(window.innerHeight / 2 - 330)) },
   };
 
   return (
@@ -218,7 +218,7 @@ export default function Extras() {
         return (
           <RetroWindow key={id} title={game && view === 'inspect' ? `${TITLES[id]} · inspector` : TITLES[id]} z={600 + z} start={starts[id]} width={width}
             onClose={() => close(id)} onFocus={() => launch(id)}>
-            {game ? <GameShell id={id} view={view} setView={(v) => setViews((s) => ({ ...s, [id]: v }))} /> : <Body />}
+            {game ? <GameShell id={id} view={view} active={z === wins.length - 1} setView={(v) => setViews((s) => ({ ...s, [id]: v }))} /> : <Body />}
           </RetroWindow>
         );
       }), document.body)}

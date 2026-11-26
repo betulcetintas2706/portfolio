@@ -2272,3 +2272,25 @@ body.hack-dead #root > *:not(.hack):not(.term) { filter: hue-rotate(110deg) satu
 }
 .menubar-right > * { white-space: nowrap; }
 @media (max-width: 1400px) { .lx-open kbd { display: none; } .sys-status { display: none; } }
+
+/* Comfy Cakes (board version) */
+.cc2-canvas { width: 100%; aspect-ratio: 4 / 3; image-rendering: pixelated; display: block; border-radius: 8px; border: 2px solid #3a0e1c; background: #ffe8e8; cursor: pointer; touch-action: manipulation; }
+.cc2-keys { display: flex; gap: 6px; align-items: center; margin-top: 8px; }
+.cc2-key {
+  min-width: 38px; padding: 6px 10px; border-radius: 7px; cursor: pointer; font-family: 'Space Mono', monospace; font-weight: 700; font-size: 13px;
+  background: #fff; color: var(--burgundy-900); border: 1px solid var(--burgundy-200); box-shadow: 0 3px 0 var(--burgundy-200);
+  touch-action: manipulation; user-select: none;
+}
+.cc2-key:active { transform: translateY(2px); box-shadow: 0 1px 0 var(--burgundy-200); }
+.cc2-enter { background: var(--burgundy-700); color: #fdf6f0; border-color: var(--burgundy-700); box-shadow: 0 3px 0 #2d0a14; }
+.cc2-mute { margin-left: auto; background: none; border: 1px solid var(--burgundy-200); border-radius: 8px; cursor: pointer; padding: 2px 8px; font-family: 'Space Mono', monospace; font-size: 11px; color: var(--burgundy-500); }
+.gshell.inspecting .gshell-game:has(.cc2) { width: 560px; }
+
+/* Gold Miner board HEX display */
+.gm-board { display: flex; gap: 10px; align-items: center; margin-top: 8px; }
+.gm-board .gm-bar { flex: 1; margin-top: 0; }
+.gm-hex { display: flex; align-items: center; gap: 3px; background: #1a1a1a; border-radius: 6px; padding: 5px 8px; position: relative; }
+
+.gm-hex-digit { width: 16px; height: 27px; }
+.gm-hex-digit path { stroke: #3a1414; stroke-width: 3; stroke-linecap: round; fill: none; }
+.gm-hex-digit path.on { stroke: #ff3b30; filter: drop-shadow(0 0 2px rgba(255,59,48,0.8)); }
