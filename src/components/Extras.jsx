@@ -35,6 +35,22 @@ const BABIES = [
   { src: './gallery/babies/baby-21.jpg', cap: 'nap together' },
   { src: './gallery/babies/baby-22.jpg', cap: 'helping me study' },
 ];
+const PLACES = [
+  { src: './gallery/places/place-01.jpg', cap: 'sunset on the water' },
+  { src: './gallery/places/place-02.jpg', cap: 'washington, dc' },
+  { src: './gallery/places/place-03.jpg', cap: 'air & space museum, dc' },
+  { src: './gallery/places/place-04.jpg', cap: 'new york at night' },
+  { src: './gallery/places/place-05.jpg', cap: 'toronto from above' },
+  { src: './gallery/places/place-06.jpg', cap: 'ottawa canal at night' },
+  { src: './gallery/places/place-07.jpg', cap: 'chicago river at night' },
+  { src: './gallery/places/place-08.jpg', cap: 'lake michigan' },
+  { src: './gallery/places/place-09.jpg', cap: 'chicago river' },
+  { src: './gallery/places/place-10.jpg', cap: 'cloud gate, chicago' },
+  { src: './gallery/places/place-11.jpg', cap: 'old montreal' },
+  { src: './gallery/places/place-12.jpg', cap: 'montreal from the mountain' },
+  { src: './gallery/places/place-13.jpg', cap: 'the oculus, new york' },
+  { src: './gallery/places/place-14.jpg', cap: 'tribeca, new york' },
+];
 const MORE = [
   { src: './lilies.png', cap: 'lilies' },
   { src: './rug.png', cap: 'home' },
@@ -81,9 +97,10 @@ function RetroWindow({ title, onClose, z, onFocus, start, children, width }) {
 }
 
 function Gallery() {
-  const [album, setAlbum] = useState(null); // null = top level, 'babies' = inside the folder
+  const [album, setAlbum] = useState(null); // null = top level, or 'babies' / 'places'
   const [big, setBig] = useState(null);
-  const list = album === 'babies' ? BABIES : MORE;
+  const ALB = { babies: { name: 'my babies', list: BABIES }, places: { name: 'places', list: PLACES } };
+  const list = album ? ALB[album].list : MORE;
 
   if (big !== null) {
     const p = list[big];
@@ -95,7 +112,7 @@ function Gallery() {
           <span>{p.cap} · {big + 1}/{list.length}</span>
           <button onClick={() => setBig((big + 1) % list.length)}>▶</button>
         </div>
-        <button className="retro-btn" onClick={() => setBig(null)}>{album === 'babies' ? 'back to my babies' : 'back to all'}</button>
+        <button className="retro-btn" onClick={() => setBig(null)}>{album ? `back to ${ALB[album].name}` : 'back to all'}</button>
       </div>
     );
   }
@@ -107,15 +124,15 @@ function Gallery() {
     </button>
   );
 
-  if (album === 'babies') {
+  if (album) {
     return (
       <div className="gal">
         <div className="gal-path">
           <button onClick={() => setAlbum(null)}>← Gallery</button>
-          <span>/ my babies</span>
-          <small>{BABIES.length} photos</small>
+          <span>/ {ALB[album].name}</span>
+          <small>{list.length} photos</small>
         </div>
-        <div className="gal-grid">{BABIES.map((p, i) => tile(p, i, () => setBig(i)))}</div>
+        <div className="gal-grid">{list.map((p, i) => tile(p, i, () => setBig(i)))}</div>
       </div>
     );
   }
@@ -129,7 +146,13 @@ function Gallery() {
           <span>my babies</span>
           <em>{BABIES.length} photos</em>
         </button>
-        {MORE.map((p, i) => tile(p, i + 1, () => setBig(i)))}
+        <button className="polaroid gal-folder" style={{ '--r': '2.5deg' }} onClick={() => setAlbum('places')} aria-label={`Open places, ${PLACES.length} photos`}>
+          <span className="gal-stack" aria-hidden="true"><i /><i /></span>
+          <img src={PLACES[0].src} alt="" />
+          <span>places</span>
+          <em>{PLACES.length} photos</em>
+        </button>
+        {MORE.map((p, i) => tile(p, i + 2, () => setBig(i)))}
       </div>
     </div>
   );
