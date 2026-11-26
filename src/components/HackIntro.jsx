@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from 'react';
 //   1. Debug    (software): squash bugs that are stealing real things off the page
 //   2. Rewire   (hardware): flip switches so the logic gates light the LED
 //   3. Override (terminal): run `sudo restore`
-// Always skippable, works with touch, and only shown once per browser.
+// Always skippable, works with touch,. Plays on every visit.
 
 const BUGS = 6;
 const NAME = 'Betül Cetintas';
@@ -147,11 +147,8 @@ function Override({ onDone }) {
 }
 
 export function hasSeenIntro() {
-  try {
-    // add ?intro to the link to always show it (handy for testing and demos)
-    if (new URLSearchParams(window.location.search).has('intro')) return false;
-    return localStorage.getItem('seenHackIntro') === '1';
-  } catch { return true; }
+  // Plays on every visit and refresh. Add ?nointro to a link to skip it.
+  try { return new URLSearchParams(window.location.search).has('nointro'); } catch { return false; }
 }
 
 export default function HackIntro({ onDone }) {
