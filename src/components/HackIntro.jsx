@@ -162,13 +162,37 @@ const TAUNTS = {
 const MOUTHS = ['closed', 'mid', 'open', 'wide'].map((k) => `./stickers/pickle-talk-${k}.png`);
 if (typeof window !== 'undefined') MOUTHS.forEach((src) => { const i = new Image(); i.src = src; });
 
-let voiceCache = null;
-function pickVoice() {
-  if (voiceCache || !window.speechSynthesis) return voiceCache;
-  const vs = window.speechSynthesis.getVoices().filter((v) => /^en/i.test(v.lang));
-  const pref = ['Fred', 'Junior', 'Albert', 'Ralph', 'Google UK English Male', 'Daniel', 'Alex'];
-  voiceCache = pref.map((n) => vs.find((v) => v.name.includes(n))).find(Boolean) || vs[0] || null;
-  return voiceCache;
+// Cartoon "babble" voice: a short squeaky blip for each letter, built with
+// Web Audio so it sounds the same on every device.
+let babbleCtx = null;
+function audio() {
+  try {
+    if (!babbleCtx) babbleCtx = new (window.AudioContext || window.webkitAudioContext)();
+    if (babbleCtx.state === 'suspended') babbleCtx.resume();
+    return babbleCtx;
+  } catch { return null; }
+}
+function blip(ch, mood) {
+  const ac = audio(); if (!ac || ac.state !== 'running') return;
+  const c = ch.toLowerCase();
+  if (!/[a-z0-9!?]/.test(c)) return;
+  const vowel = 'aeiou'.includes(c);
+  const base = mood === 'angry' ? 300 : mood === 'evil' ? 230 : 380;
+  const f = base + ((c.charCodeAt(0) * 37) % 11) * 22 + (vowel ? 60 : 0) + (Math.random() * 30 - 15);
+  const t = ac.currentTime;
+  const o = ac.createOscillator(); const o2 = ac.createOscillator(); const g = ac.createGain(); const lp = ac.createBiquadFilter();
+  o.type = 'square'; o2.type = 'triangle';
+  o.frequency.setValueAtTime(f, t); o.frequency.exponentialRampToValueAtTime(f * (vowel ? 1.25 : 0.85), t + 0.06);
+  o2.frequency.setValueAtTime(f * 2.01, t);
+  lp.type = 'lowpass'; lp.frequency.value = 2200;
+  g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(0.06, t + 0.008); g.gain.exponentialRampToValueAtTime(0.0001, t + 0.07);
+  o.connect(lp); o2.connect(lp); lp.connect(g); g.connect(ac.destination);
+  o.start(t); o2.start(t); o.stop(t + 0.08); o2.stop(t + 0.08);
+}
+// unlock audio on the first click or tap anywhere
+if (typeof window !== 'undefined') {
+  const unlock = () => { audio(); window.removeEventListener('pointerdown', unlock); window.removeEventListener('keydown', unlock); };
+  window.addEventListener('pointerdown', unlock); window.addEventListener('keydown', unlock);
 }
 
 function Villain({ mode, hit, low, sound }) {
@@ -210,30 +234,19 @@ function Villain({ mode, hit, low, sound }) {
     return () => clearInterval(id);
   }, [key, lines.length]);
 
-  // say the line: typewriter text + voice + moving mouth
+  // say the line: typewriter text, babble voice and moving mouth
   useEffect(() => {
     if (!line) return undefined;
     setTyped(''); setTalking(true);
+    const mood = key === 'hit' ? 'angry' : key === 'dead' || key === 'low' ? 'evil' : 'normal';
     let n = 0;
-    const typer = setInterval(() => { n += 1; setTyped(line.slice(0, n)); if (n >= line.length) clearInterval(typer); }, 38);
-    let done = setTimeout(() => setTalking(false), Math.max(900, line.length * 62));
-    const synth = window.speechSynthesis;
-    if (sound && synth) {
-      try {
-        synth.cancel();
-        const u = new SpeechSynthesisUtterance(line.replace(/\.\.\./g, ',').replace(/MWAHAHA/i, 'mwa ha ha ha'));
-        const v = pickVoice(); if (v) u.voice = v;
-        u.pitch = 1.7; u.rate = 1.08; u.volume = 0.9;
-        u.onstart = () => { clearTimeout(done); setTalking(true); };
-        u.onend = () => setTalking(false);
-        u.onerror = () => { done = setTimeout(() => setTalking(false), 300); };
-        synth.speak(u);
-      } catch { /* speech not available */ }
-    }
-    return () => { clearInterval(typer); clearTimeout(done); };
-  }, [line, sound]);
-
-  useEffect(() => () => { try { window.speechSynthesis?.cancel(); } catch { /* ignore */ } }, []);
+    const typer = setInterval(() => {
+      n += 1; setTyped(line.slice(0, n));
+      if (sound && n % 2 === 1) blip(line[n - 1] || 'a', mood);
+      if (n >= line.length) { clearInterval(typer); setTimeout(() => setTalking(false), 120); }
+    }, 42);
+    return () => clearInterval(typer);
+  }, [line, sound, key]);
 
   // flap the mouth while talking
   useEffect(() => {
@@ -279,7 +292,6 @@ export default function HackIntro({ onDone }) {
   const toggleSound = () => setSound((v) => {
     const nv = !v;
     try { localStorage.setItem('pickleSound', nv ? 'on' : 'off'); } catch { /* ignore */ }
-    if (!nv) { try { window.speechSynthesis?.cancel(); } catch { /* ignore */ } }
     return nv;
   });
   const hitT = useRef(null);
