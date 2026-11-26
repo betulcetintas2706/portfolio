@@ -102,6 +102,7 @@ export const projects = [
   },
   {
     title: "IRIS",
+    link: "https://devpost.com/software/iris-de1z3t",
     desc: "Real-time AI lab assistant combining ESP32-S3 smart glasses + SwiftUI iOS app for live, context-aware STEM experiment guidance with ~2–3s latency via ESP32 → FastAPI → Vision API → Gemini → ElevenLabs pipeline.",
     tags: ["SwiftUI", "ESP32", "FastAPI", "Gemini", "ElevenLabs"],
     award: "YHack 2026",
@@ -109,6 +110,7 @@ export const projects = [
   },
   {
     title: "RearView",
+    link: "https://devpost.com/software/rearview-gy51t3",
     desc: "iOS app simulating real driving test routes with AI examiner feedback. Uses ARKit camera input, Gemini API summaries & ElevenLabs voice guidance.",
     tags: ["SwiftUI", "ARKit", "MapKit", "Gemini API"],
     award: "🏆 Hackathon MVP",
@@ -116,6 +118,7 @@ export const projects = [
   },
   {
     title: "49th",
+    link: "https://devpost.com/software/hack-canada-2026",
     desc: "WhatsApp AI settlement assistant for newcomers to Canada. Handles healthcare registration, gov forms & banking via conversational AI + browser automation.",
     tags: ["Node.js", "Twilio", "Playwright", "React"],
     award: "🥉 Hack Canada 2026",
@@ -123,6 +126,7 @@ export const projects = [
   },
   {
     title: "SideQuest",
+    link: "https://devpost.com/software/sidequest-0iysgt",
     desc: "Discovery-first navigation iOS app generating scenic, themed routes (Adventure, Foodie, Nature, Culture) with AI narration and gamified challenges.",
     tags: ["SwiftUI", "Google Maps API", "Supabase", "Gemini"],
     award: "🏆 DeerHacks V",
@@ -130,6 +134,7 @@ export const projects = [
   },
   {
     title: "NanoTrade",
+    link: "https://devpost.com/software/nanotrade",
     desc: "Tiny Tapeout ASIC in Verilog with 5 RTL modules running 8 parallel market anomaly checks at 50 MHz with ~80 ns latency. Fit into 9,800 of 10,000 cells and cut false positives from 40% to 0.5% across 10,000+ simulations.",
     tags: ["Verilog", "ASIC", "SKY130", "Icarus"],
     award: "🥉 UofT IC Hackathon",
@@ -144,6 +149,7 @@ export const projects = [
   },
   {
     title: "VYBE",
+    link: "https://devpost.com/software/vybe-l3ua1m",
     desc: "Accessibility iOS app translating live music into real-time haptic feedback for users with hearing impairments. Includes Apple Watch companion app.",
     tags: ["SwiftUI", "Core Haptics", "AVFoundation", "watchOS"],
     award: "🥈 Hackville 2026",

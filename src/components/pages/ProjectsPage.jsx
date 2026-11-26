@@ -30,7 +30,7 @@ export default function ProjectsPage() {
                 </div>
                 <div className="project-links">
                   <a className="project-link" href={proj.link || personalInfo.github} target="_blank" rel="noreferrer" style={{ textDecoration: 'none' }}>
-                    {proj.link ? 'View' : 'GitHub'}
+                    {proj.link ? 'Devpost' : 'GitHub'}
                   </a>
                   {proj.award && (
                     <span className="project-link outline" style={{ borderColor: 'var(--gold)', color: 'var(--gold)' }}>
