@@ -18,6 +18,7 @@ const COMMANDS = [
   ['contact', 'how to reach me'],
   ['github / linkedin / devpost', 'open my profiles'],
   ['tour', 'take the desktop tour'],
+  ['hack', 'replay the save-the-site game'],
   ['ls', 'list files'],
   ['clear', 'clear the screen'],
   ['exit', 'close the terminal'],
@@ -117,6 +118,8 @@ export default function Terminal({ onClose, showPage }) {
       say(`Opening ${lc}...`, 'accent'); openUrl(contact[`${lc}Url`]);
     } else if (lc === 'tour') {
       say('Starting the tour...', 'accent'); onClose(); window.dispatchEvent(new Event('start-tour'));
+    } else if (lc === 'hack' || lc === 'virus') {
+      say('Uh oh... 🐛', 'err'); setTimeout(() => window.dispatchEvent(new Event('start-hack')), 400);
     } else if (lc === 'clear' || lc === 'cls') {
       setLines([]); return;
     } else if (lc === 'exit' || lc === 'quit') {

@@ -10,6 +10,7 @@ import SimpleView from './components/SimpleView';
 import Tour from './components/Tour';
 import Terminal from './components/Terminal';
 import MobileHome from './components/MobileHome';
+import HackIntro, { hasSeenIntro } from './components/HackIntro';
 
 function startSimple() {
   try {
@@ -21,16 +22,23 @@ function startSimple() {
 
 export default function App() {
   const [activePage, setActivePage] = useState(() => (window.innerWidth <= 768 ? null : 'home')); // phones start on the home screen
-  const [minimized, setMinimized] = useState(false);
+  const [minimized, setMinimized] = useState(() => !hasSeenIntro() && !startSimple());
   const [simple, setSimple] = useState(startSimple);
   const [touring, setTouring] = useState(false);
   const [term, setTerm] = useState(false);
+  const [hack, setHack] = useState(() => !hasSeenIntro() && !startSimple());
   const windowBodyRef = useRef(null);
 
   useEffect(() => {
     try { localStorage.setItem('view', simple ? 'simple' : 'desktop'); } catch { /* ignore */ }
     document.body.classList.toggle('simple-mode', simple);
   }, [simple]);
+
+  useEffect(() => {
+    const replay = () => { setTerm(false); setMinimized(true); setHack(true); };
+    window.addEventListener('start-hack', replay);
+    return () => window.removeEventListener('start-hack', replay);
+  }, []);
 
   useEffect(() => {
     const open = () => setTerm(true);
@@ -85,6 +93,7 @@ export default function App() {
         setMinimized={setMinimized}
       />
       <Dock activePage={activePage} showPage={showPage} />
+      {hack && <HackIntro onDone={() => { setHack(false); setMinimized(false); }} />}
       {term && <Terminal onClose={() => setTerm(false)} showPage={showPage} />}
       {touring && (
         <Tour

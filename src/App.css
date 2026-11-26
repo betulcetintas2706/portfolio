@@ -1828,3 +1828,49 @@ body.simple-mode { overflow: auto; }
   .cc-row-title { width: auto; }
 }
 .fun-icon .game-tile { background: linear-gradient(160deg, #fbf3e6, #e8d3b4); padding: 0; border-radius: 13px; }
+
+/* ===== Hacked intro ===== */
+:root { --corrupt: 0; }
+body.hacked #root > *:not(.hack):not(.term) {
+  filter: hue-rotate(calc(var(--corrupt) * 150deg)) saturate(calc(1 + var(--corrupt) * 1.5)) contrast(calc(1 + var(--corrupt) * 0.4)) blur(calc(var(--corrupt) * 1.2px));
+  transition: filter 0.4s;
+}
+body.hacked .desktop, body.hacked .desktop-icons, body.hacked .dock-container, body.hacked .mobile-home { animation: hackJitter 0.35s steps(2) infinite; animation-play-state: running; }
+@keyframes hackJitter {
+  0% { transform: translate(calc(var(--corrupt) * 3px), 0); clip-path: inset(0 0 0 0); }
+  50% { transform: translate(calc(var(--corrupt) * -4px), calc(var(--corrupt) * 1px)); clip-path: inset(calc(var(--corrupt) * 8%) 0 calc(var(--corrupt) * 4%) 0); }
+  100% { transform: translate(0, 0); }
+}
+.hack { position: fixed; inset: 0; z-index: 4000; font-family: 'JetBrains Mono', 'Space Mono', monospace; }
+.hack-alert, .hack-won, .hack-lost { background: rgba(20, 2, 8, 0.55); }
+.hack-scan { position: absolute; inset: 0; pointer-events: none; background: repeating-linear-gradient(0deg, rgba(255,0,60,0.06) 0 2px, transparent 2px 4px); animation: hackScan 6s linear infinite; }
+@keyframes hackScan { to { background-position: 0 200px; } }
+.hack-skip { position: absolute; top: 12px; right: 14px; z-index: 3; background: rgba(253,246,240,0.9); color: #3a0e1c; border: none; border-radius: 999px; padding: 6px 14px; font: inherit; font-size: 12px; font-weight: 700; cursor: pointer; }
+.hack-term { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); width: min(520px, calc(100vw - 32px)); background: #12040a; border: 1px solid #ff3b6b; border-radius: 10px; box-shadow: 0 0 40px rgba(255,59,107,0.35); overflow: hidden; animation: hackShake 0.4s; }
+.hack-end { border-color: #e2c069; box-shadow: 0 0 40px rgba(226,192,105,0.35); }
+@keyframes hackShake { 0%,100% { transform: translate(-50%,-50%); } 20% { transform: translate(-52%,-50%); } 40% { transform: translate(-48%,-51%); } 60% { transform: translate(-51%,-49%); } }
+.hack-term-bar { background: #2b0a14; color: #ff8fa3; font-size: 12px; padding: 7px 12px; font-weight: 700; }
+.hack-end .hack-term-bar { color: #e2c069; }
+.hack-term-body { padding: 14px 16px; color: #f3dfe4; font-size: 13.5px; line-height: 1.7; min-height: 150px; }
+.hack-red { color: #ff5c7a; font-weight: 700; animation: hackBlink 1s steps(2) infinite; }
+.hack-green { color: #7ee08a; font-weight: 700; }
+@keyframes hackBlink { 50% { opacity: 0.6; } }
+.hack-caret { animation: hackBlink 0.8s steps(2) infinite; color: #ff8fa3; }
+.hack-cta p, .hack-end p { margin: 12px 0; color: #fdf6f0; }
+.hack-go { background: linear-gradient(135deg, #c9a84c, #e2c069); color: #2b0a14; border: none; border-radius: 999px; padding: 9px 18px; font: inherit; font-weight: 700; font-size: 13px; cursor: pointer; animation: hackPulse 1.2s ease-in-out infinite; }
+@keyframes hackPulse { 50% { box-shadow: 0 0 0 6px rgba(226,192,105,0.25); } }
+.hack-again { margin-left: 8px; background: none; border: 1px solid rgba(253,246,240,0.4); color: #fdf6f0; border-radius: 999px; padding: 8px 14px; font: inherit; font-size: 12px; cursor: pointer; }
+.hack-end-btns { display: flex; align-items: center; flex-wrap: wrap; gap: 6px; }
+.hack-hud { position: absolute; top: 12px; left: 50%; transform: translateX(-50%); z-index: 2; display: flex; align-items: center; gap: 12px; background: rgba(18,4,10,0.85); color: #fdf6f0; border: 1px solid #ff3b6b; border-radius: 999px; padding: 7px 16px; font-size: 12.5px; white-space: nowrap; }
+.hack-bar { width: 120px; height: 8px; border-radius: 4px; background: rgba(255,255,255,0.15); overflow: hidden; }
+.hack-bar i { display: block; height: 100%; background: linear-gradient(90deg, #e2c069, #7ee08a); transition: width 0.3s; }
+.hack-bug { position: absolute; z-index: 1; background: none; border: none; font-size: 34px; line-height: 1; padding: 8px; cursor: crosshair; touch-action: none; filter: drop-shadow(0 0 6px rgba(255,59,107,0.8)); }
+.hack-splat { position: absolute; transform: translate(-50%, -50%); color: #e2c069; font-size: 26px; pointer-events: none; animation: hackSplat 0.6s ease-out forwards; }
+@keyframes hackSplat { from { opacity: 1; transform: translate(-50%,-50%) scale(0.6); } to { opacity: 0; transform: translate(-50%,-50%) scale(2.2); } }
+@media (max-width: 768px) {
+  .hack-hud { top: 56px; gap: 8px; font-size: 11px; padding: 6px 12px; }
+  .hack-bar { width: 60px; }
+  .hack-hud span:nth-of-type(2) { display: none; }
+  .hack-skip { top: 52px; right: auto; left: 50%; transform: translateX(-50%); bottom: auto; }
+  .hack-play .hack-skip { top: auto; bottom: 120px; }
+}
