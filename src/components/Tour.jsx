@@ -1,11 +1,17 @@
 import { useEffect, useLayoutEffect, useState, useCallback } from 'react';
+import { MOD } from './Launcher';
 
 const STEPS = [
-  { sel: ['.dock'], title: 'The dock', text: 'Jump to any section from here: projects, experience, awards and more.' },
-  { sel: ['.desktop-icon'], title: 'Desktop folders', text: 'The same pages live here too, plus my résumé.' },
-  { sel: ['img.sticker[alt="Sleepy pickle"]'], title: 'Stickers', text: "They're not glued down. Drag them anywhere you like.", wiggle: true },
-  { sel: ['.media-widget'], title: 'Music player', text: 'Press play, it really works.' },
+  { sel: ['.dock'], title: 'The dock', text: 'Jump to any section from here: about, experience, projects, skills, awards and contact.' },
+  { sel: ['.desktop-icon:not(.game-icon)'], title: 'Desktop folders', text: 'The same pages live here too, plus my résumé as a PDF.' },
+  { sel: ['.game-icon'], title: 'Playable games', text: 'Gold Miner and Comfy Cakes, two FPGA games I built in Verilog. Play them here, or open "See how it works" to watch the state machine run.' },
   { sel: ['.extras'], title: 'extras.zip', text: 'Open it for my gallery, music and movies.', openZip: true, pad: 110 },
+  { sel: ['.media-widget'], title: 'Music player', text: 'Press play, it really works. These are songs from my own playlist.' },
+  { sel: ['.widget-zone.left > :nth-child(-n+2)'], title: 'Widgets', text: "Toronto weather, the date, and what I'm building right now." },
+  { sel: ['img.sticker[alt="Sleepy pickle"]'], title: 'Stickers', text: "They're not glued down. Drag them anywhere you like.", wiggle: true },
+  { sel: ['.lx-open'], title: 'Search', text: `Press ${MOD}+K anywhere to search projects, skills, demos or my résumé.` },
+  { sel: ['.term-toggle'], title: 'Terminal', text: "Type help to see what it can do. Try play goldminer, trace iris, or hack to meet the pickle again." },
+  { sel: ['.simple-toggle:not(.lx-open):not(.term-toggle)'], title: 'Simple view', text: 'Prefer one plain page you can scroll? This switches to it, and you can come back anytime.' },
   { sel: ['.menubar-logo'], title: 'A little secret', text: 'Click the ★ five times for a surprise.' },
 ];
 
@@ -70,7 +76,7 @@ export default function Tour({ onFinish, onClose }) {
   };
 
   // Place the card next to the highlight, kept inside the screen.
-  const W = 290, H = 170, vw = window.innerWidth, vh = window.innerHeight;
+  const W = 300, H = 190, vw = window.innerWidth, vh = window.innerHeight;
   let card = { left: vw / 2 - W / 2, top: vh / 2 - H / 2 };
   if (hole) {
     const below = hole.top + hole.height + 16;
@@ -101,7 +107,7 @@ export default function Tour({ onFinish, onClose }) {
           <div>
             {i > 0 && <button className="tour-back" onClick={() => setI(i - 1)}>Back</button>}
             {last
-              ? <button className="tour-next" onClick={onFinish}>See my Featured Work →</button>
+              ? <button className="tour-next" onClick={onFinish}>See my projects →</button>
               : <button className="tour-next" onClick={() => setI(i + 1)}>Next →</button>}
           </div>
         </div>
