@@ -184,15 +184,27 @@ function blip(ch, mood) {
   o.type = 'square'; o2.type = 'triangle';
   o.frequency.setValueAtTime(f, t); o.frequency.exponentialRampToValueAtTime(f * (vowel ? 1.25 : 0.85), t + 0.06);
   o2.frequency.setValueAtTime(f * 2.01, t);
-  lp.type = 'lowpass'; lp.frequency.value = 2200;
-  g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(0.06, t + 0.008); g.gain.exponentialRampToValueAtTime(0.0001, t + 0.07);
+  lp.type = 'lowpass'; lp.frequency.value = 3200;
+  g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(0.28, t + 0.008); g.gain.exponentialRampToValueAtTime(0.0001, t + 0.075);
   o.connect(lp); o2.connect(lp); lp.connect(g); g.connect(ac.destination);
   o.start(t); o2.start(t); o.stop(t + 0.08); o2.stop(t + 0.08);
 }
-// unlock audio on the first click or tap anywhere
+// unlock audio on any click, tap or key press. Capture phase so game
+// handlers that stop the event can't block it. Keeps trying until running.
 if (typeof window !== 'undefined') {
-  const unlock = () => { audio(); window.removeEventListener('pointerdown', unlock); window.removeEventListener('keydown', unlock); };
-  window.addEventListener('pointerdown', unlock); window.addEventListener('keydown', unlock);
+  const evs = ['pointerdown', 'touchend', 'mousedown', 'click', 'keydown'];
+  const unlock = () => {
+    const ac = audio(); if (!ac) return;
+    // tiny silent sound, needed by iOS Safari to really start audio
+    try { const b = ac.createBuffer(1, 1, 22050); const s = ac.createBufferSource(); s.buffer = b; s.connect(ac.destination); s.start(0); } catch { /* ignore */ }
+    const done = () => {
+      if (ac.state !== 'running') return;
+      evs.forEach((e) => window.removeEventListener(e, unlock, true));
+      window.dispatchEvent(new Event('pickle-audio-ready'));
+    };
+    if (ac.state === 'running') done(); else ac.resume().then(done).catch(() => {});
+  };
+  evs.forEach((e) => window.addEventListener(e, unlock, true));
 }
 
 function Villain({ mode, hit, low, sound }) {
@@ -234,6 +246,14 @@ function Villain({ mode, hit, low, sound }) {
     return () => clearInterval(id);
   }, [key, lines.length]);
 
+  // when sound unlocks (first click), say the current line again so it is heard
+  const [replay, setReplay] = useState(0);
+  useEffect(() => {
+    const on = () => setReplay((r) => r + 1);
+    window.addEventListener('pickle-audio-ready', on);
+    return () => window.removeEventListener('pickle-audio-ready', on);
+  }, []);
+
   // say the line: typewriter text, babble voice and moving mouth
   useEffect(() => {
     if (!line) return undefined;
@@ -246,7 +266,7 @@ function Villain({ mode, hit, low, sound }) {
       if (n >= line.length) { clearInterval(typer); setTimeout(() => setTalking(false), 120); }
     }, 42);
     return () => clearInterval(typer);
-  }, [line, sound, key]);
+  }, [line, sound, key, replay]);
 
   // flap the mouth while talking
   useEffect(() => {
