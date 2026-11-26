@@ -10,7 +10,7 @@ export const personalInfo = {
   degree: "BASc CompEng PEY",
   years: "2024 – 2028",
 
-  photo: "./photo.jpg",
+  photo: "./headshot-2026.jpg",
   github: "https://github.com/betulcetintas2706",
   devpost: "https://devpost.com/betulcetintas2706",
   resume: "./BetulCetintas-Resume.pdf",
