@@ -1,4 +1,4 @@
-import { projects } from '../../data/portfolioData';
+import { projects, personalInfo } from '../../data/portfolioData';
 import { projectIconMap } from '../Icons';
 
 export default function ProjectsPage() {
@@ -29,7 +29,9 @@ export default function ProjectsPage() {
                   ))}
                 </div>
                 <div className="project-links">
-                  <span className="project-link">GitHub</span>
+                  <a className="project-link" href={proj.link || personalInfo.github} target="_blank" rel="noreferrer" style={{ textDecoration: 'none' }}>
+                    {proj.link ? 'View' : 'GitHub'}
+                  </a>
                   {proj.award && (
                     <span className="project-link outline" style={{ borderColor: 'var(--gold)', color: 'var(--gold)' }}>
                       {proj.award}
