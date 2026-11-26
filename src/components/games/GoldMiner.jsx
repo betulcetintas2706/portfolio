@@ -209,59 +209,73 @@ export default function GoldMiner({ probe, ctl, active = true }) {
       ctx.restore();
     };
 
-    // start screen 1: title badge on sand, like our board's first page
+    // 5x7 pixel font, like the bitmap text on our VGA pages
+    const GLYPH = {
+      G: ['01110', '10001', '10000', '10111', '10001', '10001', '01110'],
+      O: ['01110', '10001', '10001', '10001', '10001', '10001', '01110'],
+      L: ['10000', '10000', '10000', '10000', '10000', '10000', '11111'],
+      D: ['11110', '10001', '10001', '10001', '10001', '10001', '11110'],
+      M: ['10001', '11011', '10101', '10101', '10001', '10001', '10001'],
+      I: ['11111', '00100', '00100', '00100', '00100', '00100', '11111'],
+      N: ['10001', '11001', '10101', '10011', '10001', '10001', '10001'],
+      E: ['11111', '10000', '10000', '11110', '10000', '10000', '11111'],
+      R: ['11110', '10001', '10001', '11110', '10100', '10010', '10001'],
+      T: ['11111', '00100', '00100', '00100', '00100', '00100', '00100'],
+      B: ['11110', '10001', '10001', '11110', '10001', '10001', '11110'],
+    };
+    const pixText = (str, x, y, px, color, shadow) => {
+      const w = str.length * 6 * px - px;
+      let cx = Math.round(x - w / 2);
+      [...str].forEach((ch) => {
+        const gl = GLYPH[ch];
+        if (gl) gl.forEach((row, r) => [...row].forEach((bit, c) => {
+          if (bit !== '1') return;
+          if (shadow) { ctx.fillStyle = shadow; ctx.fillRect(cx + c * px + 1, y + r * px + 1, px, px); }
+          ctx.fillStyle = color; ctx.fillRect(cx + c * px, y + r * px, px, px);
+        }));
+        cx += 6 * px;
+      });
+    };
+
+    // start screen 1: the GOLD MINER badge on sand, like our board's first page
     const titlePage = (t) => {
-      ctx.fillStyle = '#f0cf78'; ctx.fillRect(0, 0, W, H);
-      ctx.fillStyle = 'rgba(160,200,120,0.35)';
-      for (let i = 0; i < 160; i += 1) { const px = (i * 97) % W; const py = (i * 53) % H; ctx.fillRect(px, py, 2, 1); }
-      // stepped pixel badge
-      const cx = 92; const cy = 112; const r = 66;
-      for (let y = -r; y <= r; y += 3) for (let x = -r; x <= r; x += 3) {
-        const d = Math.hypot(x * 0.95, y * 1.05);
-        if (d > r) continue;
-        const edge = d > r - 5;
-        ctx.fillStyle = edge ? '#5f7a3a' : (x + y < -20 ? '#cdeea0' : '#f4d690');
-        ctx.fillRect(cx + x, cy + y, 3, 3);
+      ctx.fillStyle = '#f2cc76'; ctx.fillRect(0, 0, W, H);
+      ctx.fillStyle = 'rgba(150,205,140,0.45)';
+      for (let i = 0; i < 220; i += 1) ctx.fillRect((i * 97) % W, (i * 53 + (i % 7) * 11) % H, 1, 1);
+      const cx = 86; const cy = 104;
+      // stepped blob badge with a thick olive outline
+      for (let y = -70; y <= 70; y += 2) for (let x = -82; x <= 82; x += 2) {
+        const wob = 1 + Math.sin(Math.atan2(y, x) * 5) * 0.035;
+        const d = Math.hypot(x / 78, y / 66) / wob;
+        if (d > 1) continue;
+        let c;
+        if (d > 0.93) c = '#5f6f3a';
+        else if (d > 0.88 && x + y > 30) c = (x * 3 + y) % 7 === 0 ? '#e0603a' : '#c98a4a';
+        else if (x + y * 1.2 < -18) c = '#c9efa0';
+        else c = '#f6dc9c';
+        ctx.fillStyle = c; ctx.fillRect(cx + x, cy + y, 2, 2);
       }
-      // sparkle
-      const tw = 0.6 + Math.sin(t * 4) * 0.4;
-      ctx.fillStyle = `rgba(170,215,255,${tw})`;
-      ctx.fillRect(cx - 1, cy - 70, 3, 26); ctx.fillRect(cx - 12, cy - 58, 25, 3);
-      ctx.fillStyle = '#5d9ad8'; ctx.fillRect(cx - 4, cy - 61, 9, 9);
-      ctx.font = 'bold 30px VT323, monospace'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-      ctx.fillStyle = '#d9a63a'; ctx.fillText('GOLD', cx + 2, cy - 12); ctx.fillText('MINER', cx + 2, cy + 18);
-      ctx.fillStyle = '#4e5a2c'; ctx.fillText('GOLD', cx, cy - 14); ctx.fillText('MINER', cx, cy + 16);
-      // our miner, waving
-      drawMiner(186, 58 + Math.sin(t * 3) * 2, 4.2);
-      ctx.font = '14px VT323, monospace'; ctx.fillStyle = Math.floor(t * 2) % 2 ? '#7a4a2a' : 'rgba(122,74,42,0.35)';
-      ctx.fillText('press any key', cx, H - 22);
+      // sparkle on the top edge
+      const tw = 0.55 + Math.sin(t * 4) * 0.45;
+      ctx.fillStyle = `rgba(190,225,255,${tw})`;
+      ctx.fillRect(cx - 2, cy - 82, 2, 34); ctx.fillRect(cx - 16, cy - 64, 30, 2);
+      ctx.fillRect(cx - 10, cy - 74, 2, 2); ctx.fillRect(cx + 7, cy - 74, 2, 2); ctx.fillRect(cx - 10, cy - 55, 2, 2); ctx.fillRect(cx + 7, cy - 55, 2, 2);
+      ctx.fillStyle = '#7fb4ef'; ctx.fillRect(cx - 6, cy - 69, 10, 10);
+      ctx.fillStyle = '#5a8fd6'; ctx.fillRect(cx - 3, cy - 66, 4, 4);
+      pixText('GOLD', cx, cy - 26, 4, '#4f5a2a', '#8b2e2e');
+      pixText('MINER', cx, cy + 6, 4, '#4f5a2a', '#8b2e2e');
+      // our miner, waving, where the character stands on the board
+      drawMiner(196, 70 + Math.sin(t * 3) * 2, 4.6);
     };
     // start screen 2: ENTER TO BEGIN on blue
     const enterPage = (t) => {
-      const gr = ctx.createRadialGradient(W / 2, H / 2, 20, W / 2, H / 2, 220);
-      gr.addColorStop(0, '#3d63b8'); gr.addColorStop(1, '#1f3a7a');
+      const gr = ctx.createRadialGradient(W * 0.6, H * 0.45, 10, W / 2, H / 2, 230);
+      gr.addColorStop(0, '#4a6fc0'); gr.addColorStop(1, '#23408a');
       ctx.fillStyle = gr; ctx.fillRect(0, 0, W, H);
-      ctx.font = 'bold 34px VT323, monospace'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-      const glow = 0.75 + Math.sin(t * 5) * 0.25;
-      ctx.fillStyle = 'rgba(120,220,255,0.6)'; ctx.fillText('ENTER', W / 2 + 1, H / 2 - 32); ctx.fillText('BEGIN', W / 2 + 1, H / 2 + 34);
-      ctx.fillStyle = `rgba(255,255,255,${glow})`; ctx.fillText('ENTER', W / 2, H / 2 - 33); ctx.fillText('BEGIN', W / 2, H / 2 + 33);
-      ctx.fillStyle = 'rgba(200,200,210,0.55)'; ctx.fillText('TO', W / 2, H / 2);
-    };
-    const drawHook = (x, y) => {
-      ctx.fillStyle = '#d9d9d9'; ctx.fillRect(x - 5, y, 10, 3);
-      ctx.fillRect(x - 6, y + 2, 3, 6); ctx.fillRect(x + 3, y + 2, 3, 6);
-      ctx.fillStyle = '#c0392b'; ctx.fillRect(x - 2, y - 3, 4, 3);
-    };
-    const text = (s, x, y, size, color, align = 'left') => {
-      ctx.font = `${size}px VT323, monospace`; ctx.textAlign = align; ctx.textBaseline = 'middle';
-      ctx.fillStyle = color; ctx.fillText(s, x, y);
-    };
-    const page = (title, lines, tone) => {
-      ctx.drawImage(bg, 0, 0);
-      ctx.fillStyle = 'rgba(30,6,14,0.82)'; ctx.fillRect(36, 70, W - 72, 128);
-      ctx.strokeStyle = tone; ctx.lineWidth = 2; ctx.strokeRect(37, 71, W - 74, 126);
-      text(title, W / 2, 96, 30, tone, 'center');
-      lines.forEach((l, i) => text(l, W / 2, 128 + i * 18, 14, '#fdf6f0', 'center'));
+      const glow = 0.8 + Math.sin(t * 5) * 0.2;
+      pixText('ENTER', W / 2, 84, 4, `rgba(255,255,255,${glow})`, 'rgba(110,220,255,0.7)');
+      pixText('TO', W / 2, 116, 4, 'rgba(150,150,160,0.75)', null);
+      pixText('BEGIN', W / 2, 148, 4, `rgba(255,255,255,${glow})`, 'rgba(110,220,255,0.7)');
     };
 
     let raf; let last = performance.now();
