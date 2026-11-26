@@ -147,6 +147,36 @@ function Override({ onDone }) {
   );
 }
 
+// The villain: a mischievous pickle hacker in a robe and bunny slippers.
+const TAUNTS = {
+  alert: ['hehe... your portfolio is mine now 🥒', 'I already took the résumé 😏', 'good luck getting it back'],
+  debug: ['my bugs are faster than you', 'ooh, that icon looks tasty', 'go little bugs, go!'],
+  rewire: ['you know logic gates?? 😳', "that circuit is MY circuit"],
+  override: ["you don't have root 😤", "don't you dare type that..."],
+  low: ['tick tock ⏰', 'almost mine... 🥒'],
+  hit: ['hey!! stop that 😠', 'my poor bug 😭', 'rude!!'],
+  dead: ['MWAHAHA too slow! 🥒', 'this desktop is pickle territory now'],
+  won: ["noooo! I'll be back... 🥒💨"],
+};
+
+function Villain({ mode, hit, low }) {
+  const [i, setI] = useState(0);
+  const key = hit ? 'hit' : low && mode !== 'dead' && mode !== 'won' ? 'low' : mode;
+  const lines = TAUNTS[key] || [];
+  useEffect(() => { setI(0); }, [key]);
+  useEffect(() => {
+    if (lines.length < 2) return undefined;
+    const id = setInterval(() => setI((n) => (n + 1) % lines.length), 2600);
+    return () => clearInterval(id);
+  }, [key, lines.length]);
+  return (
+    <div className={`hk-villain hk-v-${mode}${hit ? ' hk-v-hit' : ''}`} aria-hidden="true">
+      {lines[i] && <div className="hk-bubble" key={`${key}${i}`}>{lines[i]}</div>}
+      <img src="./stickers/pickle-hacker.png" alt="" draggable="false" />
+    </div>
+  );
+}
+
 export function hasSeenIntro() {
   // Plays on every visit and refresh. Add ?nointro to a link to skip it.
   try { return new URLSearchParams(window.location.search).has('nointro'); } catch { return false; }
@@ -164,6 +194,8 @@ export default function HackIntro({ onDone }) {
   const bugsRef = useRef([]);
   const lootRef = useRef([]);
   const startRef = useRef(0);
+  const [hit, setHit] = useState(false);
+  const hitT = useRef(null);
 
   const level = { alert: 1, debug: 1 - (squashed / BUGS) * 0.45, rewire: 0.5, override: 0.25, won: 0, dead: 1.6 }[phase];
   const left = Math.max(0, LIMIT - elapsed);
@@ -304,6 +336,7 @@ export default function HackIntro({ onDone }) {
       setTimeout(() => b.target.classList.remove('hack-returned'), 700);
     }
     setSplats((s) => [...s.slice(-8), { id: b.id, x: b.x, y: b.y }]);
+    setHit(true); clearTimeout(hitT.current); hitT.current = setTimeout(() => setHit(false), 1100);
     setSquashed((n) => {
       const v = n + 1;
       if (v >= BUGS) setTimeout(() => { restoreAll(); setPhase('rewire'); }, 400);
@@ -329,6 +362,7 @@ export default function HackIntro({ onDone }) {
     <div className={`hack hack-${phase}`} role="dialog" aria-label="Save the site mini game">
       <div className="hack-scan" aria-hidden="true" />
       <button className="hack-skip" onClick={finish}>Skip intro →</button>
+      <Villain mode={phase} hit={hit && phase === 'debug'} low={left <= 10 && phase !== 'alert'} />
 
       {phase !== 'alert' && phase !== 'won' && phase !== 'dead' && (
         <div className="hack-hud">

@@ -1955,3 +1955,51 @@ body.hack-dead #root > *:not(.hack):not(.term) { filter: hue-rotate(110deg) satu
 .hk-dead-sub { margin-top: 6px; font-size: 14px; } .hk-dead-sub b { color: #ff8fa3; }
 .hk-dead p { margin: 14px 0 16px; font-size: 14px; line-height: 1.6; }
 .hk-dead-btns { justify-content: center; }
+
+/* ===== Pickle hacker villain ===== */
+.hk-villain { position: absolute; z-index: 3; pointer-events: none; transition: all 0.6s cubic-bezier(0.34, 1.3, 0.64, 1); }
+.hk-villain img { display: block; width: 100%; height: auto; filter: drop-shadow(0 0 18px rgba(126,224,138,0.35)) drop-shadow(0 10px 16px rgba(0,0,0,0.5)); }
+.hk-bubble {
+  position: absolute; bottom: 92%; left: 55%; transform: translateX(-20%); width: max-content; max-width: 220px;
+  background: #fdf6f0; color: #3a0e1c; font-family: 'Space Mono', monospace; font-size: 12px; font-weight: 700;
+  padding: 7px 11px; border-radius: 14px; box-shadow: 0 6px 16px rgba(0,0,0,0.4); animation: hkBubble 0.35s cubic-bezier(0.34, 1.6, 0.64, 1);
+}
+.hk-bubble::after { content: ''; position: absolute; left: 22px; bottom: -7px; border: 8px solid transparent; border-top-color: #fdf6f0; border-bottom: 0; }
+@keyframes hkBubble { from { transform: translateX(-20%) scale(0.6); opacity: 0; } }
+/* alert: big, next to the terminal */
+.hk-v-alert { width: 190px; left: calc(50% - 470px); top: calc(50% - 150px); animation: hkSway 2.4s ease-in-out infinite; }
+/* during the steps: peeking from the bottom left */
+.hk-v-debug, .hk-v-rewire, .hk-v-override { width: 120px; left: 18px; bottom: -40px; animation: hkSway 2s ease-in-out infinite; }
+.hk-v-hit { animation: hkShakeV 0.35s 2 !important; }
+/* fully hacked: big and laughing */
+.hk-v-dead { width: 200px; left: calc(50% - 100px); top: calc(50% - 400px); animation: hkLaugh 0.5s ease-in-out infinite; }
+.hk-v-dead .hk-bubble { left: 75%; }
+/* won: runs off */
+.hk-v-won { width: 140px; left: 18px; bottom: 10px; animation: hkRunAway 2.2s ease-in 0.6s forwards; }
+@keyframes hkSway { 0%,100% { transform: rotate(-3deg); } 50% { transform: rotate(3deg) translateY(-4px); } }
+@keyframes hkShakeV { 25% { transform: translateX(-8px) rotate(-6deg); } 75% { transform: translateX(8px) rotate(6deg); } }
+@keyframes hkLaugh { 0%,100% { transform: translateY(0) rotate(-4deg); } 50% { transform: translateY(-14px) rotate(4deg); } }
+@keyframes hkRunAway { 0% { transform: scaleX(1); } 15% { transform: scaleX(-1) translateY(-10px); } 100% { transform: scaleX(-1) translateX(120vw); } }
+@media (max-width: 1060px) { .hk-v-alert { left: 12px; top: auto; bottom: 30px; width: 140px; } }
+@media (max-width: 768px) {
+  .hk-v-alert { width: 110px; left: 50%; top: 56px; bottom: auto; margin-left: -55px; }
+  .hk-v-alert .hk-bubble { left: 90%; bottom: 40%; }
+  .hk-v-debug, .hk-v-rewire, .hk-v-override { width: 84px; left: 6px; bottom: 96px; }
+  .hk-v-debug .hk-bubble, .hk-v-rewire .hk-bubble, .hk-v-override .hk-bubble { left: 70%; font-size: 11px; max-width: 170px; }
+  .hk-v-dead { width: 120px; left: calc(50% - 60px); top: 70px; }
+  .hk-v-won { width: 100px; bottom: 110px; }
+  .hk-bubble { font-size: 11px; }
+}
+/* villain fixes */
+.hk-v-dead { width: 170px; left: calc(50% - 470px); top: calc(50% - 170px); }
+.hk-v-won { animation: hkRunAway2 2.2s ease-in 0.6s forwards; }
+.hk-v-won img { transform: scaleX(-1); }
+@keyframes hkRunAway2 { 0% { transform: translate(0, 0); } 15% { transform: translate(-10px, -10px); } 100% { transform: translate(120vw, 0); } }
+@media (max-width: 1060px) { .hk-v-dead { left: 12px; top: auto; bottom: 30px; width: 130px; } }
+@media (max-width: 768px) {
+  .hk-v-alert { left: 14px; margin-left: 0; top: 52px; }
+  .hk-v-alert .hk-bubble { left: 85%; bottom: 55%; max-width: 190px; transform: none; }
+  .hack-debug .hk-stage-tag { bottom: auto; top: 112px; }
+  .hk-v-dead { width: 120px; left: calc(50% - 60px); top: 70px; bottom: auto; }
+  .hk-v-dead .hk-bubble { left: 80%; transform: none; max-width: 150px; }
+}
