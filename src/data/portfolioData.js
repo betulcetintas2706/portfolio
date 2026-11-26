@@ -244,13 +244,19 @@ export const skills = {
     { name: "Swift", usedIn: ["IRIS", "VYBE", "RearView", "SideQuest"] },
     { name: "Python", usedIn: ["SaHera ML model", "IRIS backend", "AI Trash Bin Sorter"] },
     { name: "C / C++", usedIn: ["Data Structures (C++)", "C Programming"] },
-    { name: "JavaScript", usedIn: ["Kavodax", "OSIRIS", "SideQuest"] },
+    { name: "JavaScript", usedIn: ["Kavodax", "OSIRIS", "SideQuest", "This website"] },
+    { name: "HTML", usedIn: ["Re:Pair Genomics", "Praevo landing page", "This website"] },
+    { name: "CSS", usedIn: ["Re:Pair Genomics", "Praevo landing page", "This website"] },
     { name: "Verilog", usedIn: ["NanoTrade", "Comfy Cakes", "Gold Miner"] },
     { name: "TypeScript / SQL", usedIn: ["Meducine", "49th"] },
     { name: "Java", usedIn: [] },
     { name: "MATLAB", usedIn: [] },
   ],
   categories: [
+    {
+      title: "// Web",
+      chips: ["HTML5", "CSS3", "Responsive Design", "React", "Next.js", "Vite", "WebGL", "WordPress", "Canvas API", "Web Audio API", "GitHub Pages", "Accessibility (ARIA)"],
+    },
     {
       title: "// Platforms & iOS",
       chips: ["SwiftUI", "React", "React Native (Expo)", "Next.js", "Vite", "FastAPI", "SFSpeechRecognizer", "AVFoundation", "Core Haptics", "MapKit", "ARKit (TrueDepth)", "ROS 2", "Linux (Ubuntu)", "Gemini API", "ElevenLabs", "Vision API", "Multimodal AI", "OCR Pipelines", "Text-to-Speech"],
