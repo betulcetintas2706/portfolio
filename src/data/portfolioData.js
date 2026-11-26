@@ -71,13 +71,13 @@ export const experiences = [
   },
   {
     role: "Web Developer",
-    date: "Feb 2026 – Present",
+    date: "Feb 2026 – Apr 2026",
     company: "Re:Pair Genomics Inc. · Vaughan, ON (Remote)",
-    desc: "Re-architecting the company's WordPress site for improved performance and responsive layouts. Designed and implemented a Products page and inquiry workflow, and resolved frontend rendering bugs while maintaining consistent UI/UX across the site.",
+    desc: "Re-architected the company's WordPress site for improved performance and responsive layouts. Designed and implemented a Products page and inquiry workflow, and resolved frontend rendering bugs while maintaining consistent UI/UX across the site.",
     tags: ["WordPress", "HTML/CSS", "Frontend", "UI/UX"],
   },
   {
-    role: "Software Team Member — Robotics",
+    role: "Software Team Member",
     date: "Jan 2025 – Present",
     company: "UofT Underwater Exploration (UTUX) · Toronto, ON",
     desc: "Contributing to onboard robotics software for an autonomous underwater vehicle using ROS 2 on Ubuntu Linux. Developed and tested ROS 2 nodes for sensor integration and telemetry, and debugged deployment issues across Linux-based environments.",
