@@ -1936,3 +1936,22 @@ body.hacked .desktop, body.hacked .desktop-icons, body.hacked .dock-container, b
   .hack .hack-skip, .hack-debug .hack-skip, .hack-play .hack-skip { top: auto !important; bottom: 108px !important; left: 50% !important; right: auto !important; transform: translateX(-50%) !important; height: auto; }
   .hack-debug .hk-stage-tag { bottom: 150px; }
 }
+
+/* ===== Fully hacked ===== */
+.hk-low { color: #ff5c7a; font-weight: 700; animation: hackBlink 0.6s steps(2) infinite; }
+body.hack-dead #root > *:not(.hack):not(.term) { filter: hue-rotate(110deg) saturate(2.2) contrast(1.5) brightness(0.55) blur(1px) !important; }
+.hack-fall { animation: hkFallAway 1.4s cubic-bezier(0.55, 0, 1, 0.45) var(--fd, 0s) forwards !important; }
+@keyframes hkFallAway { 0% { transform: translate(0, 0) rotate(0); } 15% { transform: translate(0, -12px) rotate(calc(var(--fr) * 0.2)); } 100% { transform: translate(0, 120vh) rotate(var(--fr)); opacity: 0.6; } }
+.hack-dead { background: radial-gradient(circle at 50% 45%, rgba(80, 0, 20, 0.55), rgba(5, 0, 2, 0.92)); }
+.hk-swarm { position: absolute; inset: 0; pointer-events: none; }
+.hk-swarm span { position: absolute; font-size: 26px; animation: hkCrawl 1.2s ease-in-out infinite alternate; filter: drop-shadow(0 0 6px rgba(255,59,107,0.8)); }
+@keyframes hkCrawl { from { transform: translate(-8px, -6px) rotate(-20deg); } to { transform: translate(10px, 8px) rotate(25deg); } }
+.hk-dead { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); width: min(560px, calc(100vw - 32px)); text-align: center; color: #fdf6f0; background: rgba(12, 2, 6, 0.9); border: 2px solid #ff3b6b; border-radius: 12px; padding: 22px 18px; box-shadow: 0 0 60px rgba(255,59,107,0.5); animation: hackShake 0.5s 3; }
+.hk-dead-title { position: relative; font-size: clamp(22px, 5vw, 38px); font-weight: 800; color: #ff3b6b; letter-spacing: 0.06em; }
+.hk-dead-title::before, .hk-dead-title::after { content: attr(data-text); position: absolute; inset: 0; }
+.hk-dead-title::before { color: #5ee0e6; transform: translate(2px, 0); clip-path: inset(0 0 55% 0); animation: hkGlitch 0.4s steps(2) infinite; mix-blend-mode: screen; }
+.hk-dead-title::after { color: #e2c069; transform: translate(-2px, 0); clip-path: inset(55% 0 0 0); animation: hkGlitch 0.5s steps(2) infinite reverse; mix-blend-mode: screen; }
+@keyframes hkGlitch { 0% { transform: translate(3px, -1px); } 50% { transform: translate(-3px, 1px); } 100% { transform: translate(1px, 0); } }
+.hk-dead-sub { margin-top: 6px; font-size: 14px; } .hk-dead-sub b { color: #ff8fa3; }
+.hk-dead p { margin: 14px 0 16px; font-size: 14px; line-height: 1.6; }
+.hk-dead-btns { justify-content: center; }

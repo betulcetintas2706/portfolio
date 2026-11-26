@@ -7,6 +7,7 @@ import { useEffect, useRef, useState } from 'react';
 // Always skippable, works with touch,. Plays on every visit.
 
 const BUGS = 6;
+const LIMIT = 45; // seconds to save the site before it is fully hacked
 const NAME = 'Betül Cetintas';
 const GLYPHS = '#$%&@!?*01<>/\\[]{}~^';
 const LINES = [
@@ -14,7 +15,7 @@ const LINES = [
   '⚠ INTRUSION DETECTED',
   '⚠ bugs are stealing the portfolio',
   '⚠ circuit board offline · admin locked out',
-  '> 3 steps to restore · about 30 seconds',
+  '> 3 steps to restore · you have 45 seconds',
 ];
 
 const isPhone = () => window.matchMedia('(max-width: 768px)').matches;
@@ -164,10 +165,14 @@ export default function HackIntro({ onDone }) {
   const lootRef = useRef([]);
   const startRef = useRef(0);
 
-  const level = { alert: 1, debug: 1 - (squashed / BUGS) * 0.45, rewire: 0.5, override: 0.25, won: 0 }[phase];
+  const level = { alert: 1, debug: 1 - (squashed / BUGS) * 0.45, rewire: 0.5, override: 0.25, won: 0, dead: 1.6 }[phase];
+  const left = Math.max(0, LIMIT - elapsed);
 
   const restoreAll = () => {
-    document.querySelectorAll('.hack-stolen').forEach((el) => el.classList.remove('hack-stolen'));
+    document.querySelectorAll('.hack-stolen, .hack-fall').forEach((el) => {
+      el.classList.remove('hack-stolen', 'hack-fall'); el.style.removeProperty('--fr'); el.style.removeProperty('--fd');
+    });
+    document.body.classList.remove('hack-dead');
   };
 
   const finish = () => {
@@ -210,11 +215,36 @@ export default function HackIntro({ onDone }) {
     return () => clearInterval(id);
   }, [phase]);
 
-  const start = () => { startRef.current = performance.now(); setPhase('debug'); };
+  const start = () => { startRef.current = performance.now(); setElapsed(0); setPhase('debug'); };
+
+  // Out of time: the desktop gets fully hacked.
+  useEffect(() => {
+    if (['debug', 'rewire', 'override'].includes(phase) && elapsed >= LIMIT) setPhase('dead');
+  }, [elapsed, phase]);
+
+  useEffect(() => {
+    if (phase !== 'dead') return undefined;
+    bugsRef.current = []; setBugs([]);
+    document.body.classList.add('hack-dead');
+    findLoot().concat([...document.querySelectorAll('.widget-panel, .desktop-widgets-wrapper > *, .m-widget, .window')])
+      .forEach((el, i) => {
+        el.style.setProperty('--fr', `${(Math.random() - 0.5) * 90}deg`);
+        el.style.setProperty('--fd', `${(i % 12) * 0.06}s`);
+        el.classList.add('hack-fall');
+      });
+    return undefined;
+  }, [phase]);
+
+  const retry = () => {
+    restoreAll();
+    bugsRef.current = []; setBugs([]); setSquashed(0); setSplats([]);
+    startRef.current = performance.now(); setElapsed(0); setPhase('debug');
+  };
 
   // ---------- Stage 1 loop ----------
   useEffect(() => {
     if (phase !== 'debug') return undefined;
+    bugsRef.current = [];
     lootRef.current = findLoot().sort(() => Math.random() - 0.5);
     let spawned = 0;
     const take = () => lootRef.current.find((el) => !el.classList.contains('hack-stolen') && !bugsRef.current.some((b) => b.target === el));
@@ -300,7 +330,7 @@ export default function HackIntro({ onDone }) {
       <div className="hack-scan" aria-hidden="true" />
       <button className="hack-skip" onClick={finish}>Skip intro →</button>
 
-      {phase !== 'alert' && phase !== 'won' && (
+      {phase !== 'alert' && phase !== 'won' && phase !== 'dead' && (
         <div className="hack-hud">
           <span className="hk-owner">owner: <b>{name}</b></span>
           <span className="hk-steps">
@@ -309,7 +339,7 @@ export default function HackIntro({ onDone }) {
             ))}
           </span>
           <div className="hack-bar"><i style={{ width: `${pct}%` }} /></div>
-          <span>⏱ {elapsed.toFixed(1)}s</span>
+          <span className={left <= 10 ? 'hk-low' : ''}>⏱ {Math.ceil(left)}s left</span>
         </div>
       )}
 
@@ -356,6 +386,25 @@ export default function HackIntro({ onDone }) {
           <div className="hack-term-bar">⌨️ Step 3 · Override</div>
           <div className="hack-term-body"><Override onDone={win} /></div>
         </div>
+      )}
+
+      {phase === 'dead' && (
+        <>
+          <div className="hk-swarm" aria-hidden="true">
+            {Array.from({ length: 36 }, (_, i) => (
+              <span key={i} style={{ left: `${(i * 29) % 100}%`, top: `${(i * 53) % 100}%`, animationDelay: `${(i % 9) * 0.15}s` }}>{i % 3 ? '🐛' : '👾'}</span>
+            ))}
+          </div>
+          <div className="hk-dead">
+            <div className="hk-dead-title" data-text="SYSTEM COMPROMISED">SYSTEM COMPROMISED</div>
+            <div className="hk-dead-sub">owner: <b>{name}</b></div>
+            <p>Time ran out. The bugs took everything 👾<br />betulcetintas.com belongs to them now.</p>
+            <div className="hack-end-btns hk-dead-btns">
+              <button className="hack-go" onClick={retry}>⚔️ Try again</button>
+              <button className="hack-again" onClick={finish}>Restore from backup →</button>
+            </div>
+          </div>
+        </>
       )}
 
       {phase === 'won' && (
