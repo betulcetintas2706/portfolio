@@ -99,7 +99,13 @@ const PEOPLE = [
 const MORE = [];
 
 
-const MOVIES = [];
+const MOVIES = [
+  { title: 'From', note: 'series · 2022' },
+  { title: 'Manifest', note: 'series · 2018' },
+  { title: 'Into the Night', note: 'series · 2020' },
+  { title: 'Interstellar', note: 'film · 2014' },
+  { title: 'Silo', note: 'series · 2023' },
+];
 
 function RetroWindow({ title, onClose, z, onFocus, start, children, width }) {
   const [pos, setPos] = useState(start);

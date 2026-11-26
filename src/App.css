@@ -2659,3 +2659,6 @@ body.hack-dead #root > *:not(.hack):not(.term) { filter: hue-rotate(110deg) satu
 .gal-stack i:first-child { transform: rotate(5deg) translate(4px, 2px); }
 .gal-stack i:last-child { transform: rotate(-4deg) translate(-3px, 3px); }
 .gal-folder { isolation: isolate; }
+.film-frame:not(:has(img)) { display: flex; flex-direction: column; justify-content: center; gap: 6px; aspect-ratio: 2 / 3; padding: 10px 8px; background: linear-gradient(170deg, #6b1f35, #2d0a14); color: #f3d27a; border: 1px solid #b89a52; border-radius: 4px; }
+.film-frame:not(:has(img)) span { font-family: 'Lora', serif; font-style: italic; font-weight: 600; font-size: 16px; line-height: 1.15; }
+.film-frame:not(:has(img)) small { font-family: 'Space Mono', monospace; font-size: 9.5px; color: rgba(246,234,215,0.75); opacity: 1; }
