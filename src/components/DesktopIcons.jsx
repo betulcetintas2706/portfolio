@@ -10,6 +10,11 @@ const icons = [
   { href: './BetulCetintas-Resume.pdf?v=2029', page: 'resume', label: 'Resume.pdf', imgSrc: './f6.png' },
 ];
 
+const GAMES = [
+  { id: 'goldminer', label: 'Gold Miner', img: './fun/GoldMiner_t.png' },
+  { id: 'cakes', label: 'Comfy Cakes', img: './fun/ComfyCakes_t.png' },
+];
+
 export default function DesktopIcons({ activePage, showPage }) {
   return (
     <div className="desktop-icons">
@@ -30,6 +35,14 @@ export default function DesktopIcons({ activePage, showPage }) {
         </div>
       ))}
       <Extras />
+      {GAMES.map((g) => (
+        <div key={g.id} className="desktop-icon game-icon" onClick={() => window.dispatchEvent(new CustomEvent('open-extra', { detail: { id: g.id, view: 'play' } }))}>
+          <div className="icon-img" style={{ background: 'transparent', border: 'none', boxShadow: 'none' }}>
+            <img src={g.img} alt={g.label} style={{ width: '48px', height: '48px', objectFit: 'contain', filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.4))' }} />
+          </div>
+          <div className="icon-label">{g.label}</div>
+        </div>
+      ))}
     </div>
   );
 }

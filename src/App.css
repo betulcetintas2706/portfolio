@@ -2468,3 +2468,30 @@ body.hack-dead #root > *:not(.hack):not(.term) { filter: hue-rotate(110deg) satu
   .ab-edu { padding: 0 0 20px; border-right: none; border-bottom: 1px solid rgba(201,168,76,0.55); }
   .ab-open { padding: 20px 0 0; }
 }
+/* fit all desktop icons in one column on shorter screens */
+@media (min-width: 769px) and (max-height: 980px) {
+  .desktop-icons { gap: 0; top: 40px; }
+  .desktop-icon { padding-top: 3px; padding-bottom: 3px; }
+  .extras { height: 70px; }
+}
+@media (min-width: 769px) and (max-height: 900px) {
+  .desktop-icon img { width: 42px !important; height: 42px !important; }
+  .zip-icon .zip-svg img { width: 42px; height: 42px; }
+  .extras { height: 64px; }
+}
+@media (min-width: 769px) and (max-height: 780px) {
+  .desktop-icons { top: 34px; }
+  .desktop-icon { padding-top: 1px; padding-bottom: 1px; }
+  .desktop-icon img { width: 34px !important; height: 34px !important; }
+  .zip-icon .zip-svg img { width: 34px; height: 34px; }
+  .desktop-icon .icon-label, .zip-label { font-size: 11px !important; }
+  .extras { height: 54px; }
+}
+.game-icon .icon-label { white-space: nowrap; }
+@media (min-width: 769px) and (max-height: 720px) {
+  .desktop-icons { top: 32px; }
+  .desktop-icon { padding-top: 0; padding-bottom: 0; }
+  .desktop-icon img { width: 30px !important; height: 30px !important; }
+  .zip-icon .zip-svg img { width: 30px; height: 30px; }
+  .extras { height: 48px; }
+}
