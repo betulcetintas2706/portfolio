@@ -173,7 +173,7 @@ export const projects = [
     title: "Gold Miner (FPGA Game)",
     desc: "Minecraft-themed Gold Miner arcade game built fully in hardware in Verilog on the DE1-SoC. 31-state control FSM plus sub-FSMs, five custom RAM modules, pixel-level collision detection, 320×240 VGA graphics, a 45-second HEX timer, PS/2 keyboard controls, LFSR object placement and win/fail audio.",
     tags: ["Verilog", "FPGA", "DE1-SoC", "FSMs", "VGA"],
-    award: "ECE241 Final Project",
+    award: "FPGA Final Project",
     icon: "chip",
   },
   {
