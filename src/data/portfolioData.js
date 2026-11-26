@@ -76,8 +76,8 @@ export const experiences = [
     role: "Software & FinTech Intern",
     date: "Sep 2026 – Present",
     company: "Kavodax · Toronto, ON",
-    desc: "Built an agentic payments prototype in React/Vite where an AI agent parses natural-language payments and a policy engine with 7 configurable rules across 3 currencies executes, escalates to human approval, or blocks them. Tested 7 operations of the Bloquo payments REST API in a reusable Postman workspace built from its OpenAPI spec, and built a mock payment API (~450 ms simulated latency) with 7 edge-case test scenarios using Claude Code.",
-    tags: ["React", "Vite", "AI Agents", "Postman", "OpenAPI", "Claude Code"],
+    desc: "Built an agentic payments prototype in React/Vite where an AI agent parses natural-language payments and a policy engine with 7 configurable rules across 3 currencies executes, escalates to human approval, or blocks them. Tested 7 operations of the Bloquo payments REST API in a reusable Postman workspace built from its OpenAPI spec, and built a mock payment API (~450 ms simulated latency) with 7 edge-case test scenarios.",
+    tags: ["React", "Vite", "AI Agents", "Postman", "OpenAPI"],
   },
   {
     role: "Full Stack Engineer",
@@ -92,6 +92,7 @@ export const experiences = [
     company: "Praevo (Wearable Athlete Injury Prediction) · Toronto, ON",
     desc: "Built the Next.js landing page (praevo.band) with a WebGL ripple background, scroll storytelling and a waitlist with a referral system, plus the SwiftUI iOS app with role-based Coach, Athlete and Clinic views for readiness and injury risk.",
     tags: ["Next.js", "WebGL", "SwiftUI", "iOS"],
+    links: [{ label: "praevo.band", url: "https://praevo.band" }],
   },
   {
     role: "Distributor & Operations Lead",
@@ -120,6 +121,7 @@ export const experiences = [
     company: "SaHera · Montreal, QC (Remote)",
     desc: "Built an XGBoost hot flash detection model on minute-level wrist temperature data with 12 engineered time-series features, then replaced the app's placeholder backend with a FastAPI endpoint returning a probability, 3 risk levels and personalized alerts inside the team's React Native app.",
     tags: ["Python", "XGBoost", "FastAPI", "Time Series"],
+    links: [{ label: "sahera.ca", url: "https://sahera.ca/en" }],
   },
   {
     role: "Full Stack Engineer Intern",
@@ -127,6 +129,7 @@ export const experiences = [
     company: "UNUHR Inc. · Toronto, ON",
     desc: "Built frontend and backend features for a healthcare job-seeking app for health workers, taking features from idea and mockup to working code in a small startup team.",
     tags: ["Full Stack", "Startup"],
+    links: [{ label: "unuhr.com", url: "https://unuhr.com" }],
   },
   {
     role: "Web Developer",
@@ -134,6 +137,7 @@ export const experiences = [
     company: "Re:Pair Genomics Inc. · Vaughan, ON (Remote)",
     desc: "Re-architected the company's WordPress site for improved performance and responsive layouts. Designed and implemented a Products page and inquiry workflow, and resolved frontend rendering bugs while maintaining consistent UI/UX across the site.",
     tags: ["WordPress", "HTML/CSS", "Frontend", "UI/UX"],
+    links: [{ label: "repairgenomics.com", url: "https://repairgenomics.com" }],
   },
   {
     role: "Software Team Member",
@@ -291,7 +295,7 @@ export const skills = {
     },
     {
       title: "// Tools",
-      chips: ["Claude Code", "Postman", "Playwright", "Google ADK", "Xcode", "GitHub", "VS Code", "Linux/Unix CLI", "Bash", "Node-RED", "ModelSim", "Logic Simulation", "Figma", "Lovable"],
+      chips: ["Postman", "Playwright", "Google ADK", "Xcode", "GitHub", "VS Code", "Linux/Unix CLI", "Bash", "Node-RED", "ModelSim", "Logic Simulation", "Figma", "Lovable"],
     },
   ],
 };

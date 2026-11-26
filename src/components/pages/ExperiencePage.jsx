@@ -14,7 +14,7 @@ function parse(exp) {
   if (m) { name = m[1]; note = m[2]; }
   const location = parts.find((p, i) => i > 0 && /,\s*[A-Z]{2}|Remote|Toronto|Montreal|Vaughan/.test(p)) || '';
   const extra = parts.filter((p, i) => i > 0 && p !== location);
-  const sentences = exp.desc.match(/[^.!?]+(?:\.\d+[^.!?]*)*[.!?]+/g)?.map((s) => s.trim()) || [exp.desc];
+  const sentences = exp.desc.split(/(?<=[.!?])\s+(?=[A-Z])/).map((s) => s.trim()).filter(Boolean);
   const [range0, range1] = exp.date.split(/\s+[–-]\s+/);
   return { name, note, location, award: extra.join(' · '), summary: sentences[0], bullets: sentences.slice(1), from: range0, to: range1 || '', current: /present/i.test(exp.date) };
 }
@@ -50,7 +50,10 @@ function Role({ exp }) {
         )}
         <div className="xp-foot">
           <div className="xp-stack">{exp.tags.join(' · ')}</div>
-          {caseId && <button className="xp-link" onClick={() => actions.page(`case-${caseId}`)}>Explore {r.name} ↗</button>}
+          <div className="xp-links">
+            {(exp.links || []).map((l) => <a key={l.url} className="xp-link" href={l.url} target="_blank" rel="noopener noreferrer">{l.label} ↗</a>)}
+            {caseId && <button className="xp-link" onClick={() => actions.page(`case-${caseId}`)}>Explore {r.name} ↗</button>}
+          </div>
         </div>
       </div>
     </article>
