@@ -1286,3 +1286,19 @@ body {
 @keyframes stickerFloat { 0%, 100% { margin-top: 0; } 50% { margin-top: -5px; } }
 @keyframes stickerSwing { 0%, 100% { rotate: -6deg; } 50% { rotate: 6deg; } }
 @media (max-width: 768px) { .stickers-layer { display: none; } }
+
+/* ===== Sticky note ===== */
+.sticky-note {
+  position: fixed; left: 46vw; top: 4.5vh; z-index: 60; width: 200px;
+  background: #fff3a8; color: #4a3a10; padding: 8px 12px 10px;
+  font-family: 'JetBrains Mono', monospace; font-size: 11.5px; line-height: 1.45;
+  box-shadow: 0 8px 18px rgba(0,0,0,0.35); transform: rotate(2deg); border-radius: 2px;
+}
+.sticky-note::after {
+  content: ''; position: absolute; right: 0; bottom: 0; border-width: 0 0 14px 14px; border-style: solid;
+  border-color: transparent transparent rgba(0,0,0,0.12) transparent;
+}
+.sticky-head { display: flex; justify-content: space-between; align-items: center; font-weight: 700; margin-bottom: 4px; }
+.sticky-x { background: none; border: 1px solid rgba(74,58,16,0.4); color: #4a3a10; width: 18px; height: 18px; line-height: 14px; cursor: pointer; font-size: 13px; padding: 0; }
+.sticky-small { margin-top: 4px; opacity: 0.75; }
+@media (max-width: 768px) { .sticky-note { display: none; } }
