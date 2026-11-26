@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { TRACKS } from './widgets/MediaWidget';
 
 const ITEMS = [
@@ -145,9 +146,9 @@ export default function Extras() {
   const close = (id) => setWins((w) => w.filter((x) => x !== id));
 
   const starts = {
-    gallery: { x: Math.round(window.innerWidth * 0.3), y: Math.round(window.innerHeight * 0.18) },
-    music: { x: Math.round(window.innerWidth * 0.38), y: Math.round(window.innerHeight * 0.26) },
-    movies: { x: Math.round(window.innerWidth * 0.46), y: Math.round(window.innerHeight * 0.22) },
+    gallery: { x: Math.round(window.innerWidth * 0.36), y: Math.round(window.innerHeight * 0.14) },
+    music: { x: Math.round(window.innerWidth * 0.44), y: Math.round(window.innerHeight * 0.22) },
+    movies: { x: Math.round(window.innerWidth * 0.52), y: Math.round(window.innerHeight * 0.18) },
   };
 
   return (
@@ -169,7 +170,7 @@ export default function Extras() {
           </button>
         ))}
       </div>
-      {wins.map((id, z) => {
+      {createPortal(wins.map((id, z) => {
         const Body = BODIES[id];
         return (
           <RetroWindow key={id} title={TITLES[id]} z={600 + z} start={starts[id]}
@@ -177,7 +178,7 @@ export default function Extras() {
             <Body />
           </RetroWindow>
         );
-      })}
+      }), document.body)}
     </>
   );
 }

@@ -1,3 +1,4 @@
+import Extras from './Extras';
 const icons = [
   { page: 'home', label: 'Welcome', imgSrc: './f_welcome.png' },
   { page: 'about', label: 'About.txt', imgSrc: './f2.png' },
@@ -28,6 +29,7 @@ export default function DesktopIcons({ activePage, showPage }) {
           <div className="icon-label">{label}</div>
         </div>
       ))}
+      <Extras />
     </div>
   );
 }
