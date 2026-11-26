@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 
 // First-visit mini game in three quick stages that mirror what Betül does:
 //   1. Debug    (software): squash bugs that are stealing real things off the page
@@ -164,6 +164,30 @@ function Villain({ mode, hit, low }) {
   const key = hit ? 'hit' : low && mode !== 'dead' && mode !== 'won' ? 'low' : mode;
   const lines = TAUNTS[key] || [];
   useEffect(() => { setI(0); }, [key]);
+  const bubbleRef = useRef(null);
+  const [shift, setShift] = useState({ x: 0, below: false });
+  // keep the speech bubble fully on screen
+  useLayoutEffect(() => {
+    const el = bubbleRef.current;
+    if (!el) return undefined;
+    const fit = () => {
+      const prev = el.style.getPropertyValue('--dx');
+      el.style.setProperty('--dx', '0px');
+      const r = el.getBoundingClientRect();
+      el.style.setProperty('--dx', prev);
+      const m = 8; let dx = 0;
+      if (r.left < m) dx = m - r.left;
+      else if (r.right > window.innerWidth - m) dx = window.innerWidth - m - r.right;
+      const below = el.classList.contains('hk-bubble-below');
+      const vil = el.parentElement.getBoundingClientRect();
+      const needBelow = below ? vil.top - r.height - 6 < 48 : r.top < 48;
+      setShift((p) => (Math.abs(p.x - dx) > 1 || p.below !== needBelow ? { x: dx, below: needBelow } : p));
+    };
+    fit();
+    const id = setInterval(fit, 300); // the villain moves and sways, so keep checking
+    window.addEventListener('resize', fit);
+    return () => { clearInterval(id); window.removeEventListener('resize', fit); };
+  }, [key, i, mode]);
   useEffect(() => {
     if (lines.length < 2) return undefined;
     const id = setInterval(() => setI((n) => (n + 1) % lines.length), 2600);
@@ -171,7 +195,10 @@ function Villain({ mode, hit, low }) {
   }, [key, lines.length]);
   return (
     <div className={`hk-villain hk-v-${mode}${hit ? ' hk-v-hit' : ''}`} aria-hidden="true">
-      {lines[i] && <div className="hk-bubble" key={`${key}${i}`}>{lines[i]}</div>}
+      {lines[i] && (
+        <div ref={bubbleRef} className={`hk-bubble${shift.below ? ' hk-bubble-below' : ''}`} key={`${key}${i}`}
+          style={{ '--dx': `${shift.x}px` }}>{lines[i]}</div>
+      )}
       <img src="./stickers/pickle-hacker.png" alt="" draggable="false" />
     </div>
   );
