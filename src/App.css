@@ -1570,3 +1570,38 @@ body.simple-mode { overflow: auto; }
 .film-strip { border-radius: 8px; }
 .film-frame { font-family: 'Lora', serif; font-size: 12px; }
 .retro-win { background: #f6eeea; backdrop-filter: none; }
+
+/* ===== Tour ===== */
+.tour { position: fixed; inset: 0; z-index: 3000; }
+.tour-block { position: absolute; inset: 0; }
+.tour-hole {
+  position: fixed; border-radius: 16px; pointer-events: none;
+  box-shadow: 0 0 0 9999px rgba(30, 6, 14, 0.62), 0 0 0 2px var(--gold, #e2c069), 0 0 24px 6px rgba(226,192,105,0.55);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.tour-card {
+  position: fixed; background: #fff3a8; color: #4a3a10; border-radius: 3px; padding: 12px 14px;
+  font-family: 'JetBrains Mono', 'Space Mono', monospace; font-size: 12.5px; line-height: 1.5;
+  box-shadow: 0 12px 28px rgba(0,0,0,0.45); transform: rotate(-1deg);
+  transition: top 0.4s cubic-bezier(0.4, 0, 0.2, 1), left 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.tour-head { display: flex; justify-content: space-between; font-weight: 700; font-size: 13px; }
+.tour-count { opacity: 0.6; font-weight: 400; }
+.tour-card p { margin: 6px 0 8px; }
+.tour-dots { display: flex; gap: 5px; margin-bottom: 10px; }
+.tour-dots i { width: 6px; height: 6px; border-radius: 50%; background: rgba(74,58,16,0.25); }
+.tour-dots i.on { background: #8b2942; width: 16px; border-radius: 3px; }
+.tour-btns { display: flex; justify-content: space-between; align-items: center; gap: 6px; }
+.tour-btns > div { display: flex; gap: 6px; }
+.tour-btns button { font: inherit; font-size: 11.5px; cursor: pointer; border-radius: 999px; padding: 5px 11px; }
+.tour-skip { background: none; border: none; color: #7a6530; text-decoration: underline; padding-left: 0 !important; }
+.tour-back { background: transparent; border: 1px solid rgba(74,58,16,0.45); color: #4a3a10; }
+.tour-next { background: #6b1f35; border: none; color: #fdf6f0; font-weight: 700; }
+.tour-next:hover { background: #8b2942; }
+.tour-wiggle { animation: tourWiggle 0.9s ease-in-out infinite; }
+@keyframes tourWiggle { 0%,100% { rotate: 0deg; } 25% { rotate: -7deg; } 75% { rotate: 7deg; } }
+.tour-start { margin-top: -2px; background: rgba(226,192,105,0.18); border-style: solid; border-color: var(--gold, #c9a84c); }
+.tour-start:hover { background: rgba(226,192,105,0.32); }
+@media (max-width: 768px) { .tour-start, .tour { display: none; } }
+.welcome-top-btns { align-self: stretch; display: flex; justify-content: flex-end; gap: 8px; flex-wrap: wrap; margin: -6px 0 4px; }
+.welcome-top-btns .skip-simple { margin: 0; align-self: auto; }

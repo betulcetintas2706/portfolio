@@ -14,9 +14,14 @@ export default function WelcomePage({ showPage, simple }) {
   return (
     <div className="page active welcome-page">
       {!simple && (
-        <button className="skip-simple" onClick={() => window.dispatchEvent(new Event('go-simple'))}>
-          In a hurry? Skip to simple view →
-        </button>
+        <div className="welcome-top-btns">
+          <button className="skip-simple tour-start" onClick={() => window.dispatchEvent(new Event('start-tour'))}>
+            ✦ New here? Take a quick tour
+          </button>
+          <button className="skip-simple" onClick={() => window.dispatchEvent(new Event('go-simple'))}>
+            In a hurry? Skip to simple view →
+          </button>
+        </div>
       )}
       <div className="framed-photo hero-framed"><img src={personalInfo.photo} alt={`${personalInfo.name} ${personalInfo.lastName}`} /><img className="frame-overlay" src="./frame.png" alt="" /></div>
 
