@@ -16,7 +16,8 @@ import { useEffect, useRef, useState } from 'react';
 
 const W = 320;
 const H = 240;
-const HOOK_Y = 44;
+const HOOK_Y = 52;
+const SKY_H = 63; // our sky + grass art band at the top
 const GOAL = 200;
 const LEVEL_TIME = 45;
 const HOOK_SPEED = [0, 55, 85, 120];   // px/s for levels 1..3
@@ -28,8 +29,8 @@ const TYPE_NAME = { GL: 'large gold', GM: 'medium gold', RL: 'large rock', RM: '
 
 // object RAM: the layout from our board demo (centre x, centre y, type)
 const OBJECTS = [
-  [187, 66, 'RM'], [106, 91, 'RL'], [102, 135, 'GM'], [262, 133, 'GM'], [103, 160, 'RM'],
-  [226, 158, 'RL'], [300, 159, 'GL'], [183, 180, 'GM'], [105, 186, 'RL'], [296, 200, 'RM'], [221, 222, 'GM'],
+  [187, 72, 'RM'], [106, 97, 'RL'], [102, 141, 'GM'], [262, 139, 'GM'], [103, 166, 'RM'],
+  [226, 164, 'RL'], [300, 165, 'GL'], [183, 186, 'GM'], [105, 192, 'RL'], [296, 206, 'RM'], [221, 228, 'GM'],
 ];
 
 export const GOLD_SPEC = {
@@ -159,7 +160,12 @@ export default function GoldMiner({ probe, ctl, active = true }) {
   useEffect(() => {
     const cv = canvasRef.current;
     const ctx = cv.getContext('2d');
+    ctx.setTransform(2, 0, 0, 2, 0, 0); // draw in 320x240 game units on a 640x480 canvas
     ctx.imageSmoothingEnabled = false;
+    const img = (src) => { const i = new Image(); i.src = src; return i; };
+    const skyArt = img('./games/goldminer/sky.png');
+    const titleArt = img('./games/goldminer/title.png');
+    const levelUpArt = img('./games/goldminer/levelup.png');
 
     // background RAM: sky, clouds, grass and the dirt (crimson, like our board's colours)
     const bg = document.createElement('canvas'); bg.width = W; bg.height = H;
@@ -175,8 +181,8 @@ export default function GoldMiner({ probe, ctl, active = true }) {
     });
     b.fillStyle = '#21c44a'; b.fillRect(0, 50, W, 7);
     for (let x = 0; x < W; x += 4) { b.fillStyle = rnd() > 0.5 ? '#178a35' : '#2fe05a'; b.fillRect(x, 50 + Math.floor(rnd() * 5), 4, 2); }
-    const grad = b.createLinearGradient(0, 57, 0, H); grad.addColorStop(0, '#9e2045'); grad.addColorStop(1, '#b9285a');
-    b.fillStyle = grad; b.fillRect(0, 57, W, H - 57);
+    const grad = b.createLinearGradient(0, SKY_H, 0, H); grad.addColorStop(0, '#9e2045'); grad.addColorStop(1, '#b9285a');
+    b.fillStyle = grad; b.fillRect(0, SKY_H, W, H - SKY_H);
 
     const blob = (o, x, y) => {
       const gold = o.type[0] === 'G';
@@ -270,7 +276,12 @@ export default function GoldMiner({ probe, ctl, active = true }) {
       }
 
       // draw
-      if (s.state === 'S_BACKGROUND') {
+      const art = (im) => im.complete && im.naturalWidth > 0;
+      if (s.state === 'S_BACKGROUND' && art(titleArt)) {
+        ctx.drawImage(titleArt, 0, 0, W, H);
+      } else if (s.state === 'S_SUCCESS' && s.level < 3 && art(levelUpArt)) {
+        ctx.drawImage(levelUpArt, 0, 0, W, H);
+      } else if (s.state === 'S_BACKGROUND') {
         page('GOLD MINER', ['press ENTER to start', `grab $${GOAL} of gold in ${LEVEL_TIME} s`, 'DOWN drops the hook'], '#e2c069');
       } else if (s.state === 'S_SUCCESS') {
         page('YOU WIN!', [`MONEY $${s.money}`, s.level < 3 ? `ENTER for level ${s.level + 1}` : 'all 3 levels done!', s.level < 3 ? 'the hook gets faster' : 'ENTER to play again'], '#9be37a');
@@ -278,17 +289,26 @@ export default function GoldMiner({ probe, ctl, active = true }) {
         page("TIME'S UP", [`MONEY $${s.money} / GOAL $${GOAL}`, 'press ENTER to try again'], '#ff8fa3');
       } else {
         ctx.drawImage(bg, 0, 0);
+        const skyOk = art(skyArt);
+        if (skyOk) ctx.drawImage(skyArt, 0, 0, W, SKY_H);
         const shown = s.state === 'S_DRAW_BG' ? [] : s.objs;
         shown.forEach((o) => blob(o, o.x, o.y));
-        drawMiner();
+        if (!skyOk) drawMiner();
         if (s.state !== 'S_DRAW_BG' && s.state !== 'S_DRAW_OBJECTS') {
           if (s.ropeY > HOOK_Y) { ctx.fillStyle = '#111'; ctx.fillRect(Math.round(s.hookX), HOOK_Y, 1, Math.round(s.ropeY - HOOK_Y)); }
           drawHook(Math.round(s.hookX), Math.round(s.ropeY));
           if (s.caught) blob(s.caught, s.caught.x, s.caught.y);
         }
-        text('MONEY $', 6, 10, 14, '#111'); text(String(s.money), 76, 10, 14, '#e0242f');
-        text('GOAL  $', 6, 26, 14, '#111'); text(String(GOAL), 76, 26, 14, '#e0242f');
-        text('LEVEL', W - 20, 30, 14, '#111', 'right'); text(String(s.level), W - 8, 30, 14, '#e0242f', 'right');
+        if (skyOk) {
+          // the labels are part of the sky art; the numbers go after them in red
+          text(String(s.money), 62, 17, 15, '#e0242f');
+          text(String(GOAL), 56, 31, 15, '#e0242f');
+          text(String(s.level), 299, 32, 15, '#e0242f');
+        } else {
+          text('MONEY $', 6, 10, 14, '#111'); text(String(s.money), 76, 10, 14, '#e0242f');
+          text('GOAL  $', 6, 26, 14, '#111'); text(String(GOAL), 76, 26, 14, '#e0242f');
+          text('LEVEL', W - 20, 30, 14, '#111', 'right'); text(String(s.level), W - 8, 30, 14, '#e0242f', 'right');
+        }
       }
 
       const shownTime = Math.ceil(s.time);
@@ -329,7 +349,7 @@ export default function GoldMiner({ probe, ctl, active = true }) {
 
   return (
     <div className="gm">
-      <canvas ref={canvasRef} width={W} height={H} className="gm-canvas" onPointerDown={tap} />
+      <canvas ref={canvasRef} width={W * 2} height={H * 2} className="gm-canvas" onPointerDown={tap} />
       <div className="gm-board">
         <div className="gm-hex" aria-label={`Timer ${timeShown} seconds`}>
           <Hex d={Math.floor(timeShown / 10)} /><Hex d={timeShown % 10} />
