@@ -76,6 +76,7 @@ export const experiences = [
     role: "Software & FinTech Intern",
     date: "Sep 2026 – Present",
     company: "Kavodax · Toronto, ON",
+    links: [{ label: "kavodax.com", url: "https://kavodax.com/" }],
     desc: "Built an agentic payments prototype in React/Vite where an AI agent parses natural-language payments and a policy engine with 7 configurable rules across 3 currencies executes, escalates to human approval, or blocks them. Tested 7 operations of the Bloquo payments REST API in a reusable Postman workspace built from its OpenAPI spec, and built a mock payment API (~450 ms simulated latency) with 7 edge-case test scenarios.",
     tags: ["React", "Vite", "AI Agents", "Postman", "OpenAPI"],
   },
@@ -158,6 +159,7 @@ export const projects = [
     tags: ["React Native", "Expo", "AI", "Health Tech"],
     award: "Harvard HSIL 2026",
     icon: "chat",
+    image: "./meducine/preview.jpg",
   },
   {
     title: "OSIRIS",

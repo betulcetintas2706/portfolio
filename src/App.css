@@ -2726,3 +2726,28 @@ body.hack-dead #root > *:not(.hack):not(.term) { filter: hue-rotate(110deg) satu
 }
 .window.window-wide:has(.page.xp) { background: var(--win-bg); }
 .xp-links { display: flex; gap: 16px; flex-wrap: wrap; } a.xp-link { text-decoration: underline; }
+
+/* ===== Case study: app screens ===== */
+.case-banner.has-logo { background: linear-gradient(135deg, #e4f1ee, #b8d8d3); border-color: #9cc5bf; }
+.case-banner img.case-logo { width: auto; height: 124px; object-fit: contain; border-radius: 28px; box-shadow: 0 12px 26px rgba(14,59,63,0.3); }
+.case-app { display: flex; gap: 16px; align-items: flex-start; }
+.case-phone { margin: 0; flex: 0 0 200px; text-align: center; }
+.case-phone video { width: 200px; aspect-ratio: 1320 / 2868; border-radius: 26px; background: #0e3b3f; border: 6px solid #1f0a12; box-shadow: 0 14px 30px rgba(74,21,37,0.22); display: block; }
+.case-phone figcaption { font-family: 'Space Mono', monospace; font-size: 10px; color: var(--burgundy-500); margin-top: 8px; }
+.case-screens { flex: 1; min-width: 0; display: flex; gap: 10px; overflow-x: auto; scroll-snap-type: x mandatory; padding: 2px 2px 12px; }
+.case-screen { flex: 0 0 168px; scroll-snap-align: start; border: 0; padding: 0; background: none; cursor: zoom-in; text-align: center; }
+.case-screen img { width: 168px; aspect-ratio: 540 / 1110; object-fit: cover; object-position: top; border-radius: 16px; border: 1px solid var(--burgundy-200); display: block; transition: transform 0.15s; }
+.case-screen:hover img { transform: translateY(-3px); }
+.case-screen span { display: block; font-family: 'Space Mono', monospace; font-size: 10px; color: var(--burgundy-700); margin-top: 6px; }
+.case-lightbox { position: fixed; inset: 0; z-index: 2000; background: rgba(31,10,18,0.82); display: flex; align-items: center; justify-content: center; gap: 18px; }
+.case-lightbox figure { margin: 0; text-align: center; }
+.case-lightbox img { max-height: 82vh; max-width: 86vw; border-radius: 22px; display: block; }
+.case-lightbox figcaption { color: #fdf6f0; font-family: 'Space Mono', monospace; font-size: 12px; margin-top: 10px; }
+.case-lb-nav, .case-lb-close { background: rgba(253,246,240,0.14); color: #fdf6f0; border: 1px solid rgba(253,246,240,0.35); border-radius: 50%; width: 44px; height: 44px; font-size: 24px; cursor: pointer; line-height: 1; }
+.case-lb-close { position: absolute; top: 18px; right: 18px; }
+@media (max-width: 640px) {
+  .case-app { flex-direction: column; align-items: center; }
+  .case-screens { width: 100%; }
+  .case-lb-nav { position: absolute; bottom: 24px; }
+  .case-lb-nav:first-child { left: 24px; } .case-lb-nav:nth-child(3) { right: 24px; }
+}

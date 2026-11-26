@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { caseStudies, caseOrder } from '../../data/caseStudies';
 import { projectIconMap } from '../Icons';
 
@@ -5,6 +6,7 @@ export function CaseStudy({ id, onOpen, onBack, compact }) {
   const c = caseStudies[id];
   if (!c) return null;
   const Icon = projectIconMap[c.icon];
+  const [big, setBig] = useState(null);
   const next = caseOrder[(caseOrder.indexOf(id) + 1) % caseOrder.length];
 
   return (
@@ -12,8 +14,9 @@ export function CaseStudy({ id, onOpen, onBack, compact }) {
       {onBack && <button className="case-back" onClick={onBack}>← All projects</button>}
 
       <header className="case-hero">
-        <div className="case-banner">
-          {c.image ? <img src={c.image} alt={c.title} /> : Icon && <Icon />}
+        <div className={`case-banner${c.logo ? ' has-logo' : ''}`}>
+          {c.logo ? <img className="case-logo" src={c.logo} alt={`${c.title} app icon`} />
+            : c.image ? <img src={c.image} alt={c.title} /> : Icon && <Icon />}
         </div>
         <div className="case-kicker">// case study</div>
         <h1 className="case-title">{c.title}</h1>
@@ -50,6 +53,41 @@ export function CaseStudy({ id, onOpen, onBack, compact }) {
           ))}
         </div>
       </section>
+
+      {(c.demo || c.screens) && (
+        <section>
+          <h3>// Inside the app</h3>
+          <div className="case-app">
+            {c.demo && (
+              <figure className="case-phone">
+                <video src={c.demo.src} poster={c.demo.poster} autoPlay muted loop playsInline controls preload="metadata" />
+                <figcaption>Real recording from the iOS build</figcaption>
+              </figure>
+            )}
+            {c.screens && (
+              <div className="case-screens" role="list">
+                {c.screens.map((sc, i) => (
+                  <button key={sc.src} role="listitem" className="case-screen" onClick={() => setBig(i)}>
+                    <img src={sc.src} alt={`${c.title}: ${sc.label}`} loading="lazy" />
+                    <span>{sc.label}</span>
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+          {big !== null && (
+            <div className="case-lightbox" onClick={() => setBig(null)}>
+              <button className="case-lb-nav" onClick={(e) => { e.stopPropagation(); setBig((big - 1 + c.screens.length) % c.screens.length); }} aria-label="Previous screen">‹</button>
+              <figure onClick={(e) => e.stopPropagation()}>
+                <img src={c.screens[big].src} alt={c.screens[big].label} />
+                <figcaption>{c.screens[big].label} · {big + 1} / {c.screens.length}</figcaption>
+              </figure>
+              <button className="case-lb-nav" onClick={(e) => { e.stopPropagation(); setBig((big + 1) % c.screens.length); }} aria-label="Next screen">›</button>
+              <button className="case-lb-close" onClick={() => setBig(null)} aria-label="Close">×</button>
+            </div>
+          )}
+        </section>
+      )}
 
       {c.video && (
         <section>

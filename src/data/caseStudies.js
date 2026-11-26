@@ -8,6 +8,13 @@ export const caseStudies = {
     tagline: 'An AI health literacy app that explains your health in plain words, before it is too late.',
     award: '1st Place · Harvard HSIL 2026 (Toronto Hub)',
     icon: 'chat',
+    logo: './meducine/icon.png',
+    demo: { src: './meducine/demo.mp4', poster: './meducine/demo-poster.jpg' },
+    screens: [
+      ['s01', 'Welcome'], ['s02', 'Sign up'], ['s03', 'Home'], ['s04', 'Learn'], ['s05', 'Community'],
+      ['s06', 'For You quiz'], ['s07', 'Your plan'], ['s08', 'Profile'], ['s09', 'Settings'], ['s10', 'Medical dictionary'],
+      ['s11', 'Specialty'], ['s12', 'Chapter'], ['s13', 'Lesson'], ['s14', 'Quiz'], ['s15', 'Quiz result'],
+    ].map(([f, l]) => ({ src: `./meducine/${f}.jpg`, label: l })),
     meta: [
       { k: 'My role', v: 'Frontend engineer, 1 of 2 engineers' },
       { k: 'Team', v: 'Sehreen Basara (backend), Tami Vasanthakumaran (founder), Sangkavi Kuhan' },
