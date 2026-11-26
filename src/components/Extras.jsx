@@ -72,7 +72,7 @@ const PEOPLE = [
   { src: './gallery/people/people-04.jpg', cap: 'dressed up' },
   { src: './gallery/people/people-05.jpg', cap: 'cognichip day' },
   { src: './gallery/people/people-06.jpg', cap: 'matching moment' },
-  { src: './gallery/people/people-07.jpg', cap: 'dinner date' },
+  { src: './gallery/people/people-07.jpg', cap: 'birthday dinner' },
   { src: './gallery/people/people-08.jpg', cap: 'sunset dinner' },
   { src: './gallery/people/people-09.jpg', cap: 'building with lego' },
   { src: './gallery/people/people-10.jpg', cap: 'museum crew' },
