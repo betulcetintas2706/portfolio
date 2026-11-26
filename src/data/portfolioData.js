@@ -29,7 +29,7 @@ export const about = {
 export const experiences = [
   {
     role: "Software & FinTech Intern",
-    date: "Sep 2026 – Nov 2026",
+    date: "Sep 2026 – Present",
     company: "Kavodax · Toronto, ON",
     desc: "Built an agentic payments prototype in React/Vite where an AI agent parses natural-language payments and a policy engine with 7 configurable rules across 3 currencies executes, escalates to human approval, or blocks them. Tested 7 operations of the Bloquo payments REST API in a reusable Postman workspace built from its OpenAPI spec, and built a mock payment API (~450 ms simulated latency) with 7 edge-case test scenarios using Claude Code.",
     tags: ["React", "Vite", "AI Agents", "Postman", "OpenAPI", "Claude Code"],
@@ -64,7 +64,7 @@ export const experiences = [
   },
   {
     role: "Data Engineering Intern",
-    date: "Jan 2026 – Sep 2026",
+    date: "Jan 2026 – Oct 2026",
     company: "Alephic Labs · San Francisco, CA (Remote)",
     desc: "Architected a centralized monetization data pipeline integrating RevenueCat, GCS, and Looker Studio across 10+ mobile apps. Built automated ETL workflows reducing manual reporting by 80% and improved portfolio-level subscription LTV visibility by 30%.",
     tags: ["GCS", "Google Apps Script", "Looker Studio", "OAuth 2.0", "ETL", "RevenueCat"],
@@ -85,7 +85,7 @@ export const experiences = [
   },
   {
     role: "Web Developer",
-    date: "Feb 2026 – Apr 2026",
+    date: "Feb 2026 – May 2026",
     company: "Re:Pair Genomics Inc. · Vaughan, ON (Remote)",
     desc: "Re-architected the company's WordPress site for improved performance and responsive layouts. Designed and implemented a Products page and inquiry workflow, and resolved frontend rendering bugs while maintaining consistent UI/UX across the site.",
     tags: ["WordPress", "HTML/CSS", "Frontend", "UI/UX"],
@@ -156,7 +156,7 @@ export const projects = [
   },
   {
     title: "Comfy Cakes",
-    desc: "Recreation of the Purble Place Comfy Cakes game on a DE1-SoC FPGA in Verilog for ECE241. I own the game logic and control: FSMs, order generation and checking, scoring, timing and difficulty.",
+    desc: "Recreation of the Purble Place Comfy Cakes game on a DE1-SoC FPGA in Verilog. I own the game logic and control: FSMs, order generation and checking, scoring, timing and difficulty.",
     tags: ["Verilog", "FPGA", "DE1-SoC", "FSMs"],
     award: "🛠 In Progress",
     icon: "chip",
