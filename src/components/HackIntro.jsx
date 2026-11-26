@@ -231,14 +231,118 @@ if (typeof window !== 'undefined') {
 }
 
 function Villain({ mode, hit, low, sound }) {
-  const [i, setI] = useState(0);
+  // what he wants to talk about right now (hit lines are queued, see below)
+  const base = low && mode !== 'dead' && mode !== 'won' ? 'low' : mode;
+  const [say, setSay] = useState(null); // { k, i } of the line being said
   const [typed, setTyped] = useState('');
   const [talking, setTalking] = useState(false);
   const [mouth, setMouth] = useState(0);
-  const key = hit ? 'hit' : low && mode !== 'dead' && mode !== 'won' ? 'low' : mode;
-  const lines = TAUNTS[key] || [];
-  const line = lines[i] || '';
-  useEffect(() => { setI(0); }, [key]);
+  const key = say?.k || base;
+  const line = say ? (TAUNTS[say.k] || [])[say.i] || '' : '';
+  const i = say?.i || 0;
+
+  // speech queue: a line always plays to the end. Clicks, hits and stage
+  // changes wait for him to finish, except the final win/lose lines.
+  const sp = useRef({ busy: false, clip: null, typer: null, timers: [], idx: {}, last: null, pendingHit: false, heard: false });
+  const baseRef = useRef(base); baseRef.current = base;
+  const modeRef = useRef(mode); modeRef.current = mode;
+  const soundRef = useRef(sound); soundRef.current = sound;
+
+  const stopAll = () => {
+    const c = sp.current;
+    clearInterval(c.typer); c.timers.forEach(clearTimeout); c.timers = [];
+    if (c.clip) { c.clip.onended = null; c.clip.pause(); c.clip = null; musicMix(0.2); }
+    c.busy = false;
+  };
+
+  const speakRef = useRef(null);
+  speakRef.current = (forceK, forceI) => {
+    const c = sp.current;
+    if (c.busy) return;
+    let k = forceK;
+    if (!k) {
+      k = c.pendingHit && modeRef.current === 'debug' ? 'hit' : baseRef.current;
+      c.pendingHit = false;
+    }
+    const lines = TAUNTS[k] || [];
+    if (!lines.length) return;
+    // one-line endings are said once
+    if (!forceK && lines.length === 1 && c.last === k) return;
+    const idx = forceI ?? (c.idx[k] || 0);
+    if (forceI == null) c.idx[k] = (idx + 1) % lines.length;
+    c.last = k; c.busy = true; c.silentLine = false;
+    const text = lines[idx];
+    setSay({ k, i: idx }); setTyped(''); setTalking(true);
+
+    const type = (ms) => {
+      let n = 0;
+      const step = Math.max(28, Math.min(80, ms / text.length));
+      clearInterval(c.typer);
+      c.typer = setInterval(() => { n += 1; setTyped(text.slice(0, n)); if (n >= text.length) clearInterval(c.typer); }, step);
+    };
+    const done = () => {
+      c.clip = null; c.busy = false; setTalking(false); musicMix(0.2);
+      // short breath, then the next line (sooner if something is waiting)
+      const wait = c.pendingHit || c.last !== baseRef.current ? 350 : 1100;
+      c.timers.push(setTimeout(() => speakRef.current(), wait));
+    };
+    const silent = () => { c.silentLine = true; type(text.length * 42); c.timers.push(setTimeout(done, text.length * 42 + 500)); };
+
+    if (soundRef.current) {
+      const clip = new Audio(`./voice/${k}-${idx}.mp3?v=betul`);
+      clip.volume = 0.9; c.clip = clip;
+      clip.onended = done;
+      clip.play().then(() => {
+        c.heard = true;
+        window.dispatchEvent(new Event('pickle-heard'));
+        musicMix(0.07);
+        type((clip.duration || text.length * 0.06) * 1000 * 0.85);
+      }).catch(() => { c.clip = null; c.heard = false; silent(); });
+    } else silent();
+  };
+
+  // start talking, and react when the stage changes
+  useEffect(() => {
+    const c = sp.current;
+    if (base === 'dead' || base === 'won') { stopAll(); speakRef.current(base, 0); return; }
+    if (!c.busy) speakRef.current();
+  }, [base]);
+
+  // a hit waits for the current line, then he complains
+  useEffect(() => {
+    if (!hit) return;
+    const c = sp.current;
+    c.pendingHit = true;
+    if (!c.busy) speakRef.current();
+  }, [hit]);
+
+  // first click unlocks audio: say the current line again so it is heard
+  useEffect(() => {
+    const on = () => {
+      const c = sp.current;
+      // only repeat a line that was shown without sound
+      if (c.heard || !soundRef.current || (c.busy && !c.silentLine)) return;
+      const cur = say;
+      stopAll();
+      if (cur) speakRef.current(cur.k, cur.i); else speakRef.current();
+    };
+    window.addEventListener('pickle-audio-ready', on);
+    return () => window.removeEventListener('pickle-audio-ready', on);
+  }, [say]);
+
+  // sound switched off mid-line: stop the voice, keep the text
+  useEffect(() => {
+    const c = sp.current;
+    if (!sound && c.clip) { c.clip.onended = null; c.clip.pause(); c.clip = null; c.timers.push(setTimeout(() => { c.busy = false; setTalking(false); speakRef.current(); }, 600)); }
+  }, [sound]);
+
+  // when the intro closes, let the last line finish instead of cutting it
+  useEffect(() => () => {
+    const c = sp.current;
+    clearInterval(c.typer); c.timers.forEach(clearTimeout); c.timers = [];
+    if (c.clip) c.clip.onended = null;
+  }, []);
+
   const bubbleRef = useRef(null);
   const [shift, setShift] = useState({ x: 0, below: false });
   // keep the speech bubble fully on screen
@@ -263,56 +367,6 @@ function Villain({ mode, hit, low, sound }) {
     window.addEventListener('resize', fit);
     return () => { clearInterval(id); window.removeEventListener('resize', fit); };
   }, [key, i, mode]);
-  useEffect(() => {
-    if (lines.length < 2) return undefined;
-    const id = setInterval(() => setI((n) => (n + 1) % lines.length), 3400);
-    return () => clearInterval(id);
-  }, [key, lines.length]);
-
-  // when sound unlocks (first click), say the current line again so it is heard
-  const [replay, setReplay] = useState(0);
-  useEffect(() => {
-    const on = () => setReplay((r) => r + 1);
-    window.addEventListener('pickle-audio-ready', on);
-    return () => window.removeEventListener('pickle-audio-ready', on);
-  }, []);
-
-  // say the line: plays the recorded voice, types the text in time with it,
-  // and moves the mouth while he talks
-  useEffect(() => {
-    if (!line) return undefined;
-    setTyped(''); setTalking(true);
-    let typer = null; let stopT = null; let clip = null; let cancelled = false;
-    const type = (ms) => {
-      let n = 0;
-      const step = Math.max(28, Math.min(80, ms / line.length));
-      typer = setInterval(() => {
-        n += 1; setTyped(line.slice(0, n));
-        if (n >= line.length) clearInterval(typer);
-      }, step);
-    };
-    const finish = () => { if (!cancelled) setTalking(false); };
-    if (sound) {
-      clip = new Audio(`./voice/${key}-${i}.mp3?v=betul`);
-      clip.volume = 0.9;
-      clip.onended = () => { musicMix(0.2); finish(); };
-      clip.play().then(() => {
-        window.dispatchEvent(new Event('pickle-heard'));
-        musicMix(0.07);
-        const d = (clip.duration || line.length * 0.06) * 1000;
-        type(d * 0.85);
-      }).catch(() => {
-        // browser blocked sound until the first click: just type it
-        type(line.length * 42); stopT = setTimeout(finish, line.length * 42 + 120);
-      });
-    } else {
-      type(line.length * 42); stopT = setTimeout(finish, line.length * 42 + 120);
-    }
-    return () => {
-      cancelled = true; clearInterval(typer); clearTimeout(stopT);
-      if (clip) { clip.onended = null; clip.pause(); musicMix(0.2); }
-    };
-  }, [line, sound, key, i, replay]);
 
   // flap the mouth while talking
   useEffect(() => {
