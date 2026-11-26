@@ -86,7 +86,7 @@ export default function AwardsPage() {
   const judge = pick('Judge');
   const hackathons = [
     { a: pick('Second Place'), title: 'Second place', medal: <Medal n="2" metal={SILVER} /> },
-    { a: pick('Third Place Overall'), title: 'Third place overall', medal: <Medal n="3" metal={BRONZE} />, note: '600+ participants' },
+    { a: pick('Third Place ('), title: 'Third place', medal: <Medal n="3" metal={BRONZE} />, note: '600+ participants' },
     { a: pick('Google Build'), title: 'Google Build with AI winner', medal: <Medal n="★" metal={GOLD} star /> },
     { a: pick('Third Place, ASIC'), title: 'Third place · ASIC', medal: <Medal n="3" metal={BRONZE} /> },
   ];

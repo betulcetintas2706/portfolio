@@ -35,7 +35,7 @@ export const awards = [
   { emoji: "🥇", title: "First Place", year: "2026", where: "Harvard Health Systems Innovation Lab Hackathon, Toronto Hub", project: "Meducine" },
   { emoji: "🎓", title: "HSIL Venture Building Bootcamp (Top 120 Globally)", year: "2026", where: "Harvard Health Systems Innovation Lab", project: "Meducine" },
   { emoji: "🥈", title: "Second Place", year: "2026", where: "Hackville", project: "VYBE" },
-  { emoji: "🥉", title: "Third Place Overall (600+ participants)", year: "2026", where: "Hack Canada", project: "49th" },
+  { emoji: "🥉", title: "Third Place (600+ participants)", year: "2026", where: "Hack Canada", project: "49th" },
   { emoji: "🏅", title: "Google Build with AI Winner", year: "2026", where: "Hack Canada", project: "49th" },
   { emoji: "🥉", title: "Third Place, ASIC", year: "2026", where: "UofT IEEE IC Hackathon", project: "NanoTrade" },
   { emoji: "⚖️", title: "Judge", year: "2026", where: "Youth Impact Challenge Summer Challenge", project: null },
