@@ -2094,7 +2094,7 @@ body.hack-dead #root > *:not(.hack):not(.term) { filter: hue-rotate(110deg) satu
 .hk-bubble-ghost { visibility: hidden; }
 .hk-talking img { animation: hkTalkBob 0.22s ease-in-out infinite alternate; }
 @keyframes hkTalkBob { to { transform: translateY(-2px) rotate(-0.6deg); } }
-.hk-sound { position: absolute; top: 12px; right: 128px; z-index: 3; background: rgba(253,246,240,0.18); color: #fdf6f0; border: 1px solid rgba(253,246,240,0.4); border-radius: 999px; padding: 6px 12px; font-family: 'JetBrains Mono', monospace; font-size: 11px; cursor: pointer; }
+.hk-sound { position: absolute; top: 12px; right: 150px; z-index: 3; background: rgba(253,246,240,0.18); color: #fdf6f0; border: 1px solid rgba(253,246,240,0.4); border-radius: 999px; padding: 6px 12px; font-family: 'JetBrains Mono', monospace; font-size: 11px; cursor: pointer; }
 .hk-sound[aria-pressed="false"] { opacity: 0.6; }
 @media (max-width: 768px) { .hk-sound { top: auto; bottom: 108px; right: 12px; } .hack .hack-skip { left: 38% !important; } }
 
@@ -2302,7 +2302,7 @@ body.hack-dead #root > *:not(.hack):not(.term) { filter: hue-rotate(110deg) satu
 .game-btn.inspect:hover { box-shadow: 0 0 8px rgba(243,210,122,0.45); }
 .simple-mode .retro-win { z-index: 3000 !important; }
 .hk-tap {
-  position: absolute; top: 52px; right: 112px; z-index: 3; pointer-events: none;
+  position: absolute; top: 52px; right: 134px; z-index: 3; pointer-events: none;
   background: #f3d27a; color: #2d0a14; border-radius: 999px; padding: 5px 12px;
   font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 700;
   box-shadow: 0 0 14px rgba(243,210,122,0.6); animation: hkTap 1.2s ease-in-out infinite;
