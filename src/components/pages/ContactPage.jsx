@@ -5,9 +5,28 @@ import { MailIcon, PhoneIcon, LinkedInIcon, MapPinIcon, CodeIcon, StarIcon } fro
 export default function ContactPage() {
   const [form, setForm] = useState({ name: '', email: '', subject: '', message: '' });
   const update = (k) => (e) => setForm({ ...form, [k]: e.target.value });
+  const [pick, setPick] = useState(false);
+  const [err, setErr] = useState('');
+  const [copied, setCopied] = useState(false);
+  const subject = form.subject || 'Hello from your portfolio';
+  const body = `${form.message}\n\nFrom: ${form.name}${form.email ? ` (${form.email})` : ''}`;
+  const enc = encodeURIComponent;
   const send = () => {
-    const body = `${form.message}\n\nFrom: ${form.name} (${form.email})`;
-    window.location.href = `mailto:${contact.email}?subject=${encodeURIComponent(form.subject || 'Hello from your portfolio')}&body=${encodeURIComponent(body)}`;
+    if (!form.message.trim()) { setErr('Write a short message first 🙂'); return; }
+    setErr(''); setPick(true);
+  };
+  const links = {
+    gmail: `https://mail.google.com/mail/?view=cm&fs=1&to=${enc(contact.email)}&su=${enc(subject)}&body=${enc(body)}`,
+    outlook: `https://outlook.office.com/mail/deeplink/compose?to=${enc(contact.email)}&subject=${enc(subject)}&body=${enc(body)}`,
+    app: `mailto:${contact.email}?subject=${enc(subject)}&body=${enc(body)}`,
+  };
+  const copy = async () => {
+    const text = `To: ${contact.email}\nSubject: ${subject}\n\n${body}`;
+    try { await navigator.clipboard.writeText(text); } catch {
+      const t = document.createElement('textarea'); t.value = text; document.body.appendChild(t); t.select();
+      document.execCommand('copy'); t.remove();
+    }
+    setCopied(true); setTimeout(() => setCopied(false), 2500);
   };
   return (
     <div className="page active">
@@ -79,7 +98,22 @@ export default function ContactPage() {
           <label className="form-label">Message</label>
           <textarea className="form-textarea" placeholder="Tell me about your project or opportunity..." value={form.message} onChange={update('message')} />
         </div>
-        <button className="form-submit" onClick={send}>Send Message ✦</button>
+        {err && <div className="send-err">{err}</div>}
+        {!pick ? (
+          <button className="form-submit" onClick={send}>Send Message ✦</button>
+        ) : (
+          <div className="send-pick">
+            <div className="send-pick-title">How do you want to send it?</div>
+            <div className="send-pick-row">
+              <a className="send-opt" href={links.gmail} target="_blank" rel="noreferrer">Gmail</a>
+              <a className="send-opt" href={links.outlook} target="_blank" rel="noreferrer">Outlook</a>
+              <a className="send-opt" href={links.app}>Mail app</a>
+              <button className="send-opt" onClick={copy}>{copied ? 'Copied ✓' : 'Copy message'}</button>
+            </div>
+            <div className="send-pick-note">Your message is already filled in. Or email me at <b>{contact.email}</b></div>
+            <button className="send-back" onClick={() => setPick(false)}>← edit message</button>
+          </div>
+        )}
       </div>
     </div>
   );
