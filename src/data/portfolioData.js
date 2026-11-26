@@ -12,7 +12,7 @@ export const personalInfo = {
   photo: "./headshot-2026.jpg",
   github: "https://github.com/betulcetintas2706",
   devpost: "https://devpost.com/betulcetintas2706",
-  resume: "./BetulCetintas-Resume.pdf",
+  resume: "./BetulCetintas-Resume.pdf?v=2029",
   headline: "I build where hardware, AI and people meet: from 80 ns ASIC chips to iOS apps real people use.",
   status: [
     "Software, AI and hardware engineer in training",

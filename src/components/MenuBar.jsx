@@ -47,7 +47,7 @@ export default function MenuBar({ showPage, onSimple }) {
       </div>
       <div className="menubar-right">
         <button className="simple-toggle" onClick={onSimple} title="A plain, scrollable version of this site">Simple view</button>
-        <a href="./BetulCetintas-Resume.pdf" target="_blank" rel="noopener noreferrer">Résumé</a>
+        <a href="./BetulCetintas-Resume.pdf?v=2029" target="_blank" rel="noopener noreferrer">Résumé</a>
         <a href="https://github.com/betulcetintas2706" target="_blank" rel="noopener noreferrer">GitHub</a>
         <a href="https://devpost.com/betulcetintas2706" target="_blank" rel="noopener noreferrer">Devpost</a>
         <a href="https://www.linkedin.com/in/betul-cetintas/" target="_blank" rel="noopener noreferrer">LinkedIn</a>

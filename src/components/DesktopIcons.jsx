@@ -6,7 +6,7 @@ const icons = [
   { page: 'skills', label: 'Skills', imgSrc: './f5.png' },
   { page: 'awards', label: 'Awards', imgSrc: './f1.png' },
   { page: 'contact', label: 'Contact', imgSrc: './f_contact.png' },
-  { href: './BetulCetintas-Resume.pdf', page: 'resume', label: 'Resume.pdf', imgSrc: './f6.png' },
+  { href: './BetulCetintas-Resume.pdf?v=2029', page: 'resume', label: 'Resume.pdf', imgSrc: './f6.png' },
 ];
 
 export default function DesktopIcons({ activePage, showPage }) {
