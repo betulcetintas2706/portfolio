@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { personalInfo, about, experiences, projects, awards, skills, contact } from '../data/portfolioData';
 import { caseStudies, caseForProject } from '../data/caseStudies';
+import { actions, GAME_IDS, GAME_NAMES, TRACES, traceKey } from '../lib/actions';
 
 const PROMPT = 'guest@betul ~ %';
 
@@ -17,6 +18,10 @@ const COMMANDS = [
   ['cat resume.txt', 'open my résumé'],
   ['contact', 'how to reach me'],
   ['github / linkedin / devpost', 'open my profiles'],
+  ['play <game>', 'play goldminer or cakes'],
+  ['inspect <game>', 'see the state machine while you play'],
+  ['trace <project>', 'follow the data path: iris, nanotrade, goldminer'],
+  ['search <words>', 'open the search launcher (or press ⌘K)'],
   ['tour', 'take the desktop tour'],
   ['hack', 'replay the save-the-site game'],
   ['ls', 'list files'],
@@ -116,6 +121,32 @@ export default function Terminal({ onClose, showPage }) {
       say('Merhaba! I grew up in Turkey, lived in Iraq, then moved to Canada at 13.', 'accent');
     } else if (lc === 'github' || lc === 'linkedin' || lc === 'devpost') {
       say(`Opening ${lc}...`, 'accent'); openUrl(contact[`${lc}Url`]);
+    } else if (lc === 'play' || lc === 'inspect' || lc === 'games') {
+      say('Games:', 'accent');
+      Object.entries(GAME_NAMES).forEach(([id, n]) => say(`  ${id.padEnd(12)} ${n}`));
+      say("Try 'play goldminer' or 'inspect cakes'", 'dim');
+    } else if (lc.startsWith('play ') || lc.startsWith('inspect ')) {
+      const [verb, ...rest] = lc.split(/\s+/);
+      const id = GAME_IDS[slug(rest.join(''))];
+      if (!id) say(`No game called '${rest.join(' ')}'. Try goldminer or cakes.`, 'err');
+      else if (verb === 'play') { say(`Starting ${GAME_NAMES[id]}...`, 'accent'); actions.play(id); }
+      else { say(`Opening ${GAME_NAMES[id]} with the inspector...`, 'accent'); say('Watch the state light up as you play. Pause and Step are on the panel.', 'dim'); actions.inspect(id); }
+    } else if (lc === 'trace' || lc.startsWith('trace ')) {
+      const key = traceKey(lc.slice(6));
+      if (!key) {
+        say(`Usage: trace <${Object.keys(TRACES).join(' | ')}>`, lc === 'trace' ? 'dim' : 'err');
+      } else {
+        const t = TRACES[key];
+        say(`tracing ${t.title}...`, 'accent');
+        setLines((l) => [...l, ...out]);
+        t.hops.forEach(([stage, what], n) => {
+          setTimeout(() => setLines((l) => [...l, { s: `  ${String(n + 1).padStart(2)}  ${stage.padEnd(10)} ${what}`, t: n === t.hops.length - 1 ? 'accent' : '' }]), 260 * (n + 1));
+        });
+        setTimeout(() => setLines((l) => [...l, { s: `done. ${key === 'goldminer' ? "try 'inspect goldminer'" : `try 'open ${key}'`}`, t: 'dim' }]), 260 * (t.hops.length + 1));
+        return;
+      }
+    } else if (lc === 'search' || lc.startsWith('search ') || lc.startsWith('find ')) {
+      say('Opening search...', 'accent'); actions.search(cmd.split(/\s+/).slice(1).join(' '));
     } else if (lc === 'tour') {
       say('Starting the tour...', 'accent'); onClose(); window.dispatchEvent(new Event('start-tour'));
     } else if (lc === 'hack' || lc === 'virus') {
@@ -143,6 +174,7 @@ export default function Terminal({ onClose, showPage }) {
   };
 
   const names = ['help', 'whoami', 'about', 'projects', 'experience', 'awards', 'skills', 'contact', 'resume', 'cat resume.txt', 'github', 'linkedin', 'devpost', 'tour', 'clear', 'exit',
+    'play goldminer', 'play cakes', 'inspect goldminer', 'inspect cakes', 'search ', ...Object.keys(TRACES).map((k) => `trace ${k}`),
     ...projects.map((p) => `open ${slug(p.title)}`)];
 
   const onKey = (e) => {

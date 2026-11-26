@@ -11,6 +11,7 @@ import Tour from './components/Tour';
 import Terminal from './components/Terminal';
 import MobileHome from './components/MobileHome';
 import HackIntro, { hasSeenIntro } from './components/HackIntro';
+import Launcher from './components/Launcher';
 
 function startSimple() {
   try {
@@ -26,6 +27,7 @@ export default function App() {
   const [simple, setSimple] = useState(startSimple);
   const [touring, setTouring] = useState(false);
   const [term, setTerm] = useState(false);
+  const [launch, setLaunch] = useState(null); // null = closed, string = starting query
   const [hack, setHack] = useState(() => !hasSeenIntro() && !startSimple());
   const windowBodyRef = useRef(null);
 
@@ -63,6 +65,20 @@ export default function App() {
     return () => window.removeEventListener('go-simple', go);
   }, []);
 
+  // ⌘K / Ctrl+K search and command launcher
+  useEffect(() => {
+    const open = (e) => setLaunch(typeof e.detail === 'string' ? e.detail : '');
+    const key = (e) => {
+      if ((e.metaKey || e.ctrlKey) && (e.key === 'k' || e.key === 'K')) {
+        e.preventDefault();
+        setLaunch((l) => (l === null ? '' : null));
+      }
+    };
+    window.addEventListener('open-launcher', open);
+    window.addEventListener('keydown', key);
+    return () => { window.removeEventListener('open-launcher', open); window.removeEventListener('keydown', key); };
+  }, []);
+
   const showPage = (name) => {
     setActivePage(name);
     setMinimized(false);
@@ -70,6 +86,12 @@ export default function App() {
       windowBodyRef.current.scrollTop = 0;
     }
   };
+
+  useEffect(() => {
+    const go = (e) => showPage(e.detail);
+    window.addEventListener('show-page', go);
+    return () => window.removeEventListener('show-page', go);
+  });
 
   if (simple) return <SimpleView onDesktop={() => setSimple(false)} />;
 
@@ -94,6 +116,7 @@ export default function App() {
       />
       <Dock activePage={activePage} showPage={showPage} />
       {hack && <HackIntro onDone={() => { setHack(false); setMinimized(false); }} />}
+      {launch !== null && <Launcher initial={launch} onClose={() => setLaunch(null)} />}
       {term && <Terminal onClose={() => setTerm(false)} showPage={showPage} />}
       {touring && (
         <Tour

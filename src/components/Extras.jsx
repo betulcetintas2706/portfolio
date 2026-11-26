@@ -1,8 +1,9 @@
 import { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { TRACKS } from './widgets/MediaWidget';
-import GoldMiner from './games/GoldMiner';
-import ComfyCakes from './games/ComfyCakes';
+import GoldMiner, { GOLD_SPEC } from './games/GoldMiner';
+import ComfyCakes, { CAKE_SPEC } from './games/ComfyCakes';
+import Inspector from './games/Inspector';
 
 const ITEMS = [
   { id: 'gallery', label: 'Gallery', img: './fun/Gallery.png' },
@@ -23,6 +24,16 @@ const MOVIES = [];
 
 function RetroWindow({ title, onClose, z, onFocus, start, children, width }) {
   const [pos, setPos] = useState(start);
+  // keep a window that just got wider on screen
+  useEffect(() => {
+    if (!width) return;
+    setPos((p) => {
+      const maxX = Math.max(16, window.innerWidth - Math.min(width, window.innerWidth - 32) - 16);
+      const big = width > 900;
+      const next = { x: Math.min(p.x, maxX), y: big ? Math.min(p.y, 44) : p.y };
+      return next.x !== p.x || next.y !== p.y ? next : p;
+    });
+  }, [width]);
   const drag = useRef(null);
   const down = (e) => {
     if (e.target.closest('button')) return;
@@ -124,17 +135,46 @@ function Movies() {
   );
 }
 
-const BODIES = { gallery: Gallery, music: Music, movies: Movies, goldminer: GoldMiner, cakes: ComfyCakes };
+const GAMES = { goldminer: { Game: GoldMiner, spec: GOLD_SPEC }, cakes: { Game: ComfyCakes, spec: CAKE_SPEC } };
+
+// Play · See how it works
+function GameShell({ id, view, setView }) {
+  const probe = useRef(null);
+  const ctl = useRef({ paused: false, slow: false, step: 0 });
+  const { Game, spec } = GAMES[id];
+  const inspect = view === 'inspect';
+  return (
+    <div className={`gshell${inspect ? ' inspecting' : ''}`}>
+      <div className="gtabs" role="tablist" aria-label="View">
+        <button role="tab" aria-selected={!inspect} className={!inspect ? 'on' : ''} onClick={() => setView('play')}>Play</button>
+        <span aria-hidden="true">·</span>
+        <button role="tab" aria-selected={inspect} className={inspect ? 'on' : ''} onClick={() => setView('inspect')}>See how it works</button>
+      </div>
+      <div className="gshell-row">
+        <div className="gshell-game"><Game probe={probe} ctl={ctl} /></div>
+        {inspect && <Inspector spec={spec} probe={probe} ctl={ctl} />}
+      </div>
+    </div>
+  );
+}
+
+const BODIES = { gallery: Gallery, music: Music, movies: Movies };
 const WIDTHS = { goldminer: 680, cakes: 600 };
+const INSPECT_WIDTHS = { goldminer: 1010, cakes: 1010 };
 const TITLES = { gallery: 'Gallery', music: 'Music', movies: 'Movies', goldminer: 'Gold Miner', cakes: 'Comfy Cakes' };
 
 export default function Extras() {
   const [open, setOpen] = useState(false);
   const [wins, setWins] = useState([]); // ids in z order
+  const [views, setViews] = useState({}); // game id -> 'play' | 'inspect'
   const [sparks, setSparks] = useState(0);
 
   useEffect(() => {
-    const onOpen = (e) => setWins((w) => [...w.filter((x) => x !== e.detail), e.detail]);
+    const onOpen = (e) => {
+      const d = typeof e.detail === 'string' ? { id: e.detail } : e.detail;
+      if (d.view) setViews((v) => ({ ...v, [d.id]: d.view }));
+      setWins((w) => [...w.filter((x) => x !== d.id), d.id]);
+    };
     window.addEventListener('open-extra', onOpen);
     return () => window.removeEventListener('open-extra', onOpen);
   }, []);
@@ -172,10 +212,13 @@ export default function Extras() {
       </div>
       {createPortal(wins.map((id, z) => {
         const Body = BODIES[id];
+        const view = views[id] || 'play';
+        const game = !!GAMES[id];
+        const width = game && view === 'inspect' ? INSPECT_WIDTHS[id] : WIDTHS[id];
         return (
-          <RetroWindow key={id} title={TITLES[id]} z={600 + z} start={starts[id]} width={WIDTHS[id]}
+          <RetroWindow key={id} title={game && view === 'inspect' ? `${TITLES[id]} · inspector` : TITLES[id]} z={600 + z} start={starts[id]} width={width}
             onClose={() => close(id)} onFocus={() => launch(id)}>
-            <Body />
+            {game ? <GameShell id={id} view={view} setView={(v) => setViews((s) => ({ ...s, [id]: v }))} /> : <Body />}
           </RetroWindow>
         );
       }), document.body)}

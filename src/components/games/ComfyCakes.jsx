@@ -104,39 +104,132 @@ export function Cake({ cake, size = 200 }) {
   );
 }
 
-export default function ComfyCakes() {
+// State diagram for the inspector (browser version of the game logic).
+export const CAKE_SPEC = {
+  name: 'ComfyCakes',
+  view: '380 246',
+  stepHint: 'Advance the game clock by 0.5 seconds',
+  states: [
+    { id: 'NEW_ORDER', label: 'NEW ORDER', x: 45, y: 50 },
+    { id: 'BUILD', label: 'BUILD', x: 190, y: 50 },
+    { id: 'BAKE', label: 'BAKE', x: 335, y: 50 },
+    { id: 'CHECK', label: 'CHECK', x: 335, y: 135 },
+    { id: 'PERFECT', label: 'PERFECT', x: 190, y: 135 },
+    { id: 'MISS', label: 'MISS', x: 190, y: 220 },
+  ],
+  edges: [
+    { from: 'NEW_ORDER', to: 'BUILD', label: 'load order' },
+    { from: 'BUILD', to: 'BUILD', d: 'M176,37 C170,8 210,8 204,37', label: 'SW change', lx: 190, ly: 12 },
+    { from: 'BUILD', to: 'BAKE', label: 'KEY0 / t=0' },
+    { from: 'BAKE', to: 'CHECK', label: 'oven done', lx: 352, ly: 96 },
+    { from: 'CHECK', to: 'PERFECT', label: 'match=11111', lx: 262, ly: 152 },
+    { from: 'CHECK', to: 'MISS', label: 'else', lx: 280, ly: 186 },
+    { from: 'PERFECT', to: 'NEW_ORDER', label: 'next', lx: 112, ly: 100 },
+    { from: 'MISS', to: 'NEW_ORDER', d: 'M153,220 C60,222 40,150 45,65', label: 'next', lx: 70, ly: 196 },
+  ],
+  note: 'This panel shows the browser recreation. On the DE1-SoC the same logic is written in Verilog: FSMs, order generation and checking, scoring and timing, with switches and keys as inputs.',
+  board: null,
+};
+
+// field encodings used for the register view
+const ENC = {
+  shape: { bits: 2, list: OPTIONS.shape.map((o) => o.id) },
+  sponge: { bits: 2, list: OPTIONS.sponge.map((o) => o.id) },
+  layers: { bits: 2, list: OPTIONS.layers.map((o) => o.id) },
+  frosting: { bits: 2, list: OPTIONS.frosting.map((o) => o.id) },
+  topping: { bits: 3, list: OPTIONS.topping.map((o) => o.id) },
+};
+const bin = (n, w) => n.toString(2).padStart(w, '0');
+const code = (k, id) => bin(ENC[k].list.indexOf(id), ENC[k].bits);
+const encode = (c) => KEYS.map((k) => code(k, c[k])).join(' ');
+
+export default function ComfyCakes({ probe, ctl }) {
   const [order, setOrder] = useState(newOrder);
   const [cake, setCake] = useState(blank);
-  const [phase, setPhase] = useState('build'); // build | baking | result
+  const [phase, setPhase] = useState('build'); // neworder | build | baking | checking | result
   const [result, setResult] = useState(null);
   const [score, setScore] = useState(0);
   const [streak, setStreak] = useState(0);
   const [time, setTime] = useState(ORDER_TIME);
-  const timer = useRef(null);
 
-  useEffect(() => {
-    if (phase !== 'build') return undefined;
-    timer.current = setInterval(() => setTime((t) => Math.max(0, t - 1)), 1000);
-    return () => clearInterval(timer.current);
-  }, [phase, order]);
+  // one game clock drives everything, so the inspector can pause, slow and step it
+  const eng = useRef({ phase: 'build', left: ORDER_TIME, wait: 0, swT: 0, swKey: null, keyT: 0, st: 'BUILD', edge: null });
+  const live = useRef({});
+  live.current = { order, cake, time, score, streak, result };
 
-  const bake = () => {
-    clearInterval(timer.current);
-    setPhase('baking');
-    setTimeout(() => {
-      const wrong = KEYS.filter((k) => order[k] !== cake[k]);
-      const perfect = wrong.length === 0;
-      const pts = perfect ? 100 + time * 5 : Math.max(0, (KEYS.length - wrong.length) * 10);
-      setScore((s) => s + pts);
-      setStreak((s) => (perfect ? s + 1 : 0));
-      setResult({ wrong, perfect, pts });
-      setPhase('result');
-    }, 1600);
+  const go = (ph, wait = 0) => { eng.current.phase = ph; eng.current.wait = wait; setPhase(ph); };
+
+  const finishCheck = () => {
+    const { order: o, cake: c } = live.current;
+    const wrong = KEYS.filter((k) => o[k] !== c[k]);
+    const perfect = wrong.length === 0;
+    const t = Math.ceil(eng.current.left);
+    const pts = perfect ? 100 + t * 5 : Math.max(0, (KEYS.length - wrong.length) * 10);
+    setScore((x) => x + pts);
+    setStreak((x) => (perfect ? x + 1 : 0));
+    setResult({ wrong, perfect, pts, t });
+    go('result');
   };
 
-  useEffect(() => { if (phase === 'build' && time === 0) bake(); });
+  const advance = (dt) => {
+    const e = eng.current;
+    if (e.phase === 'build') {
+      e.left = Math.max(0, e.left - dt);
+      setTime(Math.ceil(e.left));
+      if (e.left <= 0) go('baking', 1.6);
+    } else if (e.phase === 'baking') {
+      e.wait -= dt; if (e.wait <= 0) go('checking', 0.5);
+    } else if (e.phase === 'checking') {
+      e.wait -= dt; if (e.wait <= 0) finishCheck();
+    } else if (e.phase === 'neworder') {
+      e.wait -= dt; if (e.wait <= 0) go('build');
+    }
+  };
 
-  const next = () => { setOrder(newOrder()); setCake(blank()); setResult(null); setTime(ORDER_TIME); setPhase('build'); };
+  const tick = useRef(null);
+  tick.current = () => {
+    const c = ctl?.current || {};
+    if (c.paused) { if (c.step) { c.step -= 1; advance(0.5); } }
+    else advance(c.slow ? 0.025 : 0.1);
+    report();
+  };
+  useEffect(() => {
+    const id = setInterval(() => tick.current(), 100);
+    return () => clearInterval(id);
+  }, []);
+
+  const bake = () => { eng.current.keyT = performance.now(); if (eng.current.phase === 'build') go('baking', 1.6); };
+  const choose = (k, id) => { eng.current.swT = performance.now(); eng.current.swKey = k; setCake({ ...cake, [k]: id }); };
+
+  const report = () => {
+    if (!probe) return;
+    const e = eng.current;
+    const { order: o, cake: c, score: sc, streak: sk, result: r } = live.current;
+    const st = { neworder: 'NEW_ORDER', build: 'BUILD', baking: 'BAKE', checking: 'CHECK', result: r?.perfect ? 'PERFECT' : 'MISS' }[e.phase];
+    const nowMs = performance.now();
+    const swLit = nowMs - e.swT < 260;
+    if (st !== e.st) { e.edge = `${e.st}>${st}`; e.st = st; }
+    else if (st === 'BUILD' && swLit) e.edge = 'BUILD>BUILD';
+    probe.current = {
+      state: st,
+      edge: e.edge,
+      inputs: [
+        ...KEYS.map((k) => ({ id: k, kind: 'switch', label: k, bits: code(k, c[k]), on: swLit && e.swKey === k, title: `${TITLES[k]} switches` })),
+        { id: 'key0', kind: 'key', label: 'KEY0 bake', on: nowMs - e.keyT < 260, title: 'push button that starts baking' },
+        { id: 'tz', kind: 'sig', label: 't_zero', on: e.left <= 0, title: 'order timer ran out' },
+      ],
+      regs: [
+        { name: 'order_reg', bits: encode(o), wide: true },
+        { name: 'cake_reg', bits: encode(c), wide: true },
+        { name: 'match', bits: KEYS.map((k) => (o[k] === c[k] ? '1' : '0')).join(''), wide: true },
+        { name: 'timer', value: `${Math.ceil(e.left)}s` },
+        { name: 'score', value: sc },
+        { name: 'streak', value: sk },
+      ],
+    };
+  };
+
+  const next = () => { setOrder(newOrder()); setCake(blank()); setResult(null); setTime(ORDER_TIME); eng.current.left = ORDER_TIME; go('neworder', 0.6); };
   const label = (k, id) => {
     const o = opt(k, id);
     if (k === 'layers') return `${id} layer${id > 1 ? 's' : ''}`;
@@ -162,14 +255,16 @@ export default function ComfyCakes() {
       </div>
 
       <div className="cc-stage">
-        <div className={`cc-cake ${phase === 'baking' ? 'cc-baking' : ''}`}>
+        <div className={`cc-cake ${phase === 'baking' || phase === 'checking' ? 'cc-baking' : ''}`}>
           <Cake cake={cake} size={210} />
         </div>
         {phase === 'baking' && <div className="cc-oven">baking...</div>}
+        {phase === 'checking' && <div className="cc-oven">checking the order...</div>}
+        {phase === 'neworder' && <div className="cc-oven">next customer...</div>}
         {phase === 'result' && (
           <div className={`cc-result ${result.perfect ? 'ok' : 'meh'}`}>
             <b>{result.perfect ? 'Perfect cake!' : `Almost! ${KEYS.length - result.wrong.length}/5 right`}</b>
-            <span>+{result.pts} points{result.perfect && time > 0 ? ` (time bonus ${time * 5})` : ''}</span>
+            <span>+{result.pts} points{result.perfect && result.t > 0 ? ` (time bonus ${result.t * 5})` : ''}</span>
             <button onClick={next}>Next order →</button>
           </div>
         )}
@@ -181,7 +276,7 @@ export default function ComfyCakes() {
             <span className="cc-row-title">{TITLES[k]}</span>
             <div className="cc-opts">
               {OPTIONS[k].map((o) => (
-                <button key={o.id} className={`cc-opt${cake[k] === o.id ? ' on' : ''}`} onClick={() => setCake({ ...cake, [k]: o.id })}
+                <button key={o.id} className={`cc-opt${cake[k] === o.id ? ' on' : ''}`} onClick={() => choose(k, o.id)}
                   style={o.c ? { '--sw': o.c } : undefined} disabled={phase !== 'build'}>
                   {o.c && <i className="cc-swatch" />}{o.label}
                 </button>

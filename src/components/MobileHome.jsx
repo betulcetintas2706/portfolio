@@ -70,6 +70,10 @@ export default function MobileHome({ showPage, onSimple }) {
           <img className="m-widget-cat" src="./stickers/cat-loaf.png" alt="" />
         </section>
 
+        <button className="m-search" onClick={() => window.dispatchEvent(new CustomEvent('open-launcher', { detail: '' }))}>
+          <span aria-hidden="true">⌕</span> Search projects, skills, demos…
+        </button>
+
         <div className="m-grid">
           {APPS.map((a) => <App key={a.label} app={a} />)}
         </div>

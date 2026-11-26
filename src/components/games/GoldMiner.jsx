@@ -20,11 +20,13 @@ const KINDS = {
 // 16-bit LFSR, like the hardware version used for random placement.
 function makeLfsr(seed) {
   let s = seed & 0xffff || 0xace1;
-  return () => {
+  const next = () => {
     const bit = ((s >> 0) ^ (s >> 2) ^ (s >> 3) ^ (s >> 5)) & 1;
     s = (s >> 1) | (bit << 15);
     return s / 0xffff;
   };
+  next.reg = () => s;
+  return next;
 }
 
 function makeLevel(level) {
@@ -50,6 +52,7 @@ function makeLevel(level) {
     }
   });
   return {
+    lfsr: rnd.reg(),
     level,
     goal: 300 + (level - 1) * 350,
     time: LEVEL_TIME,
@@ -76,7 +79,50 @@ function tune(ctxRef, notes) {
   notes.forEach(([f, d], i) => setTimeout(() => beep(ctxRef, f, d, 'square', 0.05), i * 130));
 }
 
-export default function GoldMiner() {
+// State diagram for the inspector. This is the browser version's state
+// machine; the FPGA build has a 31-state control FSM with sub-FSMs.
+export const GOLD_SPEC = {
+  name: 'GoldMiner',
+  view: '360 252',
+  stepHint: 'Advance the game by 0.1 seconds',
+  groups: [{ x: 8, y: 40, w: 252, h: 206, label: 'PLAY · 45 s timer' }],
+  states: [
+    { id: 'IDLE', label: 'IDLE', x: 70, y: 16 },
+    { id: 'SWING', label: 'SWING', x: 70, y: 76 },
+    { id: 'EXTEND', label: 'EXTEND', x: 196, y: 76 },
+    { id: 'RETRACT', label: 'RETRACT', x: 70, y: 150 },
+    { id: 'REEL', label: 'REEL IN', x: 196, y: 150 },
+    { id: 'SCORE', label: 'ADD SCORE', x: 196, y: 220 },
+    { id: 'WIN', label: 'LEVEL CLEAR', x: 314, y: 100 },
+    { id: 'GAME_OVER', label: 'GAME OVER', x: 314, y: 196 },
+  ],
+  edges: [
+    { from: 'IDLE', to: 'SWING', label: 'start', lx: 94, ly: 39 },
+    { from: 'SWING', to: 'EXTEND', label: 'drop' },
+    { from: 'EXTEND', to: 'REEL', label: 'hit', lx: 212, ly: 116 },
+    { from: 'EXTEND', to: 'RETRACT', label: 'miss', lx: 140, ly: 110 },
+    { from: 'RETRACT', to: 'SWING', label: 'at top', lx: 96, ly: 116 },
+    { from: 'REEL', to: 'SCORE', label: 'at top', lx: 222, ly: 188 },
+    { from: 'SCORE', to: 'SWING', d: 'M159,220 C40,236 10,120 33,82', label: '+value', lx: 54, ly: 214 },
+    { from: 'PLAY', to: 'WIN', d: 'M260,122 L278,108' },
+    { from: 'PLAY', to: 'GAME_OVER', d: 'M260,170 L278,186' },
+  ],
+  captions: [{ x: 314, y: 74, text: 't=0, score ≥ goal' }, { x: 314, y: 126, text: '↺ next level' }, { x: 314, y: 170, text: 't=0, score < goal' }, { x: 314, y: 222, text: '↺ retry' }],
+  note: 'This panel shows the browser recreation. The original runs in Verilog on a DE1-SoC FPGA with a 31-state control FSM, five RAM modules, a HEX timer and PS/2 keyboard input.',
+  board: null,
+};
+
+const STATE_OF = (s) => {
+  if (s.screen === 'title') return 'IDLE';
+  if (s.screen === 'win') return 'WIN';
+  if (s.screen === 'over') return 'GAME_OVER';
+  if (s.scoreT > 0) return 'SCORE';
+  if (s.hook === 'swing') return 'SWING';
+  if (s.hook === 'extend') return 'EXTEND';
+  return s.caught ? 'REEL' : 'RETRACT';
+};
+
+export default function GoldMiner({ probe, ctl }) {
   const canvasRef = useRef(null);
   const audioRef = useRef(null);
   const [muted, setMuted] = useState(false);
@@ -85,7 +131,8 @@ export default function GoldMiner() {
   const g = useRef({
     screen: 'title', // title | play | win | over
     lvl: null, score: 0, angle: 0, t: 0,
-    hook: 'swing', len: 18, caught: null, flash: null, best: 0,
+    hook: 'swing', len: 18, caught: null, flash: null, best: 0, scoreT: 0,
+    keyT: 0, enterT: 0, tapT: 0, hitT: 0, topT: 0, st: 'IDLE', edge: null,
   });
 
   const sfx = (f, d, type) => { if (!mutedRef.current) beep(audioRef, f, d, type); };
@@ -98,8 +145,10 @@ export default function GoldMiner() {
     s.screen = 'play'; s.hook = 'swing'; s.len = 18; s.caught = null; s.t = 0;
   };
 
-  const press = () => {
+  const press = (src = 'key') => {
     const s = g.current;
+    const now = performance.now();
+    if (src === 'enter') s.enterT = now; else if (src === 'tap') s.tapT = now; else s.keyT = now;
     if (s.screen === 'title' || s.screen === 'over') { startLevel(1, false); sfx(660, 0.08); return; }
     if (s.screen === 'win') { startLevel(s.lvl.level + 1, true); sfx(660, 0.08); return; }
     if (s.screen === 'play' && s.hook === 'swing') { s.hook = 'extend'; sfx(220, 0.05); }
@@ -108,7 +157,7 @@ export default function GoldMiner() {
   useEffect(() => {
     const key = (e) => {
       if (/input|textarea/i.test(document.activeElement?.tagName || '')) return;
-      if (['ArrowDown', ' ', 'Enter', 's', 'S'].includes(e.key)) { e.preventDefault(); press(); }
+      if (['ArrowDown', ' ', 'Enter', 's', 'S'].includes(e.key)) { e.preventDefault(); press(e.key === 'Enter' ? 'enter' : 'key'); }
     };
     window.addEventListener('keydown', key);
     return () => window.removeEventListener('keydown', key);
@@ -174,11 +223,17 @@ export default function GoldMiner() {
 
     let raf; let last = performance.now();
     const loop = (now) => {
-      const dt = Math.min(0.05, (now - last) / 1000); last = now;
+      const real = Math.min(0.05, (now - last) / 1000); last = now;
+      const c = ctl?.current || {};
+      let dt = real;
+      if (c.paused) {
+        if (c.step) { c.step -= 1; dt = 0.1; } else dt = 0;
+      } else if (c.slow) dt = real * 0.25;
       const s = g.current;
       s.t += dt;
+      if (s.scoreT > 0) s.scoreT -= dt;
 
-      if (s.screen === 'play') {
+      if (s.screen === 'play' && dt > 0) {
         const L = s.lvl;
         L.time -= dt;
         if (s.hook === 'swing') {
@@ -188,7 +243,7 @@ export default function GoldMiner() {
           const tx = ORIGIN.x + Math.sin(s.angle) * s.len;
           const ty = ORIGIN.y + Math.cos(s.angle) * s.len;
           const hit = L.objs.find((o) => Math.abs(o.x - tx) < o.r + 2 && Math.abs(o.y - ty) < o.r + 2);
-          if (hit) { s.caught = hit; L.objs = L.objs.filter((o) => o !== hit); s.hook = 'retract'; sfx(hit.kind === 'rock' ? 140 : 440, 0.06); }
+          if (hit) { s.hitT = performance.now(); s.caught = hit; L.objs = L.objs.filter((o) => o !== hit); s.hook = 'retract'; sfx(hit.kind === 'rock' ? 140 : 440, 0.06); }
           else if (tx < 0 || tx > W || ty > H) s.hook = 'retract';
         } else if (s.hook === 'retract') {
           const pull = s.caught ? KINDS[s.caught.kind].pull : 4;
@@ -198,8 +253,9 @@ export default function GoldMiner() {
             s.caught.y = ORIGIN.y + Math.cos(s.angle) * (s.len + s.caught.r);
           }
           if (s.len <= 18) {
-            s.len = 18; s.hook = 'swing';
+            s.len = 18; s.hook = 'swing'; s.topT = performance.now();
             if (s.caught) {
+              s.scoreT = 0.45;
               const v = KINDS[s.caught.kind].value;
               s.score = Math.max(0, s.score + v);
               s.flash = { v, t: 1 };
@@ -214,6 +270,40 @@ export default function GoldMiner() {
           else { s.screen = 'over'; s.best = Math.max(s.best, s.score); song([[392, 0.15], [330, 0.15], [262, 0.3]]); }
         }
         if (s.flash) { s.flash.t -= dt; if (s.flash.t <= 0) s.flash = null; }
+      }
+
+      // report to the inspector
+      if (probe) {
+        const st = STATE_OF(s);
+        if (st !== s.st) {
+          s.edge = st === 'WIN' || st === 'GAME_OVER' ? `PLAY>${st}` : `${s.st}>${st}`;
+          s.st = st;
+        }
+        const nowMs = performance.now();
+        const lit = (t) => nowMs - t < 220;
+        const L = s.lvl;
+        probe.current = {
+          state: st,
+          edge: s.edge,
+          inputs: [
+            { id: 'down', kind: 'key', label: '↓ / Space', on: lit(s.keyT), title: 'drop the hook (PS/2 keyboard on the board)' },
+            { id: 'enter', kind: 'key', label: 'Enter', on: lit(s.enterT), title: 'start or continue' },
+            { id: 'tap', kind: 'key', label: 'Tap', on: lit(s.tapT), title: 'mouse or touch' },
+            { id: 'hit', kind: 'sig', label: 'collide', on: lit(s.hitT), title: 'hook touched an object' },
+            { id: 'top', kind: 'sig', label: 'at_top', on: lit(s.topT), title: 'hook back at the cart' },
+            { id: 'tz', kind: 'sig', label: 't_zero', on: !!L && L.time <= 0, title: 'level timer reached zero' },
+          ],
+          regs: [
+            { name: 'score', value: s.score },
+            { name: 'goal', value: L ? L.goal : '-' },
+            { name: 'timer', value: L ? `0:${String(Math.ceil(L.time)).padStart(2, '0')}` : '0:45' },
+            { name: 'level', value: L ? L.level : '-' },
+            { name: 'angle', value: `${Math.round((s.angle * 180) / Math.PI)}°` },
+            { name: 'hook_len', value: Math.round(s.len) },
+            { name: 'caught', value: s.caught ? s.caught.kind.replace('bigGold', 'big gold') : 'none' },
+            { name: 'lfsr', value: L ? `0x${L.lfsr.toString(16).toUpperCase().padStart(4, '0')}` : '0xACE1' },
+          ],
+        };
       }
 
       // draw
@@ -260,7 +350,7 @@ export default function GoldMiner() {
 
   return (
     <div className="gm">
-      <canvas ref={canvasRef} width={W} height={H} className="gm-canvas" onPointerDown={press} />
+      <canvas ref={canvasRef} width={W} height={H} className="gm-canvas" onPointerDown={() => press('tap')} />
       <div className="gm-bar">
         <span>↓ / Space / tap to drop the hook · Enter to start</span>
         <button onClick={() => setMuted((m) => !m)}>{muted ? 'Sound off' : 'Sound on'}</button>

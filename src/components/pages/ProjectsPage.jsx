@@ -1,5 +1,5 @@
 import { projects, personalInfo } from '../../data/portfolioData';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { projectIconMap } from '../Icons';
 import { caseForProject } from '../../data/caseStudies';
 import { CaseStudy } from './CaseStudyPage';
@@ -20,7 +20,7 @@ function ProjectCard({ proj, onCase }) {
   const caseId = caseForProject[proj.title];
   const IconComp = projectIconMap[proj.icon];
   return (
-    <div className="project-card">
+    <div className="project-card" id={`proj-${proj.title.toLowerCase().replace(/[^a-z0-9]/g, '')}`}>
       <div className="project-thumb">
         {proj.image ? (
           <img src={proj.image} alt={proj.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
@@ -64,6 +64,20 @@ export default function ProjectsPage({ showPage, simple }) {
     else showPage(`case-${id}`);
   };
   const [filter, setFilter] = useState('All');
+  // jump to a project picked in the ⌘K launcher
+  useEffect(() => {
+    const focus = (e) => {
+      setFilter('All');
+      setTimeout(() => {
+        const el = document.getElementById(`proj-${e.detail}`);
+        if (!el) return;
+        el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        el.classList.remove('flash'); void el.offsetWidth; el.classList.add('flash');
+      }, 60);
+    };
+    window.addEventListener('focus-project', focus);
+    return () => window.removeEventListener('focus-project', focus);
+  }, []);
   const featured = projects.filter((p) => p.featured && inFilter(p, filter));
   const rest = projects.filter((p) => !p.featured && inFilter(p, filter));
   return (

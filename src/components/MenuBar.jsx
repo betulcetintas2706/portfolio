@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { MenuStarIcon } from './Icons';
+import { MOD } from './Launcher';
 
 export default function MenuBar({ showPage, onSimple }) {
   const [time, setTime] = useState('');
@@ -46,6 +47,9 @@ export default function MenuBar({ showPage, onSimple }) {
         ))}
       </div>
       <div className="menubar-right">
+        <button className="simple-toggle lx-open" onClick={() => window.dispatchEvent(new CustomEvent('open-launcher', { detail: '' }))} title="Search everything">
+          <span aria-hidden="true">⌕</span> Search <kbd>{MOD}</kbd><kbd>K</kbd>
+        </button>
         <button className="simple-toggle term-toggle" onClick={() => window.dispatchEvent(new Event('open-terminal'))} title="Open the terminal (shortcut: `)">&gt;_ Terminal</button>
         <button className="simple-toggle" onClick={onSimple} title="A plain, scrollable version of this site">Simple view</button>
         <a href="./BetulCetintas-Resume.pdf?v=2029" target="_blank" rel="noopener noreferrer">Résumé</a>
