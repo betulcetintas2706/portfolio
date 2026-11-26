@@ -297,6 +297,7 @@ function Villain({ mode, hit, low, sound }) {
       clip.volume = 0.9;
       clip.onended = () => { musicMix(0.2); finish(); };
       clip.play().then(() => {
+        window.dispatchEvent(new Event('pickle-heard'));
         musicMix(0.07);
         const d = (clip.duration || line.length * 0.06) * 1000;
         type(d * 0.85);
@@ -353,7 +354,16 @@ export default function HackIntro({ onDone }) {
   const lootRef = useRef([]);
   const startRef = useRef(0);
   const [hit, setHit] = useState(false);
-  const [sound, setSound] = useState(() => { try { return localStorage.getItem('pickleSound') !== 'off'; } catch { return true; } });
+  // sound always starts on for every visit and refresh
+  const [sound, setSound] = useState(true);
+  // browsers stay silent until the first click or key, so show a hint until then
+  const [needTap, setNeedTap] = useState(() => { const ac = audio(); return !ac || ac.state !== 'running'; });
+  useEffect(() => {
+    const ok = () => setNeedTap(false);
+    window.addEventListener('pickle-audio-ready', ok);
+    window.addEventListener('pickle-heard', ok);
+    return () => { window.removeEventListener('pickle-audio-ready', ok); window.removeEventListener('pickle-heard', ok); };
+  }, []);
   const toggleSound = () => setSound((v) => {
     const nv = !v;
     try { localStorage.setItem('pickleSound', nv ? 'on' : 'off'); } catch { /* ignore */ }
@@ -540,6 +550,7 @@ export default function HackIntro({ onDone }) {
       <div className="hack-scan" aria-hidden="true" />
       <button className="hack-skip" onClick={finish}>Skip intro →</button>
       <button className="hk-sound" onClick={toggleSound} aria-pressed={sound}>{sound ? 'Sound on' : 'Sound off'}</button>
+      {sound && needTap && <div className="hk-tap" aria-hidden="true">click anywhere to hear him</div>}
       <Villain mode={phase} hit={hit && phase === 'debug'} low={left <= 10 && phase !== 'alert'} sound={sound} />
 
       {phase !== 'alert' && phase !== 'won' && phase !== 'dead' && (

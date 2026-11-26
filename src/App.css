@@ -2301,3 +2301,12 @@ body.hack-dead #root > *:not(.hack):not(.term) { filter: hue-rotate(110deg) satu
 .game-btn.inspect { background: linear-gradient(180deg, #4a1525, #2d0a14); color: #f3d27a; border: 1px solid #b89a52; }
 .game-btn.inspect:hover { box-shadow: 0 0 8px rgba(243,210,122,0.45); }
 .simple-mode .retro-win { z-index: 3000 !important; }
+.hk-tap {
+  position: absolute; top: 52px; right: 112px; z-index: 3; pointer-events: none;
+  background: #f3d27a; color: #2d0a14; border-radius: 999px; padding: 5px 12px;
+  font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 700;
+  box-shadow: 0 0 14px rgba(243,210,122,0.6); animation: hkTap 1.2s ease-in-out infinite;
+}
+.hk-tap::before { content: ''; position: absolute; top: -5px; right: 34px; border: 5px solid transparent; border-top: 0; border-bottom-color: #f3d27a; }
+@keyframes hkTap { 50% { transform: translateY(3px); } }
+@media (max-width: 768px) { .hk-tap { top: auto; bottom: 146px; right: 12px; } .hk-tap::before { display: none; } }
