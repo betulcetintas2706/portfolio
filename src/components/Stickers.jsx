@@ -8,7 +8,6 @@ const STICKERS = [
   { src: 'doily.png', alt: 'Lace doily', style: { left: '77vw', top: '57vh', height: '18vh' }, cls: 'flat' },
   { src: 'turkish-coffee.png', alt: 'Turkish coffee', style: { left: '78.6vw', top: '59.5vh', height: '11vh' } },
   { src: 'pickle-sleepy.png', alt: 'Sleepy pickle', style: { left: '86vw', top: '71vh', height: '24vh' } },
-  { src: 'pickle-cool.png', alt: 'Cool pickle', style: { left: '27vw', top: '81vh', height: '17vh' } },
   { src: 'pickle-notes.png', alt: 'Pickle taking notes', style: { left: '66vw', top: '81vh', height: '17vh' } },
   { src: 'lace-corner.png', alt: 'Lace corner', style: { left: '1.6vw', top: '82vh', height: '11vh' }, cls: 'flat' },
 ];
