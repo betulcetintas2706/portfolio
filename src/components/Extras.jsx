@@ -31,8 +31,12 @@ function RetroWindow({ title, onClose, z, onFocus, start, children }) {
   return (
     <div className="retro-win" style={{ left: pos.x, top: pos.y, zIndex: z }} onPointerDown={onFocus}>
       <div className="retro-bar" onPointerDown={down} onPointerMove={move} onPointerUp={up}>
-        <span>{title}</span>
-        <button onClick={onClose} aria-label={`Close ${title}`}>×</button>
+        <div className="traffic-lights">
+          <button className="tl tl-red" onClick={onClose} aria-label={`Close ${title}`}>×</button>
+          <span className="tl tl-yellow tl-off" />
+          <span className="tl tl-green tl-off" />
+        </div>
+        <span className="retro-title">{title}</span>
       </div>
       <div className="retro-body">{children}</div>
     </div>
@@ -77,7 +81,7 @@ function Music() {
   }, []);
   return (
     <div className="music-list">
-      <div className="music-now">{st.playing ? '♪ now playing' : '♪ pick a song'}</div>
+      <div className="music-now">{st.playing ? '// now playing' : '// pick a song'}</div>
       {TRACKS.map((t, i) => {
         const on = st.idx === i && st.playing;
         return (
@@ -97,9 +101,9 @@ function Movies() {
   if (!MOVIES.length) {
     return (
       <div className="movies-empty">
-        <div className="reel">🎞️</div>
-        <p>coming soon...</p>
-        <small>favorite films loading</small>
+        <img className="reel" src="./fun/Movies.png" alt="" />
+        <p>Coming soon</p>
+        <small>my favorite films are on their way</small>
       </div>
     );
   }
@@ -117,7 +121,7 @@ function Movies() {
 }
 
 const BODIES = { gallery: Gallery, music: Music, movies: Movies };
-const TITLES = { gallery: 'gallery.exe', music: 'music.exe', movies: 'movies.exe' };
+const TITLES = { gallery: 'Gallery', music: 'Music', movies: 'Movies' };
 
 export default function Extras() {
   const [open, setOpen] = useState(false);
