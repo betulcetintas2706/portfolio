@@ -1227,3 +1227,46 @@ body {
   .dock-item { padding: 6px; }
   .dock-icon .icon-svg { width: 24px; height: 24px; }
 }
+
+/* ===== Welcome status card, CTAs, awards, easter egg ===== */
+.status-card {
+  width: 100%; max-width: 520px; margin: 4px auto 0;
+  border: 1px solid var(--burgundy-200); border-radius: 12px;
+  background: rgba(255,255,255,0.6); padding: 12px 16px; text-align: left;
+}
+.status-title { font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 1px; color: var(--burgundy-500); margin-bottom: 6px; }
+.status-list { list-style: none; display: flex; flex-direction: column; gap: 4px; }
+.status-list li { font-size: 13px; color: var(--text-mid); }
+.status-check { color: var(--gold); font-weight: 700; margin-right: 8px; }
+.cta-row { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin: 6px 0 4px; }
+.cta-btn {
+  font-family: 'JetBrains Mono', monospace; font-size: 12px; font-weight: 600;
+  padding: 8px 16px; border-radius: 20px; border: 1.5px solid var(--burgundy-600);
+  background: var(--burgundy-600); color: var(--cream); cursor: pointer; text-decoration: none;
+  transition: transform 0.15s, background 0.15s;
+}
+.cta-btn:hover { transform: translateY(-1px); background: var(--burgundy-500); }
+.cta-btn.outline { background: transparent; color: var(--burgundy-600); }
+.open-to {
+  margin: 16px 0; padding: 10px 14px; border-radius: 10px;
+  background: rgba(201,168,76,0.12); border: 1px solid rgba(201,168,76,0.4);
+  font-size: 13px; color: var(--text-mid);
+}
+.open-to a { color: var(--burgundy-600); font-weight: 600; }
+.awards-list { display: flex; flex-direction: column; gap: 10px; }
+.award-card {
+  display: flex; gap: 14px; align-items: center; padding: 12px 14px;
+  background: rgba(255,255,255,0.7); border: 1px solid var(--burgundy-100); border-radius: 12px;
+}
+.award-emoji { font-size: 26px; width: 36px; text-align: center; }
+.award-body { flex: 1; }
+.award-head { display: flex; justify-content: space-between; gap: 10px; align-items: center; }
+.award-title { font-family: 'JetBrains Mono', monospace; font-weight: 700; font-size: 13px; color: var(--text-dark); }
+.award-where { font-size: 12px; color: var(--text-light); margin-top: 2px; font-style: italic; }
+.easter-egg {
+  position: fixed; top: 40px; left: 50%; transform: translateX(-50%); z-index: 9999;
+  background: var(--cream); color: var(--burgundy-700); border: 1.5px solid var(--gold);
+  border-radius: 12px; padding: 10px 16px; font-size: 13px; box-shadow: var(--win-shadow);
+  max-width: 90vw; text-align: center; animation: eggIn 0.3s ease-out;
+}
+@keyframes eggIn { from { opacity: 0; transform: translate(-50%, -8px); } to { opacity: 1; transform: translate(-50%, 0); } }

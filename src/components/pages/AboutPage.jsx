@@ -1,6 +1,7 @@
 import { personalInfo, about } from '../../data/portfolioData';
 
 export default function AboutPage() {
+  const ed = personalInfo.education;
   return (
     <div className="page active">
       <div className="section-header">
@@ -28,6 +29,23 @@ export default function AboutPage() {
           <p>{about.drives}</p>
         </div>
       </div>
+
+      <div className="about-bio" style={{ marginTop: 16 }}>
+        <h3>// Focus Areas</h3>
+        <div className="skills-chips" style={{ marginTop: 8 }}>
+          {personalInfo.focusAreas.map((f) => <span key={f} className="skill-chip">{f}</span>)}
+        </div>
+      </div>
+
+      <div className="about-bio" style={{ marginTop: 16 }}>
+        <h3>// Education</h3>
+        <p><strong>{ed.school}</strong> · {ed.degree} · {ed.dates}</p>
+        <p style={{ marginTop: 6 }}><strong>Awards:</strong> {ed.awards.join(' · ')}</p>
+        <p style={{ marginTop: 6 }}><strong>Coursework:</strong> {ed.coursework.join(' · ')}</p>
+      </div>
+
+      <div className="open-to">✦ Open to Summer 2027 software, AI and hardware internships · <a href={personalInfo.resume} target="_blank" rel="noreferrer">View Résumé</a></div>
+
       <div className="about-stats">
         {about.stats.map((s) => (
           <div key={s.label} className="stat-box">

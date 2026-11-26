@@ -3,6 +3,13 @@ import { MenuStarIcon } from './Icons';
 
 export default function MenuBar({ showPage }) {
   const [time, setTime] = useState('');
+  const [clicks, setClicks] = useState(0);
+  const [egg, setEgg] = useState(false);
+  const starClick = () => {
+    const n = clicks + 1;
+    setClicks(n);
+    if (n >= 5) { setEgg(true); setClicks(0); setTimeout(() => setEgg(false), 4500); }
+  };
 
   useEffect(() => {
     const update = () => {
@@ -21,12 +28,16 @@ export default function MenuBar({ showPage }) {
     { label: 'Experience', page: 'experience' },
     { label: 'Projects', page: 'projects' },
     { label: 'Skills', page: 'skills' },
+    { label: 'Awards', page: 'awards' },
     { label: 'Contact', page: 'contact' },
   ];
 
   return (
     <div className="menubar">
-      <div className="menubar-logo"><MenuStarIcon /></div>
+      <div className="menubar-logo" onClick={starClick} style={{ cursor: 'pointer' }}><MenuStarIcon /></div>
+      {egg && (
+        <div className="easter-egg">Merhaba! 👋 You found it. Fun fact: NanoTrade spots a flash crash 27 billion times faster than the 2010 crash unfolded. ⚡</div>
+      )}
       <div className="menubar-items">
         {items.map((item) => (
           <div key={item.page} className="menubar-item" onClick={() => showPage(item.page)}>
@@ -35,6 +46,7 @@ export default function MenuBar({ showPage }) {
         ))}
       </div>
       <div className="menubar-right">
+        <a href="./BetulCetintas-Resume.pdf" target="_blank" rel="noopener noreferrer">Résumé</a>
         <a href="https://github.com/betulcetintas2706" target="_blank" rel="noopener noreferrer">GitHub</a>
         <a href="https://www.linkedin.com/in/betul-cetintas/" target="_blank" rel="noopener noreferrer">linkedin.com/in/betul-cetintas</a>
         <span>{time}</span>

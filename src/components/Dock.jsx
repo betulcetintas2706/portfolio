@@ -1,4 +1,4 @@
-import { StarIcon, UserIcon, BriefcaseIcon, CodeIcon, LayersIcon, PhoneIcon } from './Icons';
+import { StarIcon, UserIcon, BriefcaseIcon, CodeIcon, LayersIcon, PhoneIcon, TrophyIcon } from './Icons';
 
 const dockItems = [
   { page: 'home', Icon: StarIcon, label: 'Welcome' },
@@ -7,6 +7,7 @@ const dockItems = [
   'divider',
   { page: 'projects', Icon: CodeIcon, label: 'Projects' },
   { page: 'skills', Icon: LayersIcon, label: 'Skills' },
+  { page: 'awards', Icon: TrophyIcon, label: 'Awards' },
   'divider',
   { page: 'contact', Icon: PhoneIcon, label: 'Contact' },
 ];

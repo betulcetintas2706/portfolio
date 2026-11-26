@@ -4,17 +4,19 @@ const icons = [
   { page: 'experience', label: 'Experience', imgSrc: './f3.png' },
   { page: 'projects', label: 'Projects', imgSrc: './f4.png' },
   { page: 'skills', label: 'Skills', imgSrc: './f5.png' },
+  { page: 'awards', label: 'Awards', imgSrc: './f1.png' },
   { page: 'contact', label: 'Contact', imgSrc: './f_contact.png' },
+  { href: './BetulCetintas-Resume.pdf', page: 'resume', label: 'Resume.pdf', imgSrc: './f6.png' },
 ];
 
 export default function DesktopIcons({ activePage, showPage }) {
   return (
     <div className="desktop-icons">
-      {icons.map(({ page, label, imgSrc }) => (
+      {icons.map(({ page, label, imgSrc, href }) => (
         <div
           key={page}
           className={`desktop-icon${activePage === page ? ' active' : ''}`}
-          onClick={() => showPage(page)}
+          onClick={() => (href ? window.open(href, '_blank') : showPage(page))}
         >
           <div className="icon-img" style={{ background: 'transparent', border: 'none', boxShadow: 'none' }}>
             <img 

@@ -5,6 +5,7 @@ import ExperiencePage from './pages/ExperiencePage';
 import ProjectsPage from './pages/ProjectsPage';
 import SkillsPage from './pages/SkillsPage';
 import ContactPage from './pages/ContactPage';
+import AwardsPage from './pages/AwardsPage';
 
 const pages = {
   home: WelcomePage,
@@ -13,6 +14,7 @@ const pages = {
   projects: ProjectsPage,
   skills: SkillsPage,
   contact: ContactPage,
+  awards: AwardsPage,
 };
 
 export default function Window({ activePage, showPage, title, windowBodyRef }) {

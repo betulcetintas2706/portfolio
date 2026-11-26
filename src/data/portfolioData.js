@@ -13,7 +13,38 @@ export const personalInfo = {
   photo: "./photo.jpg",
   github: "https://github.com/betulcetintas2706",
   devpost: "https://devpost.com/betulcetintas2706",
+  resume: "./BetulCetintas-Resume.pdf",
+  headline: "I build where hardware, AI and people meet: from 80 ns ASIC chips to iOS apps real people use.",
+  status: [
+    "Software, AI and hardware engineer in training",
+    "6 internships and roles across fintech, health tech, data and startups",
+    "Shipped iOS, React Native, full-stack, ML and Verilog/ASIC projects",
+    "5 hackathon awards, including 1st at Harvard HSIL 2026",
+    "Open to Summer 2027 software, AI and hardware internships",
+  ],
+  focusAreas: ["Applied AI & Agents", "Mobile (iOS / React Native)", "Full-Stack", "FPGA & ASIC", "Data Pipelines", "Health Tech", "Accessibility"],
+  education: {
+    school: "University of Toronto",
+    degree: "B.A.Sc. Computer Engineering, PEY Co-op",
+    dates: "Sept 2024 – Apr 2028",
+    awards: ["Full Scholarship", "Edward L. Donegan Scholarship in Engineering", "Dean's Merit Award"],
+    coursework: ["Software Design", "Data Structures (C++)", "Computer Organization", "Digital Systems", "C Programming"],
+  },
+  nowBuilding: ["Meducine (HSIL)", "Comfy Cakes FPGA"],
 };
+
+export const awards = [
+  { emoji: "🥇", title: "First Place", year: "2026", where: "Harvard Health Systems Innovation Lab Hackathon, Toronto Hub", project: "Meducine" },
+  { emoji: "🎓", title: "HSIL Venture Building Bootcamp (Top 120 Globally)", year: "2026", where: "Harvard Health Systems Innovation Lab", project: "Meducine" },
+  { emoji: "🥈", title: "Second Place", year: "2026", where: "Hackville", project: "VYBE" },
+  { emoji: "🥉", title: "Third Place Overall (600+ participants)", year: "2026", where: "Hack Canada", project: "49th" },
+  { emoji: "🏅", title: "Google Build with AI Winner", year: "2026", where: "Hack Canada", project: "49th" },
+  { emoji: "🥉", title: "Third Place, ASIC", year: "2026", where: "UofT IEEE IC Hackathon", project: "NanoTrade" },
+  { emoji: "⚖️", title: "Judge", year: "2026", where: "Youth Impact Challenge Summer Challenge", project: null },
+  { emoji: "🎖️", title: "Dean's Merit Award", year: "UofT", where: "University of Toronto", project: null },
+  { emoji: "🎓", title: "Edward L. Donegan Scholarship in Engineering", year: "UofT", where: "University of Toronto", project: null },
+  { emoji: "🎓", title: "Full Scholarship", year: "UofT", where: "University of Toronto, Computer Engineering", project: null },
+];
 
 export const about = {
   hello: "I'm an engineering student at the University of Toronto who loves building products that sit at the intersection of hardware, AI, and human experience — from ASIC chips to iOS apps used by real people.",
@@ -102,6 +133,7 @@ export const experiences = [
 export const projects = [
   {
     title: "Meducine",
+    featured: true,
     desc: "AI health literacy platform that turns complex medical information into plain, personal guidance, with a 60+ term dictionary, 26 specialty filters and text-to-speech. Won 1st at Harvard HSIL Toronto Hub (~7.2% acceptance), advanced to the HSIL Venture Building Bootcamp (top 120 teams globally), and was showcased at the AstraZeneca and Plan International Canada Faces of the Future reception.",
     tags: ["React Native", "Expo", "AI", "Health Tech"],
     award: "🥇 Harvard HSIL 2026",
@@ -116,6 +148,7 @@ export const projects = [
   },
   {
     title: "IRIS",
+    featured: true,
     links: [{ label: "Devpost", url: "https://devpost.com/software/iris-de1z3t" }, { label: "Demo", url: "https://vimeo.com/1178189406" }],
     desc: "AI lab assistant on safety glasses: an ESP32-S3 camera watches the experiment, confirms finished steps and flags errors, while students ask questions by voice. Python FastAPI backend with Gemini 2.5 Flash, Overshoot vision and ElevenLabs voice, plus a SwiftUI iOS app with Auth0. Sponsored by Overshoot (YC W26); ActualFood offered to support it after the hackathon.",
     tags: ["SwiftUI", "ESP32-S3", "FastAPI", "Gemini", "ElevenLabs", "Auth0"],
@@ -132,6 +165,7 @@ export const projects = [
   },
   {
     title: "49th",
+    featured: true,
     links: [{ label: "GitHub", url: "https://github.com/akashngb/roots" }, { label: "Devpost", url: "https://devpost.com/software/hack-canada-2026" }, { label: "Demo", url: "https://vimeo.com/1171501862" }],
     desc: "AI settlement assistant for newcomers to Canada. WhatsApp onboarding, a personal task roadmap, voice-note replies in their language, a React dashboard, and a Playwright + Claude Vision agent that navigates government websites for the user. Placed against 600+ participants and 200+ projects.",
     tags: ["Node.js", "Twilio", "Gemini", "Playwright", "Claude Vision", "React", "TypeScript"],
@@ -148,6 +182,7 @@ export const projects = [
   },
   {
     title: "NanoTrade",
+    featured: true,
     links: [{ label: "GitHub", url: "https://github.com/betulcetintas2706/ttsky-nanotrades" }, { label: "Website", url: "https://betulcetintas2706.github.io/websitenanotrade/" }, { label: "Devpost", url: "https://devpost.com/software/nanotrade" }, { label: "Demo", url: "https://vimeo.com/1167116687" }],
     desc: "Tiny Tapeout ASIC in Verilog with 5 RTL modules running 8 parallel market anomaly checks at 50 MHz with ~80 ns latency. Fit into 9,800 of 10,000 cells and cut false positives from 40% to 0.5% across 10,000+ simulations.",
     tags: ["Verilog", "ASIC", "SKY130", "Tiny Tapeout", "Cognichip"],
@@ -260,4 +295,5 @@ export const pageTitles = {
   projects: "Projects",
   skills: "Skills & Tools",
   contact: "Contact",
+  awards: "Awards",
 };

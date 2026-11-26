@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { personalInfo } from '../../data/portfolioData';
 
 export default function EventWidget() {
   const [date, setDate] = useState({ day: 1, text: '' });
@@ -14,17 +15,15 @@ export default function EventWidget() {
       <div className="date-section">
         <div className="date-day-name">{date.text}</div>
         <div className="date-number">{date.day}</div>
-        <div style={{fontSize: '10px', opacity: 0.6}}>No upcoming meetings</div>
+        <div style={{fontSize: '10px', opacity: 0.6}}>Open to Summer 2027</div>
       </div>
       <div className="events-section">
-        <div className="date-event">
-          <div>Next Week</div>
-          <div style={{opacity: 0.5}}>Hackathon Presentation</div>
-        </div>
-        <div className="date-event">
-          <div>Check-in</div>
-          <div style={{opacity: 0.5}}>Team Sync</div>
-        </div>
+        {personalInfo.nowBuilding.map((item) => (
+          <div key={item} className="date-event">
+            <div>Now building</div>
+            <div style={{opacity: 0.5}}>{item}</div>
+          </div>
+        ))}
       </div>
     </div>
   );
