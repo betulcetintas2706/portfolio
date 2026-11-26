@@ -241,14 +241,14 @@ export const projects = [
 
 export const skills = {
   languages: [
-    { name: "Swift", pct: 90 },
-    { name: "Python", pct: 85 },
-    { name: "C / C++", pct: 78 },
-    { name: "JavaScript", pct: 75 },
-    { name: "Verilog", pct: 72 },
-    { name: "TypeScript / SQL", pct: 70 },
-    { name: "Java", pct: 70 },
-    { name: "MATLAB", pct: 65 },
+    { name: "Swift", usedIn: ["IRIS", "VYBE", "RearView", "SideQuest"] },
+    { name: "Python", usedIn: ["SaHera ML model", "IRIS backend", "AI Trash Bin Sorter"] },
+    { name: "C / C++", usedIn: ["Data Structures (C++)", "C Programming"] },
+    { name: "JavaScript", usedIn: ["Kavodax", "OSIRIS", "SideQuest"] },
+    { name: "Verilog", usedIn: ["NanoTrade", "Comfy Cakes", "Gold Miner"] },
+    { name: "TypeScript / SQL", usedIn: ["Meducine", "49th"] },
+    { name: "Java", usedIn: [] },
+    { name: "MATLAB", usedIn: [] },
   ],
   categories: [
     {

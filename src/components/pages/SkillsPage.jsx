@@ -25,15 +25,18 @@ export default function SkillsPage() {
       </div>
       <div className="skills-section" ref={barsRef}>
         <div>
-          <div className="skill-category-title">// Programming Languages</div>
-          <div className="skill-bars">
+          <div className="skill-category-title">// Languages · where I've used them</div>
+          <div className="lang-grid">
             {skills.languages.map((lang) => (
-              <div key={lang.name} className="skill-bar-row">
-                <div className="skill-name">{devicon(lang.name) && <img className="devicon" src={devicon(lang.name)} alt="" loading="lazy" onError={(e) => e.currentTarget.remove()} />}{lang.name}</div>
-                <div className="skill-track">
-                  <div className="skill-fill" data-width={`${lang.pct}%`} style={{ width: `${lang.pct}%` }} />
+              <div key={lang.name} className="lang-card">
+                <div className="lang-head">
+                  {devicon(lang.name) && <img className="devicon lang-logo" src={devicon(lang.name)} alt="" loading="lazy" onError={(e) => e.currentTarget.remove()} />}
+                  <span className="lang-name">{lang.name}</span>
+                  {lang.usedIn.length > 0 && <span className="lang-count">{lang.usedIn.length}</span>}
                 </div>
-                <div className="skill-pct">{lang.pct}%</div>
+                {lang.usedIn.length > 0 && (
+                  <div className="lang-used"><span className="lang-arrow">→</span>{lang.usedIn.join(' · ')}</div>
+                )}
               </div>
             ))}
           </div>
