@@ -147,7 +147,11 @@ function Override({ onDone }) {
 }
 
 export function hasSeenIntro() {
-  try { return localStorage.getItem('seenHackIntro') === '1'; } catch { return true; }
+  try {
+    // add ?intro to the link to always show it (handy for testing and demos)
+    if (new URLSearchParams(window.location.search).has('intro')) return false;
+    return localStorage.getItem('seenHackIntro') === '1';
+  } catch { return true; }
 }
 
 export default function HackIntro({ onDone }) {
