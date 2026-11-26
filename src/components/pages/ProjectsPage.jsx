@@ -4,6 +4,8 @@ import { projectIconMap } from '../Icons';
 import { caseForProject } from '../../data/caseStudies';
 import { CaseStudy } from './CaseStudyPage';
 
+const PLAYABLE = { 'Gold Miner (FPGA Game)': 'goldminer', 'Comfy Cakes': 'cakes' };
+
 function ProjectCard({ proj, onCase }) {
   const caseId = caseForProject[proj.title];
   const IconComp = projectIconMap[proj.icon];
@@ -19,6 +21,11 @@ function ProjectCard({ proj, onCase }) {
       <div className="project-body">
         <div className="project-title">{proj.title}</div>
         <div className="project-desc">{proj.desc}</div>
+        {PLAYABLE[proj.title] && (
+          <button className="case-open play-open" onClick={() => window.dispatchEvent(new CustomEvent('open-extra', { detail: PLAYABLE[proj.title] }))}>
+            ▶ Play it here
+          </button>
+        )}
         {caseId && onCase && (
           <button className="case-open" onClick={() => onCase(caseId)}>Read the case study →</button>
         )}

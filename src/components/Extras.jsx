@@ -1,11 +1,15 @@
 import { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { TRACKS } from './widgets/MediaWidget';
+import GoldMiner from './games/GoldMiner';
+import ComfyCakes from './games/ComfyCakes';
 
 const ITEMS = [
   { id: 'gallery', label: 'Gallery', img: './fun/Gallery.png' },
   { id: 'music', label: 'Music', img: './fun/Music.png' },
   { id: 'movies', label: 'Movies', img: './fun/Movies.png' },
+  { id: 'goldminer', label: 'Gold Miner', tile: '⛏️' },
+  { id: 'cakes', label: 'Comfy Cakes', tile: '🎂' },
 ];
 
 const PHOTOS = [
@@ -17,7 +21,7 @@ const PHOTOS = [
 
 const MOVIES = [];
 
-function RetroWindow({ title, onClose, z, onFocus, start, children }) {
+function RetroWindow({ title, onClose, z, onFocus, start, children, width }) {
   const [pos, setPos] = useState(start);
   const drag = useRef(null);
   const down = (e) => {
@@ -29,7 +33,7 @@ function RetroWindow({ title, onClose, z, onFocus, start, children }) {
   const move = (e) => { if (drag.current) setPos({ x: e.clientX - drag.current.x, y: e.clientY - drag.current.y }); };
   const up = () => { drag.current = null; };
   return (
-    <div className="retro-win" style={{ left: pos.x, top: pos.y, zIndex: z }} onPointerDown={onFocus}>
+    <div className={`retro-win${width ? ' retro-wide' : ''}`} style={{ left: pos.x, top: pos.y, zIndex: z, width }} onPointerDown={onFocus}>
       <div className="retro-bar" onPointerDown={down} onPointerMove={move} onPointerUp={up}>
         <div className="traffic-lights">
           <button className="tl tl-red" onClick={onClose} aria-label={`Close ${title}`}>×</button>
@@ -120,8 +124,9 @@ function Movies() {
   );
 }
 
-const BODIES = { gallery: Gallery, music: Music, movies: Movies };
-const TITLES = { gallery: 'Gallery', music: 'Music', movies: 'Movies' };
+const BODIES = { gallery: Gallery, music: Music, movies: Movies, goldminer: GoldMiner, cakes: ComfyCakes };
+const WIDTHS = { goldminer: 680, cakes: 600 };
+const TITLES = { gallery: 'Gallery', music: 'Music', movies: 'Movies', goldminer: 'Gold Miner', cakes: 'Comfy Cakes' };
 
 export default function Extras() {
   const [open, setOpen] = useState(false);
@@ -142,6 +147,8 @@ export default function Extras() {
     gallery: { x: Math.round(window.innerWidth * 0.36), y: Math.round(window.innerHeight * 0.14) },
     music: { x: Math.round(window.innerWidth * 0.44), y: Math.round(window.innerHeight * 0.22) },
     movies: { x: Math.round(window.innerWidth * 0.52), y: Math.round(window.innerHeight * 0.18) },
+    goldminer: { x: Math.max(16, Math.round(window.innerWidth / 2 - 340)), y: Math.max(40, Math.round(window.innerHeight / 2 - 330)) },
+    cakes: { x: Math.max(16, Math.round(window.innerWidth / 2 - 300)), y: Math.max(40, Math.round(window.innerHeight / 2 - 340)) },
   };
 
   return (
@@ -158,7 +165,7 @@ export default function Extras() {
         </button>
         {ITEMS.map((it, i) => (
           <button key={it.id} className="fun-icon" style={{ '--i': i }} onClick={() => launch(it.id)} tabIndex={open ? 0 : -1}>
-            <img src={it.img} alt="" draggable="false" />
+            {it.img ? <img src={it.img} alt="" draggable="false" /> : <span className="game-tile">{it.tile}</span>}
             <span>{it.label}</span>
           </button>
         ))}
@@ -166,7 +173,7 @@ export default function Extras() {
       {createPortal(wins.map((id, z) => {
         const Body = BODIES[id];
         return (
-          <RetroWindow key={id} title={TITLES[id]} z={600 + z} start={starts[id]}
+          <RetroWindow key={id} title={TITLES[id]} z={600 + z} start={starts[id]} width={WIDTHS[id]}
             onClose={() => close(id)} onFocus={() => launch(id)}>
             <Body />
           </RetroWindow>

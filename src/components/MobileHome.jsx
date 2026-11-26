@@ -14,6 +14,8 @@ const APPS = [
   { label: 'Music', img: './fun/Music.png', extra: 'music' },
   { label: 'Movies', img: './fun/Movies.png', extra: 'movies' },
   { label: 'Terminal', tile: 'term', terminal: true },
+  { label: 'Gold Miner', tile: 'game', emoji: '⛏️', extra: 'goldminer' },
+  { label: 'Comfy Cakes', tile: 'game', emoji: '🎂', extra: 'cakes' },
 ];
 
 const DOCK = ['Projects', 'Experience', 'Music', 'Contact'];
@@ -21,6 +23,7 @@ const DOCK = ['Projects', 'Experience', 'Music', 'Contact'];
 function Tile({ app }) {
   if (app.tile === 'cv') return <span className="m-tile m-tile-cv">CV</span>;
   if (app.tile === 'term') return <span className="m-tile m-tile-term">&gt;_</span>;
+  if (app.tile === 'game') return <span className="m-tile m-tile-game">{app.emoji}</span>;
   return <img src={app.img} alt="" draggable="false" />;
 }
 
