@@ -15,11 +15,11 @@ export default function WelcomePage({ showPage, simple }) {
     <div className="page active welcome-page">
       {!simple && (
         <div className="welcome-top-btns">
-          <button className="skip-simple tour-start" onClick={() => window.dispatchEvent(new Event('start-tour'))}>
-            ✦ New here? Take a quick tour
-          </button>
           <button className="skip-simple" onClick={() => window.dispatchEvent(new Event('go-simple'))}>
             In a hurry? Skip to simple view →
+          </button>
+          <button className="skip-simple tour-start" onClick={() => window.dispatchEvent(new Event('start-tour'))}>
+            ✦ New here? Take a quick tour
           </button>
         </div>
       )}
