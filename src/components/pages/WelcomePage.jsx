@@ -10,9 +10,14 @@ const navCards = [
   { page: 'contact', Icon: PhoneIcon, title: 'Contact', desc: "Let's work together" },
 ];
 
-export default function WelcomePage({ showPage }) {
+export default function WelcomePage({ showPage, simple }) {
   return (
     <div className="page active welcome-page">
+      {!simple && (
+        <button className="skip-simple" onClick={() => window.dispatchEvent(new Event('go-simple'))}>
+          In a hurry? Skip to simple view →
+        </button>
+      )}
       <img className="hero-photo" src={personalInfo.photo} alt={`${personalInfo.name} ${personalInfo.lastName}`} />
 
       <div>
@@ -49,7 +54,7 @@ export default function WelcomePage({ showPage }) {
         ))}
       </div>
 
-      <div className="tip-bar"><span>• TIP</span> Click the ★ in the menu bar a few times for a surprise</div>
+      {!simple && <div className="tip-bar"><span>• TIP</span> Click the ★ in the menu bar a few times for a surprise</div>}
     </div>
   );
 }

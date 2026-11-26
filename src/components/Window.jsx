@@ -17,7 +17,8 @@ const pages = {
   awards: AwardsPage,
 };
 
-export default function Window({ activePage, showPage, title, windowBodyRef }) {
+export default function Window({ activePage, showPage, title, windowBodyRef, minimized, setMinimized }) {
+  const [maximized, setMaximized] = useState(false);
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const [isDragging, setIsDragging] = useState(false);
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
@@ -28,7 +29,7 @@ export default function Window({ activePage, showPage, title, windowBodyRef }) {
 
   const handlePointerDown = (e) => {
     // Prevent dragging if the user is clicking on the control buttons
-    if (e.target.closest('.traffic-lights')) return;
+    if (e.target.closest('.traffic-lights') || maximized) return;
     
     setIsDragging(true);
     setDragStart({ 
@@ -53,11 +54,12 @@ export default function Window({ activePage, showPage, title, windowBodyRef }) {
 
   return (
     <div 
-      className="window" 
+      className={`window${maximized ? ' maximized' : ''}${minimized ? ' minimized' : ''}`}
       id="mainWindow"
-      style={{ 
+      aria-hidden={minimized}
+      style={maximized || minimized ? undefined : {
         transform: `translate(calc(-50% + ${position.x}px), calc(-50% + ${position.y}px))`,
-        transition: isDragging ? 'none' : 'transform 0.1s' 
+        transition: isDragging ? 'none' : 'transform 0.1s'
       }}
     >
       <div 
@@ -66,6 +68,7 @@ export default function Window({ activePage, showPage, title, windowBodyRef }) {
         onPointerMove={handlePointerMove}
         onPointerUp={handlePointerUp}
         onPointerCancel={handlePointerUp}
+        onDoubleClick={(e) => { if (!e.target.closest('.traffic-lights')) setMaximized((m) => !m); }}
         style={{ 
           cursor: isDragging ? 'grabbing' : 'grab',
           userSelect: 'none',
@@ -73,9 +76,12 @@ export default function Window({ activePage, showPage, title, windowBodyRef }) {
         }}
       >
         <div className="traffic-lights">
-          <div className="tl tl-red" onClick={() => showPage(null)}>×</div>
-          <div className="tl tl-yellow">−</div>
-          <div className="tl tl-green">+</div>
+          <button className="tl tl-red" title="Close" aria-label="Close window"
+            onClick={() => { setMaximized(false); setPosition({ x: 0, y: 0 }); showPage(null); }}>×</button>
+          <button className="tl tl-yellow" title="Minimize" aria-label="Minimize window"
+            onClick={() => setMinimized(true)}>−</button>
+          <button className="tl tl-green" title={maximized ? 'Exit full size' : 'Full size'} aria-label="Toggle full size"
+            onClick={() => setMaximized((m) => !m)}>{maximized ? '−' : '+'}</button>
         </div>
         <div className="window-title">{title}</div>
       </div>

@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { MenuStarIcon } from './Icons';
 
-export default function MenuBar({ showPage }) {
+export default function MenuBar({ showPage, onSimple }) {
   const [time, setTime] = useState('');
   const [clicks, setClicks] = useState(0);
   const [egg, setEgg] = useState(false);
@@ -46,6 +46,7 @@ export default function MenuBar({ showPage }) {
         ))}
       </div>
       <div className="menubar-right">
+        <button className="simple-toggle" onClick={onSimple} title="A plain, scrollable version of this site">Simple view</button>
         <a href="./BetulCetintas-Resume.pdf" target="_blank" rel="noopener noreferrer">Résumé</a>
         <a href="https://github.com/betulcetintas2706" target="_blank" rel="noopener noreferrer">GitHub</a>
         <a href="https://devpost.com/betulcetintas2706" target="_blank" rel="noopener noreferrer">Devpost</a>

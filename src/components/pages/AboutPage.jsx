@@ -17,7 +17,7 @@ export default function AboutPage() {
           <div className="avatar-role">{personalInfo.role}</div>
           <div className="avatar-badges">
             <span className="badge">{personalInfo.degree}</span>
-            <span className="badge">{personalInfo.years}</span>
+            <span className="badge">UofT</span>
           </div>
         </div>
         <div className="about-bio">
@@ -39,7 +39,7 @@ export default function AboutPage() {
 
       <div className="about-bio" style={{ marginTop: 16 }}>
         <h3>// Education</h3>
-        <p><strong>{ed.school}</strong> · {ed.degree} · {ed.dates}</p>
+        <p><strong>{ed.school}</strong> · {ed.degree}</p>
         <p style={{ marginTop: 6 }}><strong>Awards:</strong> {ed.awards.join(' · ')}</p>
         <p style={{ marginTop: 6 }}><strong>Coursework:</strong> {ed.coursework.join(' · ')}</p>
       </div>

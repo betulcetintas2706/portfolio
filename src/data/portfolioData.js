@@ -5,10 +5,9 @@
 export const personalInfo = {
   name: "Betul",
   lastName: "Cetintas",
-  tagline: "3rd Year Computer Engineering (PEY Co-op) · University of Toronto · 5x Hackathon Winner",
+  tagline: "Computer Engineering (PEY Co-op) · University of Toronto · 5x Hackathon Winner",
   role: "Computer Engineering @ UofT",
   degree: "BASc CompEng PEY",
-  years: "2024 – 2028",
 
   photo: "./headshot-2026.jpg",
   github: "https://github.com/betulcetintas2706",
@@ -26,7 +25,6 @@ export const personalInfo = {
   education: {
     school: "University of Toronto",
     degree: "B.A.Sc. Computer Engineering, PEY Co-op",
-    dates: "Sept 2024 – Apr 2028",
     awards: ["Full Scholarship", "Edward L. Donegan Scholarship in Engineering", "Dean's Merit Award"],
     coursework: ["Software Design", "Data Structures (C++)", "Computer Organization", "Digital Systems", "C Programming"],
   },
