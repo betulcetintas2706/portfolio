@@ -100,6 +100,7 @@ export const experiences = [
     company: "Eruslu Sağlık Ürünleri · Toronto, ON",
     desc: "Leading distribution and operations in Canada for the Sleepy Easy Clean household cleaning brand, including building and running the Sleepy Easy Clean website.",
     tags: ["Operations", "Business Development", "Web"],
+    links: [{ label: "sleepyeasyclean.ca", url: "https://sleepyeasyclean.ca/" }],
   },
   {
     role: "Judge",
@@ -114,6 +115,7 @@ export const experiences = [
     company: "Alephic Labs · San Francisco, CA (Remote)",
     desc: "Architected a centralized monetization data pipeline integrating RevenueCat, GCS, and Looker Studio across 10+ mobile apps. Built automated ETL workflows reducing manual reporting by 80% and improved portfolio-level subscription LTV visibility by 30%.",
     tags: ["GCS", "Google Apps Script", "Looker Studio", "OAuth 2.0", "ETL", "RevenueCat"],
+    links: [{ label: "app.alephiclabs.com", url: "https://app.alephiclabs.com/" }],
   },
   {
     role: "Machine Learning Intern",
