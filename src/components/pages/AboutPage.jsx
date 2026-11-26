@@ -1,60 +1,76 @@
 import { personalInfo, about } from '../../data/portfolioData';
+import { actions } from '../../lib/actions';
 
 export default function AboutPage() {
   const ed = personalInfo.education;
   return (
-    <div className="page active">
-      <div className="section-header">
-        <div className="section-title">About <span>Me</span></div>
-        <div className="section-sub">A little background on who I am</div>
-      </div>
-      <div className="about-grid">
-        <div className="about-avatar">
-          <div className="framed-photo about-framed">
-            <img src={personalInfo.photo} alt={personalInfo.name} />
-            <img className="frame-overlay" src="./frame.png" alt="" />
-          </div>
-          <div className="avatar-name">{personalInfo.name} {personalInfo.lastName}</div>
-          <div className="avatar-role">{personalInfo.role}</div>
-          <div className="avatar-badges">
-            <span className="badge">{personalInfo.degree}</span>
-            <span className="badge">UofT</span>
-          </div>
+    <div className="page active ab">
+      <section className="ab-hero">
+        <div className="framed-photo ab-photo">
+          <img src={personalInfo.photo} alt={`${personalInfo.name} ${personalInfo.lastName}`} />
+          <img className="frame-overlay" src="./frame.png" alt="" />
         </div>
-        <div className="about-bio">
-          <h3>// Hello World</h3>
-          <p>{about.hello}</p>
+        <div className="ab-hero-text">
+          <div className="ab-kicker">{about.kicker}</div>
+          <h2 className="ab-title">{about.title[0]}<br /><em>{about.title[1]}</em></h2>
+          <p className="ab-intro">{about.intro}</p>
+          <div className="ab-meta">BASc Computer Engineering · PEY Co-op</div>
         </div>
-        <div className="about-bio">
-          <h3>// What Drives Me</h3>
-          <p>{about.drives}</p>
-        </div>
-      </div>
+      </section>
 
-      <div className="about-bio" style={{ marginTop: 16 }}>
-        <h3>// Focus Areas</h3>
-        <div className="skills-chips" style={{ marginTop: 8 }}>
-          {personalInfo.focusAreas.map((f) => <span key={f} className="skill-chip">{f}</span>)}
-        </div>
-      </div>
-
-      <div className="about-bio" style={{ marginTop: 16 }}>
-        <h3>// Education</h3>
-        <p><strong>{ed.school}</strong> · {ed.degree}</p>
-        <p style={{ marginTop: 6 }}><strong>Awards:</strong> {ed.awards.join(' · ')}</p>
-        <p style={{ marginTop: 6 }}><strong>Coursework:</strong> {ed.coursework.join(' · ')}</p>
-      </div>
-
-      <div className="open-to">Open to Summer 2027 software, AI and hardware internships · <a href={personalInfo.resume} target="_blank" rel="noreferrer">View Résumé</a></div>
-
-      <div className="about-stats">
+      <section className="ab-stats">
         {about.stats.map((s) => (
-          <div key={s.label} className="stat-box">
-            <div className="stat-num">{s.num}</div>
-            <div className="stat-label">{s.label}</div>
+          <div key={s.label} className="ab-stat">
+            <div className="ab-stat-num">{s.num}</div>
+            <div className="ab-stat-label">{s.label}</div>
+            {s.sub && <div className="ab-stat-sub">{s.sub}</div>}
           </div>
         ))}
-      </div>
+      </section>
+
+      <section className="ab-building">
+        <span className="ab-label">Currently building</span>
+        {about.building.map((b, i) => (
+          <span key={b.name} className="ab-build">
+            {i > 0 && <i aria-hidden="true">·</i>}
+            <button onClick={() => actions.project(b.project)}>{b.name}</button>
+            <small>{b.note}</small>
+          </span>
+        ))}
+      </section>
+
+      <section className="ab-draws">
+        <h3 className="ab-h">What draws me in</h3>
+        {about.drawsMe.map((p) => <p key={p.slice(0, 20)}>{p}</p>)}
+        <div className="ab-areas">
+          {about.areas.map((a, i) => (
+            <div key={a.title} className="ab-area">
+              <div className="ab-area-n">{String(i + 1).padStart(2, '0')}</div>
+              <div className="ab-area-t">{a.title}</div>
+              <div className="ab-area-tags">{a.tags.join(' · ')}</div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <section className="ab-foot">
+        <div className="ab-edu">
+          <div className="ab-small">Education</div>
+          <div className="ab-big">{ed.school}</div>
+          <p>B.A.Sc. Computer Engineering<br />PEY Co-op</p>
+          <details className="ab-more">
+            <summary>Scholarships &amp; coursework</summary>
+            <p><b>Scholarships:</b> {ed.awards.join(' · ')}</p>
+            <p><b>Coursework:</b> {ed.coursework.join(' · ')}</p>
+          </details>
+        </div>
+        <div className="ab-open">
+          <div className="ab-small">Summer 2027</div>
+          <div className="ab-big">Open to internships</div>
+          <p>Software, AI, and hardware engineering.</p>
+          <a className="ab-cv" href={personalInfo.resume} target="_blank" rel="noopener noreferrer">View résumé ↗</a>
+        </div>
+      </section>
     </div>
   );
 }

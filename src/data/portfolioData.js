@@ -45,13 +45,29 @@ export const awards = [
 ];
 
 export const about = {
+  kicker: "Betül Cetintas / About",
+  title: ["From silicon", "to software."],
+  intro: "I'm a Computer Engineering student at the University of Toronto. I build across hardware, AI, and mobile apps, with a focus on making them useful to the people using them.",
+  drawsMe: [
+    "As a kid, I dreamed of becoming a scientist. I wanted to understand how things worked and be part of creating something new. I grew up in Turkey, and moved to Canada when I was 13. Moving between countries meant getting used to change early in life, and it's a big part of the perspective I bring to what I do.",
+    "I still have that curiosity, whether I'm working on a circuit, building an app, or exploring an AI idea. I'm drawn to projects that make something difficult a little easier for someone else to understand or use.",
+  ],
+  areas: [
+    { title: "AI & mobile products", tags: ["Agents", "SwiftUI", "React Native"] },
+    { title: "Digital hardware", tags: ["Verilog", "FPGA", "ASIC"] },
+    { title: "Accessible technology", tags: ["Voice", "Haptics", "Health literacy"] },
+  ],
+  building: [
+    { name: "Meducine", note: "health literacy", project: "Meducine" },
+    { name: "Comfy Cakes", note: "FPGA game", project: "Comfy Cakes" },
+  ],
   hello: "I'm a computer engineering student at the University of Toronto who loves building products where hardware, AI and people meet, from ASIC chips to iOS apps used by real people.",
   drives: "I ship fast and care deeply about impact. Whether it's helping newcomers navigate Canada, making music accessible through haptics, or detecting market anomalies in 80 ns, I build things that matter.",
   stats: [
     { num: "10+", label: "Projects Shipped" },
     { num: "6", label: "Internships & Roles" },
     { num: "5", label: "Hackathon Awards" },
-    { num: "1st", label: "Harvard HSIL 2026" },
+    { num: "1st", label: "Harvard HSIL 2026", sub: "Toronto Hub" },
   ],
 };
 
