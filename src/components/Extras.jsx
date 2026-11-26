@@ -65,6 +65,37 @@ const PLACES = [
   { src: './gallery/places/place-27.jpg', cap: 'petit champlain' },
   { src: './gallery/places/place-28.jpg', cap: 'umbrella alley, quebec' },
 ];
+const PEOPLE = [
+  { src: './gallery/people/people-01.jpg', cap: 'cabin night' },
+  { src: './gallery/people/people-02.jpg', cap: 'her big night' },
+  { src: './gallery/people/people-03.jpg', cap: 'mount royal in the snow' },
+  { src: './gallery/people/people-04.jpg', cap: 'dressed up' },
+  { src: './gallery/people/people-05.jpg', cap: 'cognichip day' },
+  { src: './gallery/people/people-06.jpg', cap: 'matching moment' },
+  { src: './gallery/people/people-07.jpg', cap: 'dinner date' },
+  { src: './gallery/people/people-08.jpg', cap: 'sunset dinner' },
+  { src: './gallery/people/people-09.jpg', cap: 'building with lego' },
+  { src: './gallery/people/people-10.jpg', cap: 'museum crew' },
+  { src: './gallery/people/people-11.jpg', cap: 'roses' },
+  { src: './gallery/people/people-12.jpg', cap: 'winter walk' },
+  { src: './gallery/people/people-13.jpg', cap: 'hackville prizes' },
+  { src: './gallery/people/people-14.jpg', cap: '3rd place at hack canada' },
+  { src: './gallery/people/people-15.jpg', cap: 'mirror moment' },
+  { src: './gallery/people/people-16.jpg', cap: 'dinner glow' },
+  { src: './gallery/people/people-17.jpg', cap: 'times square' },
+  { src: './gallery/people/people-18.jpg', cap: 'cheeky' },
+  { src: './gallery/people/people-19.jpg', cap: 'family night' },
+  { src: './gallery/people/people-20.jpg', cap: 'night out' },
+  { src: './gallery/people/people-21.jpg', cap: 'park day' },
+  { src: './gallery/people/people-22.jpg', cap: 'glam' },
+  { src: './gallery/people/people-23.jpg', cap: 'umbrella alley crew' },
+  { src: './gallery/people/people-24.jpg', cap: 'golden hour' },
+  { src: './gallery/people/people-25.jpg', cap: 'late night' },
+  { src: './gallery/people/people-26.jpg', cap: 'birthday' },
+  { src: './gallery/people/people-27.jpg', cap: 'birthday glow' },
+  { src: './gallery/people/people-28.jpg', cap: 'party' },
+  { src: './gallery/people/people-29.jpg', cap: 'christmas market' },
+];
 const MORE = [];
 
 
@@ -109,7 +140,7 @@ function RetroWindow({ title, onClose, z, onFocus, start, children, width }) {
 function Gallery() {
   const [album, setAlbum] = useState(null); // null = top level, or 'babies' / 'places'
   const [big, setBig] = useState(null);
-  const ALB = { babies: { name: 'my babies', list: BABIES }, places: { name: 'places', list: PLACES } };
+  const ALB = { babies: { name: 'my babies', list: BABIES }, places: { name: 'places', list: PLACES }, people: { name: 'my people', list: PEOPLE } };
   const list = album ? ALB[album].list : MORE;
 
   if (big !== null) {
@@ -162,7 +193,13 @@ function Gallery() {
           <span>places</span>
           <em>{PLACES.length} photos</em>
         </button>
-        {MORE.map((p, i) => tile(p, i + 2, () => setBig(i)))}
+        <button className="polaroid gal-folder" style={{ '--r': '-1.5deg' }} onClick={() => setAlbum('people')} aria-label={`Open my people, ${PEOPLE.length} photos`}>
+          <span className="gal-stack" aria-hidden="true"><i /><i /></span>
+          <img src={PEOPLE[13].src} alt="" />
+          <span>my people</span>
+          <em>{PEOPLE.length} photos</em>
+        </button>
+        {MORE.map((p, i) => tile(p, i + 3, () => setBig(i)))}
       </div>
     </div>
   );
