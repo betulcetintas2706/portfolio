@@ -1363,7 +1363,7 @@ body.simple-mode { overflow: auto; }
 .simple-main { max-width: 900px; margin: 24px auto 40px; padding: 0 16px; display: flex; flex-direction: column; gap: 20px; }
 .simple-hero, .simple-section { background: var(--win-bg, #fbf3ee); border-radius: 14px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); scroll-margin-top: 60px; }
 .simple-hero { display: flex; gap: 28px; align-items: center; padding: 28px; }
-.simple-hero img { width: 150px; height: 150px; border-radius: 50%; object-fit: cover; border: 3px solid #e2c069; flex-shrink: 0; }
+
 .simple-hero h1 { font-family: 'Space Mono', monospace; font-size: 34px; margin: 0 0 8px; color: #3a0e1c; }
 .simple-hero h1 span { color: #a3304f; font-style: italic; }
 .simple-tag { font-style: italic; margin: 0 0 12px; }
@@ -1384,3 +1384,22 @@ body.simple-mode { overflow: auto; }
 .nav-card-icon.has-img { background: none; width: 46px; height: 46px; }
 .nav-card-icon.has-img img { width: 46px; height: 46px; display: block; filter: drop-shadow(0 2px 3px rgba(74,20,38,0.25)); }
 @media (max-width: 768px) { .dock-icon.has-img img { width: 40px; height: 40px; } }
+
+/* ===== Antique gold portrait frame ===== */
+.framed-photo { position: relative; flex-shrink: 0; filter: drop-shadow(0 8px 18px rgba(45,10,20,0.35)); }
+.framed-photo > img:first-child {
+  position: absolute; left: 8.2%; top: 9.3%; width: 82.6%; height: 82.6%;
+  border-radius: 50%; object-fit: cover; object-position: center 30%;
+}
+.framed-photo .frame-overlay { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+.hero-framed { width: 170px; height: 170px; animation: starFloat 4s ease-in-out infinite; }
+.about-framed { width: 190px; height: 190px; margin: 0 auto; }
+.simple-framed { width: 180px; height: 180px; }
+.simple-hero .framed-photo > img:first-child { border: none; }
+@media (max-width: 768px) { .about-framed { width: 160px; height: 160px; } }
+
+/* ===== Gold Open buttons ===== */
+.nav-card-btn.img-btn { background: none; padding: 0; border-radius: 0; line-height: 0; }
+.nav-card-btn.img-btn img { width: 96px; height: auto; display: block; filter: drop-shadow(0 2px 3px rgba(74,20,38,0.3)); transition: filter 0.2s; }
+.nav-card-btn.img-btn:hover { background: none; transform: scale(1.06); }
+.nav-card-btn.img-btn:hover img { filter: brightness(1.08) drop-shadow(0 3px 5px rgba(74,20,38,0.35)); }

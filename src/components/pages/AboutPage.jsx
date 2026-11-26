@@ -10,8 +10,9 @@ export default function AboutPage() {
       </div>
       <div className="about-grid">
         <div className="about-avatar">
-          <div className="avatar-circle">
+          <div className="framed-photo about-framed">
             <img src={personalInfo.photo} alt={personalInfo.name} />
+            <img className="frame-overlay" src="./frame.png" alt="" />
           </div>
           <div className="avatar-name">{personalInfo.name} {personalInfo.lastName}</div>
           <div className="avatar-role">{personalInfo.role}</div>

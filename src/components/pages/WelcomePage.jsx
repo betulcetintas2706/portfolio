@@ -18,7 +18,7 @@ export default function WelcomePage({ showPage, simple }) {
           In a hurry? Skip to simple view →
         </button>
       )}
-      <img className="hero-photo" src={personalInfo.photo} alt={`${personalInfo.name} ${personalInfo.lastName}`} />
+      <div className="framed-photo hero-framed"><img src={personalInfo.photo} alt={`${personalInfo.name} ${personalInfo.lastName}`} /><img className="frame-overlay" src="./frame.png" alt="" /></div>
 
       <div>
         <div className="hero-title">Hi, I'm <span>{personalInfo.name}</span>.</div>
@@ -49,7 +49,7 @@ export default function WelcomePage({ showPage, simple }) {
               <div className="nav-card-title">{title}</div>
               <div className="nav-card-desc">{desc}</div>
             </div>
-            <button className="nav-card-btn">Open →</button>
+            <button className="nav-card-btn img-btn" aria-label={`Open ${title}`}><img src="./open-btn.png" alt="Open" /></button>
           </div>
         ))}
       </div>

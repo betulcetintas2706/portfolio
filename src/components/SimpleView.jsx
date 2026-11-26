@@ -24,7 +24,7 @@ export default function SimpleView({ onDesktop }) {
   return (
     <div className="simple-view">
       <nav className="simple-nav">
-        <span className="simple-brand" onClick={() => go('top')}>Betul Cetintas</span>
+        <span className="simple-brand" onClick={() => go('top')}>Betül Cetintas</span>
         <div className="simple-links">
           {sections.map((s) => <button key={s.id} onClick={() => go(s.id)}>{s.label}</button>)}
           <a href={personalInfo.resume} target="_blank" rel="noreferrer">Résumé</a>
@@ -34,7 +34,7 @@ export default function SimpleView({ onDesktop }) {
 
       <main className="simple-main">
         <section id="s-top" className="simple-hero">
-          <img src={personalInfo.photo} alt={`${personalInfo.name} ${personalInfo.lastName}`} />
+          <div className="framed-photo simple-framed"><img src={personalInfo.photo} alt={`${personalInfo.name} ${personalInfo.lastName}`} /><img className="frame-overlay" src="./frame.png" alt="" /></div>
           <div>
             <h1>Hi, I'm <span>{personalInfo.name}</span>.</h1>
             <p className="simple-tag">{personalInfo.headline}</p>

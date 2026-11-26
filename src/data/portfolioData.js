@@ -3,7 +3,7 @@
 // ============================================
 
 export const personalInfo = {
-  name: "Betul",
+  name: "Betül",
   lastName: "Cetintas",
   tagline: "Computer Engineering (PEY Co-op) · University of Toronto · 5x Hackathon Winner",
   role: "Computer Engineering @ UofT",
