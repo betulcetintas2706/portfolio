@@ -11,12 +11,25 @@ const ITEMS = [
   { id: 'movies', label: 'Movies', img: './fun/Movies.png' },
 ];
 
-const PHOTOS = [
+const BABIES = [
   { src: './cats.jpg', cap: 'the girls' },
+  { src: './gallery/babies/baby-01.jpg', cap: 'looking up' },
+  { src: './gallery/babies/baby-02.jpg', cap: 'on the landing' },
+  { src: './gallery/babies/baby-03.jpg', cap: 'unimpressed' },
+  { src: './gallery/babies/baby-04.jpg', cap: 'up close' },
+  { src: './gallery/babies/baby-05.jpg', cap: 'co-pilot' },
+  { src: './gallery/babies/baby-06.jpg', cap: 'nap time' },
+  { src: './gallery/babies/baby-07.jpg', cap: 'judging you' },
+  { src: './gallery/babies/baby-08.jpg', cap: 'with her toy' },
+  { src: './gallery/babies/baby-09.jpg', cap: 'comfy' },
+  { src: './gallery/babies/baby-10.jpg', cap: 'treat time' },
+];
+const MORE = [
   { src: './lilies.png', cap: 'lilies' },
   { src: './rug.png', cap: 'home' },
   { src: './quote-bg.jpg', cap: 'words to live by' },
 ];
+const PHOTOS = [...BABIES, ...MORE];
 
 const MOVIES = [];
 
@@ -72,14 +85,18 @@ function Gallery() {
       </div>
     );
   }
+  const tile = (p, i) => (
+    <button key={p.src} className="polaroid" style={{ '--r': `${(i % 2 ? 1 : -1) * (1.5 + (i % 3))}deg` }} onClick={() => setBig(i)}>
+      <img src={p.src} alt={p.cap} loading="lazy" />
+      <span>{p.cap}</span>
+    </button>
+  );
   return (
-    <div className="gal-grid">
-      {PHOTOS.map((p, i) => (
-        <button key={p.src} className="polaroid" style={{ '--r': `${(i % 2 ? 1 : -1) * (1.5 + i)}deg` }} onClick={() => setBig(i)}>
-          <img src={p.src} alt={p.cap} />
-          <span>{p.cap}</span>
-        </button>
-      ))}
+    <div className="gal">
+      <div className="gal-album">my babies <small>{BABIES.length} photos</small></div>
+      <div className="gal-grid">{BABIES.map((p, i) => tile(p, i))}</div>
+      <div className="gal-album">around me</div>
+      <div className="gal-grid">{MORE.map((p, i) => tile(p, BABIES.length + i))}</div>
     </div>
   );
 }
@@ -157,7 +174,7 @@ function GameShell({ id, view, setView, active }) {
 }
 
 const BODIES = { gallery: Gallery, music: Music, movies: Movies };
-const WIDTHS = { goldminer: 680, cakes: 680 };
+const WIDTHS = { goldminer: 680, cakes: 680, gallery: 520 };
 const INSPECT_WIDTHS = { goldminer: 1010, cakes: 1010 };
 const TITLES = { gallery: 'Gallery', music: 'Music', movies: 'Movies', goldminer: 'Gold Miner', cakes: 'Comfy Cakes' };
 

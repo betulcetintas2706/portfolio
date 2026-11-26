@@ -2643,3 +2643,9 @@ body.hack-dead #root > *:not(.hack):not(.term) { filter: hue-rotate(110deg) satu
 .ct-letter-wrap .ct-letter { width: 86%; margin: 26px 0 0 -6px; }
 .ct-sign { position: absolute; right: 0; top: 0; font-family: 'Great Vibes', cursive; font-size: 40px; color: var(--burgundy-800); transform: rotate(-10deg); }
 .ct-sign::after { content: ''; position: absolute; left: 30%; right: -14%; bottom: 8px; height: 1.5px; background: var(--burgundy-700); transform: rotate(-6deg); border-radius: 2px; }
+.gal { max-height: min(62vh, 560px); overflow-y: auto; padding-right: 4px; scrollbar-width: thin; scrollbar-color: var(--burgundy-200) transparent; }
+.gal-album { font-family: 'Lora', serif; font-style: italic; font-size: 20px; color: var(--burgundy-800); margin: 4px 4px 10px; }
+.gal-album:not(:first-child) { margin-top: 18px; }
+.gal-album small { font-family: 'Space Mono', monospace; font-style: normal; font-size: 10.5px; color: var(--burgundy-400); margin-left: 8px; }
+.gal .gal-grid { grid-template-columns: repeat(3, 1fr); }
+@media (max-width: 768px) { .gal { max-height: none; } .gal .gal-grid { grid-template-columns: 1fr 1fr; } }
