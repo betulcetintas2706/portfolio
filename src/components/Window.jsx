@@ -68,7 +68,7 @@ export default function Window({ activePage, showPage, title, windowBodyRef, min
 
   return (
     <div 
-      className={`window${maximized ? ' maximized' : ''}${minimized ? ' minimized' : ''}${activePage === 'projects' || activePage === 'awards' ? ' window-wide' : ''}`}
+      className={`window${maximized ? ' maximized' : ''}${minimized ? ' minimized' : ''}${['projects', 'awards', 'contact'].includes(activePage) ? ' window-wide' : ''}`}
       id="mainWindow"
       aria-hidden={minimized}
       style={maximized || minimized ? undefined : {
