@@ -99,9 +99,9 @@ export const explorer = {
     points: ['Built on the Micro:bit', 'Heart rate sensing', 'Project lead'],
   },
   'AI Trash Bin Sorter': {
-    kicker: 'AI · Computer vision', sub: 'Waste sorting',
-    summary: 'A computer vision system that sorts trash in real time, with voice instructions.',
-    headline: 'Sorting trash with vision.',
-    points: ['Trained on 50k images', '70% sorting accuracy', 'Camera and voice instructions'],
+    kicker: 'AI · Computer vision', sub: 'Sorting waste with AI',
+    summary: 'Point a camera at your trash and it tells you, out loud, which bin it goes in.',
+    headline: 'In the correct bin.',
+    points: ['ResNet50 fine-tuned in PyTorch', '~96% validation accuracy', 'Webcam in, voice out'],
   },
 };

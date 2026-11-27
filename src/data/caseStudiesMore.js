@@ -517,18 +517,61 @@ export const moreCases = {
   trash: {
     id: 'trash',
     title: 'AI Trash Bin Sorter',
-    tagline: 'A camera that tells you which bin your trash goes in.',
-    award: 'Computer vision project',
+    logo: './logos/trash.png',
+    tagline: 'Point a camera at your trash and it tells you, out loud, which bin it goes in.',
+    award: 'Team Binary Brains · built in 4 days',
     icon: 'eye',
-    meta: [{ k: 'Stack', v: 'Python, computer vision, OpenCV' }],
-    stats: [
-      { n: '50k', l: 'training images' },
-      { n: '70%', l: 'sorting accuracy' },
+    image: './trash/cover.jpg',
+    gallery: {
+      title: 'From our presentation',
+      caption: 'Slides and real model output from our Binary Brains deck.',
+      shots: [
+        { src: './trash/predictions.jpg', label: 'Model predictions' },
+        { src: './trash/accuracy.jpg', label: 'Loss and accuracy by epoch' },
+        { src: './trash/categories.jpg', label: 'The four bins' },
+        { src: './trash/objectives.jpg', label: 'What it had to do' },
+        { src: './trash/cover.jpg', label: 'Binary Brains' },
+      ],
+    },
+    meta: [
+      { k: 'Team', v: 'Binary Brains: Matthew, Anshuman, Elif and me' },
+      { k: 'When', v: 'Summer 2023, 4 days' },
+      { k: 'Stack', v: 'Python, PyTorch, torchvision, ResNet50, Google Colab, text to speech' },
     ],
-    problem: ['People throw things in the wrong bin all the time, and one wrong item can ruin a whole batch of recycling.'],
-    built: ['A computer vision system with a camera that recognizes objects in real time and gives voice instructions on where they go.'],
-    flow: ['Camera', 'Real time object recognition', 'Pick the bin', 'Voice instruction'],
-    links: [],
+    stats: [
+      { n: '~96%', l: 'validation accuracy' },
+      { n: '4', l: 'bins: garbage, recycling, compost, hazardous' },
+      { n: '8', l: 'training epochs' },
+      { n: '4 days', l: 'from idea to demo' },
+    ],
+    problem: [
+      'People throw things in the wrong bin all the time, and over one million animals die each year after eating or getting trapped in trash that was not thrown out properly.',
+    ],
+    built: [
+      'You take a photo with your webcam or paste an image link. A PyTorch model built on a pretrained ResNet50 recognizes the material, like cardboard, glass, metal, paper, plastic or food, and maps it to garbage, recycling, compost or hazardous waste.',
+      'The answer is read out loud with text to speech. For tricky items it asks a follow up question, like whether a plastic is hard or soft, and anything the model is not sure about goes to garbage to be safe.',
+    ],
+    flow: ['Webcam or image link', 'Resize to 256 by 256', 'ResNet50 classifier', 'Map material to a bin', 'Read it out loud'],
+    myPart: [
+      { t: 'Webcam capture', d: 'Wrote the code that takes a photo from the webcam and sends it to the model.' },
+      { t: 'Text to speech', d: 'Made the program say the answer out loud instead of only printing it.' },
+      { t: 'Answer check', d: 'Built the function that checks if the user sorted the item into the right bin.' },
+      { t: 'Hazardous data', d: 'Found a dataset for hazardous waste, like batteries, so the model could learn a fourth bin.' },
+      { t: 'Testing and slides', d: 'Ran through the code for mistakes and helped with the presentation.' },
+    ],
+    hard: [
+      { t: 'When the model is unsure', d: 'A wrong recycling guess can ruin a whole batch, so anything below 60% confidence or contaminated goes to garbage.', decision: 'Garbage when in doubt.' },
+      { t: 'Plastic is tricky', d: 'Hard plastic is recyclable and soft plastic is not, and a photo alone cannot always tell.', decision: 'Ask the user one question.' },
+      { t: 'More than three bins', d: 'The starter dataset only knew six materials, so we added compost and hazardous waste datasets.', decision: 'Four real bins.' },
+    ],
+    results: [
+      { icon: 'star', h: '~96%', d: 'Validation accuracy after 8 epochs on the fine-tuned ResNet50' },
+      { icon: 'medal', h: 'Working demo', d: 'Webcam in, spoken answer out, in 4 days' },
+    ],
+    links: [
+      { label: 'Colab notebook', url: 'https://colab.research.google.com/drive/1k_vZATjrWmMxxs7SI8zC9FMjW3MpRBEQ' },
+      { label: 'Slides', url: 'https://www.canva.com/design/DAFpLSxUW78/3r-3tZ81YAY_jcMKMIsq3A/view' },
+    ],
   },
 };
 

@@ -303,9 +303,12 @@ export const projects = [
   },
   {
     title: "AI Trash Bin Sorter",
-    desc: "Computer vision system trained on 50k images achieving 70% sorting accuracy. Real-time object recognition with camera integration and voice instructions.",
-    tags: ["Python", "Computer Vision", "CV2"],
-    award: null,
+    logo: "./logos/trash.png",
+    links: [{ label: "Notebook", url: "https://colab.research.google.com/drive/1k_vZATjrWmMxxs7SI8zC9FMjW3MpRBEQ" }, { label: "Slides", url: "https://www.canva.com/design/DAFpLSxUW78/3r-3tZ81YAY_jcMKMIsq3A/view" }],
+    desc: "Team Binary Brains: a PyTorch image classifier that tells you which bin your waste goes in: garbage, recycling, compost or hazardous. We fine-tuned a pretrained ResNet50 and reached about 96% validation accuracy in 8 epochs. I built the webcam capture, the text-to-speech that reads the answer out loud, and the check that tells users if they sorted it right, and found the hazardous waste dataset. Built in 4 days.",
+    tags: ["Python", "PyTorch", "ResNet50", "Computer Vision", "Text-to-Speech"],
+    award: "Binary Brains · 4 days",
+    image: "./trash/cover.jpg",
     icon: "eye",
   },
 ];

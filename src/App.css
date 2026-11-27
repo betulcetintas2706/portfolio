@@ -2862,7 +2862,7 @@ body.hack-dead #root > *:not(.hack):not(.term) { filter: hue-rotate(110deg) satu
 .cs-hero-phones .front { width: 190px; z-index: 1; }
 .cs-hero-phones.single .front { width: 200px; transform: none; }
 .cs-hero-img { width: 100%; border-radius: 16px; overflow: hidden; box-shadow: 0 16px 34px rgba(74,21,37,0.22), 0 0 0 1px rgba(74,21,37,0.08); transform: rotate(-1deg); background: #fff; }
-.cs-hero-img img { width: 100%; display: block; aspect-ratio: 16 / 10; object-fit: cover; }
+.cs-hero-img img { width: 100%; display: block; aspect-ratio: 16 / 9; object-fit: cover; }
 .cs-hero-icon { width: 220px; height: 220px; border-radius: 44px; display: grid; place-items: center; background: linear-gradient(150deg, var(--burgundy-700), var(--burgundy-900)); box-shadow: 0 16px 34px rgba(74,21,37,0.28); }
 .cs-hero-icon .icon-svg { width: 96px; height: 96px; stroke: #f3d27a; stroke-width: 1.3; }
 .cs-meta { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); margin: 0; border-top: 1.5px solid var(--gold-l); border-bottom: 1.5px solid var(--gold-l); }
