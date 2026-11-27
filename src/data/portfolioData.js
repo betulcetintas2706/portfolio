@@ -292,11 +292,11 @@ export const skills = {
     { name: "JavaScript", usedIn: ["Kavodax Agentic Payments", "OSIRIS", "SideQuest", "49th", "This website"] },
     { name: "TypeScript / SQL", usedIn: ["Meducine", "49th"] },
     { name: "Verilog", usedIn: ["NanoTrade", "Comfy Cakes", "Gold Miner"] },
-    { name: "C / C++", usedIn: ["Data Structures (C++)", "C Programming"] },
+    { name: "C / C++", usedIn: ["Data Structures (C++)", "C Programming"], coursework: true },
     { name: "HTML", usedIn: ["Re:Pair Genomics", "Praevo landing page", "This website"] },
     { name: "CSS", usedIn: ["Re:Pair Genomics", "Praevo landing page", "This website"] },
-    { name: "Java", usedIn: [] },
-    { name: "MATLAB", usedIn: [] },
+    { name: "Java", usedIn: ["ICS3U Computer Science (Gr 11)", "ICS4U Computer Science (Gr 12)"], coursework: true },
+    { name: "MATLAB", usedIn: ["MAT188 Linear Algebra"], coursework: true },
   ],
   categories: [
     {

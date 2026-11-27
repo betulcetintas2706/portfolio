@@ -78,7 +78,7 @@ export default function SkillsPage() {
                 <div key={l.name} className="sk-lang">
                   <div className="sk-lang-head">
                     <b>{l.name}</b>
-                    {l.usedIn.length > 0 && <span className="sk-count">{l.usedIn.length} {l.name === 'C / C++' ? 'coursework examples' : l.usedIn.length === 1 ? 'example' : 'examples'}</span>}
+                    {l.usedIn.length > 0 && <span className="sk-count">{l.usedIn.length} {l.coursework ? 'coursework ' : ''}{l.usedIn.length === 1 ? 'example' : 'examples'}</span>}
                   </div>
                   {l.usedIn.length > 0 && (
                     <div className="sk-used">
