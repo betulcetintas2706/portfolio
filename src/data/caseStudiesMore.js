@@ -136,6 +136,7 @@ export const moreCases = {
 
   osiris: {
     id: 'osiris',
+    logo: './logos/osiris.png',
     title: 'OSIRIS',
     tagline: 'An AI supply chain co-pilot that spots global disruptions early and plans what to do about them.',
     award: 'Hack the Future 2026',
