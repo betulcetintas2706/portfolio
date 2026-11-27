@@ -170,6 +170,7 @@ export const projects = [
     tags: ["React", "Vite", "AI Agents", "Fintech", "Stablecoins", "ethers.js"],
     award: "Kavodax internship",
     image: "./kavodax-preview.jpg",
+    logo: "./kavodax-icon.png",
     icon: "chip",
   },
   {

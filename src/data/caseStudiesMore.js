@@ -7,6 +7,7 @@ export const moreCases = {
     tagline: 'A sandbox where an AI agent makes payments, and a policy engine decides if it is allowed to.',
     award: 'Kavodax internship · Fall 2026',
     image: './kavodax-preview.jpg',
+    logo: './kavodax-icon.png',
     live: './kavodax-demo/',
     meta: [
       { k: 'My role', v: 'Built it on my own as a Software & FinTech Intern' },
