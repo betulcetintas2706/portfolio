@@ -28,9 +28,9 @@ export const explorer = {
   },
   OSIRIS: {
     kicker: 'AI · Supply chain', sub: 'Supply chain risk',
-    summary: 'A multi-agent AI that watches world news and logistics data for supply chain risk.',
+    summary: 'An AI co-pilot that spots global supply chain disruptions early and plans the response.',
     headline: 'Risk, spotted early.',
-    points: ['Multi-agent system on Google ADK', 'Gemini-powered agents', 'GDELT, GNews, NASA FIRMS and ACLED signals'],
+    points: ['11-step Gemini agent on Google ADK', 'Risk score, scenarios and a ranked playbook', 'Human approval before anything is sent'],
   },
   IRIS: {
     kicker: 'Hardware · AI · iOS', sub: 'AI lab assistant',

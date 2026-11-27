@@ -195,8 +195,10 @@ export const projects = [
   },
   {
     title: "OSIRIS",
-    desc: "Supply chain risk intelligence platform using a multi-agent system (Google ADK) with Gemini-powered LLM agents. Parallel signal ingestion from GDELT, GNews, NASA FIRMS & ACLED for real-time geopolitical and logistics data.",
-    tags: ["React", "Google ADK", "Gemini", "Multi-Agent Systems"],
+    links: [{ label: "GitHub", url: "https://github.com/SehreenB/Hack-the-Future" }, { label: "Demo", url: "https://drive.google.com/file/d/1HkIpK71xP0PUbO6-Wj8pGv1H6KMbrSzS/view" }],
+    desc: "AI supply chain co-pilot that spots global disruptions early and plans the response. A Google ADK agent with Gemini 2.5 Flash runs an 11-step analysis on signals from GDELT, GNews, NASA FIRMS and ACLED: risk score, revenue at risk, base, stress and shock scenarios, a ranked mitigation playbook, a supplier email draft and an ERP flag. Built with human-in-the-loop guardrails: it never places orders, emails wait for approval, and ERP changes stay simulated.",
+    tags: ["React", "TypeScript", "Google ADK", "Gemini", "Multi-Agent Systems", "Supabase", "MapLibre"],
+    image: "./osiris/risk-map.jpg",
     award: "Hack the Future 2026",
     icon: "globe",
   },

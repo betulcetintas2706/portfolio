@@ -105,7 +105,7 @@ export function CaseStudy({ id, onOpen, onBack, compact }) {
   }
 
   // inside the project: real screens, a demo video or the live sandbox
-  const inside = (screens.length > 0 || c.video || c.live) && (
+  const inside = (screens.length > 0 || c.video || c.live || c.embed) && (
     <div className="cs-inside">
       <h3 className="cs-h">Inside the {isApp ? 'app' : 'project'}</h3>
       {screens.length > 0 && (
@@ -130,6 +130,11 @@ export function CaseStudy({ id, onOpen, onBack, compact }) {
           <div className="cs-live"><iframe src={c.live} title={`${c.title} live demo`} loading="lazy" /></div>
           <a className="cs-small-link" href={c.live} target="_blank" rel="noopener noreferrer">Open the demo full screen ↗</a>
         </>
+      )}
+      {c.embed && (
+        <div className="cs-video">
+          <iframe src={c.embed} title={`${c.title} demo`} allow="autoplay; fullscreen" allowFullScreen loading="lazy" />
+        </div>
       )}
       {c.video && !c.live && c.videoPortrait && (
         <div className="cs-phone-video">

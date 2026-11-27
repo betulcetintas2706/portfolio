@@ -137,24 +137,38 @@ export const moreCases = {
   osiris: {
     id: 'osiris',
     title: 'OSIRIS',
-    tagline: 'A team of AI agents that watches world news and logistics data for supply chain risk.',
+    tagline: 'An AI supply chain co-pilot that spots global disruptions early and plans what to do about them.',
     award: 'Hack the Future 2026',
     icon: 'globe',
+    image: './osiris/risk-map.jpg',
+    embed: 'https://drive.google.com/file/d/1HkIpK71xP0PUbO6-Wj8pGv1H6KMbrSzS/preview',
     meta: [
       { k: 'Built at', v: 'Hack the Future 2026' },
-      { k: 'Stack', v: 'React, Google ADK, Gemini' },
+      { k: 'Stack', v: 'React, TypeScript, Vite, Google ADK, Gemini 2.5 Flash, Supabase, MapLibre, Three.js' },
     ],
     stats: [
-      { n: '4', l: 'live data sources' },
-      { n: 'Multi agent', l: 'system on Google ADK' },
+      { n: '11', l: 'step agent analysis' },
+      { n: '4', l: 'live signal sources' },
+      { n: '3', l: 'scenarios: base, stress, shock' },
+      { n: '$10K', l: 'playbooks above this need a human' },
     ],
     problem: [
-      'Supply chains break because of things happening far away: a fire, a conflict, a port slowing down. By the time a buyer hears about it, it is often too late.',
+      'Supply chain teams make huge routing decisions from slow, scattered news. By the time a port strike or a plant fire reaches them, the damage is done.',
     ],
     built: [
-      'OSIRIS pulls signals from GDELT, GNews, NASA FIRMS and ACLED in parallel, and Gemini powered agents built on Google ADK read them for geopolitical and logistics risk in real time.',
+      'OSIRIS watches GDELT, GNews, NASA FIRMS and ACLED for disruptions like Red Sea rerouting or a plant explosion, and puts them in a live disruption inbox ranked by severity.',
+      'For each one, a Google ADK agent with Gemini 2.5 Flash runs an 11-step analysis against your own company profile: risk score, revenue at risk, days to stockout, base, stress and shock scenarios, and a ranked playbook. It then drafts the supplier email and the ERP change, with the full reasoning trace and sources.',
     ],
-    flow: ['GDELT, GNews, NASA FIRMS, ACLED', 'Parallel signal ingestion', 'Gemini agents on Google ADK', 'Risk insights in React'],
+    flow: ['Live world signals', 'Disruption inbox', 'Gemini agent scores the risk', 'Scenarios and playbook', 'Human approves', 'Supplier email and ERP flag'],
+    hard: [
+      { t: 'AI that never acts alone', d: 'The agent can never place orders. Supplier emails wait for approval, ERP changes stay simulated, and any playbook over $10K needs a human.', decision: 'Human in the loop by default.' },
+      { t: 'Fewer false alarms', d: 'It only escalates when the risk score is over 65, confidence is over 70 and the false positive rate is under 20%.', decision: 'Escalate only when all three agree.' },
+      { t: 'Specific, not generic', d: 'Every analysis is tied to the company profile, like an automotive parts maker in Germany, so the advice fits that business.', decision: 'Context first.' },
+    ],
+    links: [
+      { label: 'GitHub', url: 'https://github.com/SehreenB/Hack-the-Future' },
+      { label: 'Demo video', url: 'https://drive.google.com/file/d/1HkIpK71xP0PUbO6-Wj8pGv1H6KMbrSzS/view' },
+    ],
   },
 
   rearview: {
