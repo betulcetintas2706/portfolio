@@ -193,6 +193,7 @@ export const projects = [
   },
   {
     title: "IRIS",
+    logo: "./logos/iris.png",
     featured: true,
     links: [{ label: "Devpost", url: "https://devpost.com/software/iris-de1z3t" }, { label: "Demo", url: "https://vimeo.com/1178189406" }],
     desc: "AI lab assistant on safety glasses: an ESP32-S3 camera watches the experiment, confirms finished steps and flags errors, while students ask questions by voice. Python FastAPI backend with Gemini 2.5 Flash, Overshoot vision and ElevenLabs voice, plus a SwiftUI iOS app with Auth0. Sponsored by Overshoot (YC W26); ActualFood offered to support it after the hackathon.",
@@ -202,6 +203,7 @@ export const projects = [
   },
   {
     title: "RearView",
+    logo: "./logos/rearview.png",
     links: [{ label: "GitHub", url: "https://github.com/SehreenB/RearView" }, { label: "Devpost", url: "https://devpost.com/software/rearview-gy51t3" }, { label: "Demo", url: "https://vimeo.com/1158143118" }],
     desc: "iOS app that simulates a Quebec Class 5 road test: examiner-style voice directions, speed and stop tracking, and ARKit TrueDepth head tracking for shoulder checks. Ends with pass or fail, a mistake list and an error heatmap.",
     tags: ["SwiftUI", "ARKit", "MapKit", "Vapor", "Gemini API", "ElevenLabs"],
@@ -210,6 +212,7 @@ export const projects = [
   },
   {
     title: "49th",
+    logo: "./logos/49th.png",
     featured: true,
     links: [{ label: "GitHub", url: "https://github.com/akashngb/roots" }, { label: "Devpost", url: "https://devpost.com/software/hack-canada-2026" }, { label: "Demo", url: "https://vimeo.com/1171501862" }],
     desc: "AI settlement assistant for newcomers to Canada. WhatsApp onboarding, a personal task roadmap, voice-note replies in their language, a React dashboard, and a Playwright + Claude Vision agent that navigates government websites for the user. Placed against 600+ participants and 200+ projects.",
@@ -219,6 +222,7 @@ export const projects = [
   },
   {
     title: "SideQuest",
+    logo: "./logos/sidequest.png",
     links: [{ label: "GitHub", url: "https://github.com/SehreenB/SideQuest" }, { label: "Devpost", url: "https://devpost.com/software/sidequest-0iysgt" }, { label: "Demo", url: "https://vimeo.com/1169233848" }],
     desc: "Discovery-first navigation iOS app generating scenic, themed routes (Adventure, Foodie, Nature, Culture) with Gemini and ElevenLabs voice narration, geo-tagged memories, challenges and Solana NFT badges.",
     tags: ["SwiftUI", "Node.js", "Google Maps API", "Supabase", "Gemini", "Solana"],
@@ -227,6 +231,7 @@ export const projects = [
   },
   {
     title: "NanoTrade",
+    logo: "./logos/nanotrade.png",
     featured: true,
     links: [{ label: "GitHub", url: "https://github.com/betulcetintas2706/ttsky-nanotrades" }, { label: "Website", url: "https://betulcetintas2706.github.io/websitenanotrade/" }, { label: "Devpost", url: "https://devpost.com/software/nanotrade" }, { label: "Demo", url: "https://vimeo.com/1167116687" }],
     desc: "Tiny Tapeout ASIC in Verilog with 5 RTL modules running 8 parallel market anomaly checks at 50 MHz with ~80 ns latency. Fit into 9,800 of 10,000 cells and cut false positives from 40% to 0.5% across 10,000+ simulations.",
@@ -236,6 +241,7 @@ export const projects = [
   },
   {
     title: "Comfy Cakes",
+    logo: "./logos/cakes.png",
     desc: "Recreation of the Purble Place Comfy Cakes game on a DE1-SoC FPGA in Verilog. I own the game logic and control: FSMs, order generation and checking, scoring, timing and difficulty.",
     tags: ["Verilog", "FPGA", "DE1-SoC", "FSMs"],
     award: "In Progress",
@@ -243,6 +249,7 @@ export const projects = [
   },
   {
     title: "VYBE",
+    logo: "./logos/vybe.png",
     links: [{ label: "GitHub", url: "https://github.com/Vidhikalal/VYBE" }, { label: "Devpost", url: "https://devpost.com/software/vybe-l3ua1m" }],
     desc: "iOS app for Deaf and hard-of-hearing users that turns live music into real-time vibration: bass drives intensity, tempo drives pulse speed. Built with AVFoundation audio capture and Core Haptics, plus an Apple Watch companion app so you can feel it on your wrist.",
     tags: ["Swift", "SwiftUI", "Core Haptics", "AVFoundation", "watchOS"],
@@ -251,6 +258,7 @@ export const projects = [
   },
   {
     title: "Gold Miner (FPGA Game)",
+    logo: "./logos/goldminer.png",
     desc: "Minecraft-themed Gold Miner arcade game built fully in hardware in Verilog on the DE1-SoC. 31-state control FSM plus sub-FSMs, five custom RAM modules, pixel-level collision detection, 320×240 VGA graphics, a 45-second HEX timer, PS/2 keyboard controls, LFSR object placement and win/fail audio.",
     tags: ["Verilog", "FPGA", "DE1-SoC", "FSMs", "VGA"],
     award: "FPGA Final Project",

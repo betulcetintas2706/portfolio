@@ -125,6 +125,7 @@ export const moreCases = {
 
   rearview: {
     id: 'rearview',
+    logo: './logos/rearview.png',
     title: 'RearView',
     tagline: 'Practice your road test before the real one, with an examiner in your phone.',
     award: 'ConUHacks X',
@@ -164,6 +165,7 @@ export const moreCases = {
 
   '49th': {
     id: '49th',
+    logo: './logos/49th.png',
     title: '49th',
     tagline: 'An AI settlement assistant that helps newcomers to Canada, right in WhatsApp.',
     award: 'Third Place, Hack Canada 2026 · Google Build with AI winner',
@@ -209,6 +211,7 @@ export const moreCases = {
 
   sidequest: {
     id: 'sidequest',
+    logo: './logos/sidequest.png',
     title: 'SideQuest',
     tagline: 'A navigation app that plans the scenic way, not the fastest one.',
     award: 'DeerHacks V',
@@ -249,6 +252,7 @@ export const moreCases = {
 
   vybe: {
     id: 'vybe',
+    logo: './logos/vybe.png',
     title: 'VYBE',
     tagline: 'Feel music through vibration, made for Deaf and hard of hearing people.',
     award: '2nd Place, Hackville 2026',
@@ -284,6 +288,7 @@ export const moreCases = {
 
   cakes: {
     id: 'cakes',
+    logo: './logos/cakes.png',
     title: 'Comfy Cakes',
     tagline: 'The Purble Place cake game, rebuilt in hardware on an FPGA.',
     award: 'ECE241 · Fall 2026',
@@ -312,6 +317,7 @@ export const moreCases = {
 
   goldminer: {
     id: 'goldminer',
+    logo: './logos/goldminer.png',
     title: 'Gold Miner',
     tagline: 'A Minecraft themed Gold Miner arcade game, built fully in hardware.',
     award: 'FPGA final project',

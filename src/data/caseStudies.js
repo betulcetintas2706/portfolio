@@ -58,6 +58,7 @@ export const caseStudies = {
 
   nanotrade: {
     id: 'nanotrade',
+    logo: './logos/nanotrade.png',
     title: 'NanoTrade',
     tagline: 'A computer chip that spots a market crash in 80 nanoseconds.',
     award: '3rd Place · UofT IEEE IC Hackathon (ASIC)',
@@ -110,6 +111,7 @@ export const caseStudies = {
 
   iris: {
     id: 'iris',
+    logo: './logos/iris.png',
     title: 'IRIS',
     tagline: 'Smart safety glasses that watch your lab experiment and tell you, out loud, if a step is wrong.',
     award: 'YHack Spring 2026 · Yale',
