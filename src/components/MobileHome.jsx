@@ -79,7 +79,7 @@ export default function MobileHome({ showPage, onSimple }) {
         </button>
 
         <div className="m-grid">
-          {APPS.map((a) => <App key={a.label} app={a} />)}
+          {APPS.filter((a) => !DOCK.includes(a.label)).map((a) => <App key={a.label} app={a} />)}
         </div>
 
         <div className="m-dots" aria-hidden="true"><i className="on" /><i /></div>

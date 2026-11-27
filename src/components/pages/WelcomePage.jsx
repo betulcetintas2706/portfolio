@@ -46,7 +46,7 @@ export default function WelcomePage({ showPage, simple }) {
       <div className="hero-tagline">{personalInfo.headline}</div>
 
       <div className="hero-chips">
-        <span>AI &amp; Hardware Engineer</span><i>·</i><span>5x Hackathon Winner</span><i>·</i><span>CompE @ UofT</span>
+        <span>Software &amp; Hardware Engineer</span><i>·</i><span>5x Hackathon Winner</span><i>·</i><span>CompE @ UofT</span>
       </div>
 
       <div className="code-card" aria-label="Current status">
