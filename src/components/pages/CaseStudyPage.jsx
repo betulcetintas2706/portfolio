@@ -24,35 +24,52 @@ export function CaseStudy({ id, onOpen, onBack, compact }) {
         <span className="case-award">{c.award}</span>
       </header>
 
-      <dl className="case-meta">
+      {c.play && (
+        <div className="case-play">
+          <button className="px-btn primary" onClick={() => window.dispatchEvent(new CustomEvent('open-extra', { detail: { id: c.play, view: 'play' } }))}>▶ Play it here</button>
+          <button className="px-btn dark" onClick={() => window.dispatchEvent(new CustomEvent('open-extra', { detail: { id: c.play, view: 'inspect' } }))}>See how it works</button>
+        </div>
+      )}
+
+      {c.meta?.length > 0 && <dl className="case-meta">
         {c.meta.map((m) => (
           <div key={m.k}><dt>{m.k}</dt><dd>{m.v}</dd></div>
         ))}
-      </dl>
+      </dl>}
 
-      <div className="case-stats">
+      {c.stats?.length > 0 && <div className="case-stats">
         {c.stats.map((s) => (
           <div key={s.l} className="case-stat"><b>{s.n}</b><span>{s.l}</span></div>
         ))}
-      </div>
+      </div>}
 
-      <section>
+      {c.problem?.length > 0 && <section>
         <h3>// The problem</h3>
         {c.problem.map((p) => <p key={p}>{p}</p>)}
-      </section>
+      </section>}
 
       <section>
         <h3>// What we built</h3>
         {c.built.map((p) => <p key={p}>{p}</p>)}
-        <div className="case-flow" aria-label="How it works">
+        {c.flow && <div className="case-flow" aria-label="How it works">
           {c.flow.map((f, i) => (
             <span key={f} className="case-flow-item">
               <span className="case-flow-step"><i>{i + 1}</i>{f}</span>
               {i < c.flow.length - 1 && <span className="case-flow-arrow">→</span>}
             </span>
           ))}
-        </div>
+        </div>}
       </section>
+
+      {c.live && (
+        <section>
+          <h3>// Try it</h3>
+          <div className="case-live">
+            <iframe src={c.live} title={`${c.title} live demo`} loading="lazy" />
+          </div>
+          <a className="case-live-open" href={c.live} target="_blank" rel="noopener noreferrer">Open full screen ↗</a>
+        </section>
+      )}
 
       {(c.demo || c.screens) && (
         <section>
@@ -99,33 +116,33 @@ export function CaseStudy({ id, onOpen, onBack, compact }) {
         </section>
       )}
 
-      <section className="case-mine">
+      {c.myPart?.length > 0 && <section className="case-mine">
         <h3>// My part</h3>
         <ul>{c.myPart.map((p) => <li key={p}>{p}</li>)}</ul>
-      </section>
+      </section>}
 
-      <section>
+      {c.hard?.length > 0 && <section>
         <h3>// The hard parts</h3>
         <div className="case-hard">
           {c.hard.map((h) => (
             <div key={h.t} className="case-hard-card"><b>{h.t}</b><p>{h.d}</p></div>
           ))}
         </div>
-      </section>
+      </section>}
 
-      <section>
+      {c.results?.length > 0 && <section>
         <h3>// Results</h3>
         <ul className="case-results">{c.results.map((r) => <li key={r}>{r}</li>)}</ul>
-      </section>
+      </section>}
 
-      <section className="case-learned">
+      {c.learned && <section className="case-learned">
         <h3>// What I learned</h3>
         <p>{c.learned}</p>
-      </section>
+      </section>}
 
       <footer className="case-foot">
         <div className="project-links">
-          {c.links.map((l) => (
+          {(c.links || []).map((l) => (
             <a key={l.label} className="project-link" href={l.url} target="_blank" rel="noreferrer">{l.label}</a>
           ))}
         </div>

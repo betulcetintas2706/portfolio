@@ -2754,3 +2754,9 @@ body.hack-dead #root > *:not(.hack):not(.term) { filter: hue-rotate(110deg) satu
 
 .px-shot.vid { background: #0b0b0c; transform: none; }
 .px-shot.vid video { height: 100%; width: auto; max-width: 100%; display: block; margin: 0 auto; }
+
+.case-play { display: flex; gap: 10px; justify-content: center; margin-top: 16px; flex-wrap: wrap; }
+.case-live { height: 560px; border-radius: 12px; overflow: hidden; border: 1px solid var(--burgundy-200); background: #fff; }
+.case-live iframe { width: 100%; height: 100%; border: 0; display: block; }
+.case-live-open { display: inline-block; margin-top: 8px; font-family: 'Space Mono', monospace; font-size: 11px; color: var(--burgundy-700); }
+@media (max-width: 640px) { .case-live { height: 480px; } }

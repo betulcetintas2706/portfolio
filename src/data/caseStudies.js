@@ -1,3 +1,5 @@
+import { moreCases, moreCaseForProject } from './caseStudiesMore';
+import { projects } from './portfolioData';
 // Case studies for the featured projects. Facts come from Devpost,
 // LinkedIn posts and the resume, so keep numbers in sync with those.
 
@@ -156,7 +158,11 @@ export const caseStudies = {
   },
 };
 
-export const caseOrder = ['meducine', 'nanotrade', 'iris'];
+Object.assign(caseStudies, moreCases);
+
 
 // Map featured project titles to their case study.
-export const caseForProject = { Meducine: 'meducine', NanoTrade: 'nanotrade', IRIS: 'iris' };
+export const caseForProject = { Meducine: 'meducine', NanoTrade: 'nanotrade', IRIS: 'iris', ...moreCaseForProject };
+
+// Same order as the project list.
+export const caseOrder = projects.map((p) => caseForProject[p.title]).filter(Boolean);

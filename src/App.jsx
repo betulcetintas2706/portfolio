@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { pageTitles } from './data/portfolioData';
+import { caseStudies } from './data/caseStudies';
 import MenuBar from './components/MenuBar';
 import DesktopIcons from './components/DesktopIcons';
 import Window from './components/Window';
@@ -109,7 +110,7 @@ export default function App() {
       <Window
         activePage={activePage}
         showPage={showPage}
-        title={pageTitles[activePage] || activePage}
+        title={pageTitles[activePage] || (activePage?.startsWith('case-') && caseStudies[activePage.slice(5)] ? `${caseStudies[activePage.slice(5)].title} · case study` : activePage)}
         windowBodyRef={windowBodyRef}
         minimized={minimized}
         setMinimized={setMinimized}
