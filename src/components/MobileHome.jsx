@@ -52,8 +52,12 @@ export default function MobileHome({ showPage, onSimple }) {
     <div className="mobile-home">
       <div className="m-status">
         <span className="m-time">{time}</span>
-        <span className="m-site">betulcetintas.com</span>
-        <span className="m-signal" aria-hidden="true">▂▄▆ ◔</span>
+        <span className="m-island" aria-hidden="true" />
+        <span className="m-icons" aria-hidden="true">
+          <svg viewBox="0 0 18 12"><rect x="0" y="8" width="3" height="4" rx="1" /><rect x="5" y="5.5" width="3" height="6.5" rx="1" /><rect x="10" y="3" width="3" height="9" rx="1" /><rect x="15" y="0" width="3" height="12" rx="1" /></svg>
+          <svg viewBox="0 0 16 12"><path d="M8 2.2c2.4 0 4.6.9 6.3 2.5l1.2-1.3C13.5 1.4 10.9.4 8 .4S2.5 1.4.5 3.4l1.2 1.3C3.4 3.1 5.6 2.2 8 2.2zm0 3.6c1.4 0 2.7.5 3.7 1.4l1.2-1.3C11.6 4.7 9.9 4 8 4s-3.6.7-4.9 1.9l1.2 1.3c1-.9 2.3-1.4 3.7-1.4zm0 3.6c-.5 0-1 .2-1.4.6L8 11.6l1.4-1.6c-.4-.4-.9-.6-1.4-.6z" /></svg>
+          <span className="m-batt"><i /></span>
+        </span>
       </div>
 
       <div className="m-scroll">

@@ -7,6 +7,7 @@ import SkillsPage from './pages/SkillsPage';
 import ContactPage from './pages/ContactPage';
 import AwardsPage from './pages/AwardsPage';
 import CaseStudyPage from './pages/CaseStudyPage';
+import { IosBack, HomeBar } from './IosBits';
 
 const pages = {
   home: WelcomePage,
@@ -124,6 +125,7 @@ export default function Window({ activePage, showPage, title, windowBodyRef, min
           touchAction: 'none'
         }}
       >
+        <IosBack label={caseId ? 'Projects' : 'Home'} onClick={() => (caseId ? showPage('projects') : (reset(), showPage(null)))} />
         <div className="traffic-lights">
           <button className="tl tl-red" title="Close" aria-label="Close window"
             onClick={() => { reset(); showPage(null); }}>×</button>
@@ -132,7 +134,7 @@ export default function Window({ activePage, showPage, title, windowBodyRef, min
           <button className="tl tl-green" title={maximized ? 'Exit full size' : 'Full size'} aria-label="Toggle full size"
             onClick={() => setMaximized((m) => !m)}>{maximized ? '−' : '+'}</button>
         </div>
-        <div className="window-title"><span className="win-path">~/{(activePage || "").replace("case-", "case-studies/").replace("home", "welcome")}</span><span className="win-name">{title}</span></div>
+        <div className="window-title"><span className="win-path">~/{(activePage || "").replace("case-", "case-studies/").replace("home", "welcome")}</span><span className="win-name">{String(title).split(' · ')[0]}{String(title).includes(' · ') && <span className="win-sub"> · {String(title).split(' · ').slice(1).join(' · ')}</span>}</span></div>
       </div>
       <div className="window-body" ref={windowBodyRef}>
         {PageComponent && <PageComponent showPage={showPage} caseId={caseId} />}
@@ -143,6 +145,7 @@ export default function Window({ activePage, showPage, title, windowBodyRef, min
           onDoubleClick={d === 'se' ? reset : undefined} />
       ))}
       {!maximized && !minimized && <span className="win-grip" aria-hidden="true" />}
+      <HomeBar onHome={() => { reset(); showPage(null); }} />
       <div className={`scroll-fade${showHint ? ' on' : ''}`} aria-hidden="true" />
       <button
         className={`scroll-hint${showHint ? ' on' : ''}`}

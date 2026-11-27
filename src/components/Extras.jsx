@@ -1,3 +1,4 @@
+import { IosBack, HomeBar } from './IosBits';
 import { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { TRACKS } from './widgets/MediaWidget';
@@ -132,6 +133,7 @@ function RetroWindow({ title, onClose, z, onFocus, start, children, width }) {
   return (
     <div className={`retro-win${width ? ' retro-wide' : ''}`} style={{ left: pos.x, top: pos.y, zIndex: z, width }} onPointerDown={onFocus}>
       <div className="retro-bar" onPointerDown={down} onPointerMove={move} onPointerUp={up}>
+        <IosBack onClick={onClose} />
         <div className="traffic-lights">
           <button className="tl tl-red" onClick={onClose} aria-label={`Close ${title}`}>×</button>
           <span className="tl tl-yellow tl-off" />
@@ -140,6 +142,7 @@ function RetroWindow({ title, onClose, z, onFocus, start, children, width }) {
         <span className="retro-title">{title}</span>
       </div>
       <div className="retro-body">{children}</div>
+      <HomeBar onHome={onClose} />
     </div>
   );
 }

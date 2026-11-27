@@ -19,7 +19,7 @@ const CODE = [
   <>{K('class')} {F('Betul')}(Engineer):</>,
   <>{'    '}focus   = [{S('"AI agents"')}, {S('"ASIC / FPGA"')}, {S('"iOS"')}]</>,
   <>{'    '}shipped = [{S('"Meducine"')}, {S('"NanoTrade"')}, {S('"IRIS"')}, {S('"49th"')}]</>,
-  <>{'    '}roles   = {N('6')}   {C('# fintech, health tech, data, startups')}</>,
+  <>{'    '}roles   = {N('10')}  {C('# fintech, health tech, data, startups')}</>,
   <>{'    '}awards  = {N('5')}   {C('# incl. 1st @ Harvard HSIL 2026')}</>,
   <>{'    '}open_to = {S('"Summer 2027 internships"')}</>,
 ];

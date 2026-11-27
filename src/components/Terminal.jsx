@@ -1,3 +1,4 @@
+import { IosBack, HomeBar } from './IosBits';
 import { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { personalInfo, about, experiences, projects, awards, skills, contact } from '../data/portfolioData';
@@ -211,6 +212,7 @@ export default function Terminal({ onClose, showPage }) {
   return createPortal(
     <div className="term" style={{ left: pos.x, top: pos.y }} role="dialog" aria-label="Terminal">
       <div className="term-bar" onPointerDown={down} onPointerMove={move} onPointerUp={up}>
+        <IosBack onClick={onClose} />
         <div className="traffic-lights">
           <button className="tl tl-red" onClick={onClose} aria-label="Close terminal">×</button>
           <span className="tl tl-yellow tl-off" />
@@ -228,6 +230,7 @@ export default function Terminal({ onClose, showPage }) {
           />
         </div>
       </div>
+      <HomeBar onHome={onClose} />
     </div>,
     document.body,
   );

@@ -3041,3 +3041,99 @@ body.hack-dead #root > *:not(.hack):not(.term) { filter: hue-rotate(110deg) satu
   .simple-section .px-detail { position: sticky; top: 54px; align-self: flex-start; }
 }
 .simple-section .px-body { align-items: flex-start; }
+
+/* ===== iPhone mode ===== */
+.ios-back, .ios-homebar { display: none; }
+@media (max-width: 768px) {
+  :root { --ios: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Helvetica Neue', system-ui, sans-serif; }
+  body { -webkit-tap-highlight-color: transparent; overscroll-behavior-y: none; }
+
+  /* status bar */
+  .m-status { height: calc(48px + env(safe-area-inset-top)); padding: env(safe-area-inset-top) 26px 0; font-family: var(--ios); font-size: 16px; font-weight: 600; letter-spacing: -0.01em; }
+  .m-island { width: 110px; height: 30px; border-radius: 20px; background: #000; box-shadow: 0 0 0 1px rgba(255,255,255,0.04); }
+  @supports (padding-top: env(safe-area-inset-top)) { .m-status { } }
+  .m-icons { display: flex; align-items: center; gap: 6px; }
+  .m-icons svg { height: 11px; width: auto; fill: currentColor; }
+  .m-batt { position: relative; width: 25px; height: 12px; border: 1.2px solid rgba(253,246,240,0.6); border-radius: 4px; padding: 1.5px; }
+  .m-batt::after { content: ''; position: absolute; right: -4px; top: 3.5px; width: 2px; height: 4px; border-radius: 0 2px 2px 0; background: rgba(253,246,240,0.6); }
+  .m-batt i { display: block; height: 100%; width: 80%; border-radius: 2px; background: #fdf6f0; }
+
+  /* home screen */
+  .m-scroll { padding: 6px 20px 0; }
+  .m-widget { border-radius: 26px; }
+  .m-hi { font-family: var(--ios); font-weight: 700; font-size: 21px; letter-spacing: -0.02em; }
+  .m-sub { font-family: var(--ios); font-size: 13px; }
+  .m-chip { font-family: var(--ios); font-weight: 600; font-size: 11.5px; }
+  .m-search { font-family: var(--ios) !important; font-size: 15px !important; border-radius: 14px !important; }
+  .m-grid { gap: 22px 10px; margin-top: 24px; }
+  .m-icon { width: 62px; height: 62px; }
+  .m-icon img, .m-tile { border-radius: 15px; }
+  .m-label { font-family: var(--ios); font-size: 11.5px; font-weight: 500; letter-spacing: -0.01em; max-width: 76px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .m-simple { font-family: var(--ios); font-size: 12px; }
+  .m-dock { left: 10px; right: 10px; bottom: calc(10px + env(safe-area-inset-bottom)); border-radius: 34px; padding: 14px 12px; background: rgba(253,246,240,0.18); backdrop-filter: blur(24px) saturate(1.4); -webkit-backdrop-filter: blur(24px) saturate(1.4); }
+  .mobile-home { padding-bottom: calc(130px + env(safe-area-inset-bottom)); }
+
+  /* every app opens full screen like an iPhone app */
+  .window, .retro-win, .term {
+    top: 0 !important; left: 0 !important; right: 0 !important; bottom: 0 !important;
+    width: 100% !important; height: 100% !important; height: 100dvh !important; max-width: none !important;
+    border-radius: 0 !important; border: none !important; box-shadow: none !important; transform: none !important;
+    animation: iosOpen 0.38s cubic-bezier(0.2, 0.9, 0.25, 1) both !important;
+    display: flex !important; flex-direction: column;
+  }
+  .window { z-index: 1300 !important; }
+  .retro-win { z-index: 1400 !important; }
+  .term { z-index: 1500 !important; }
+  .window.minimized { display: none !important; }
+  @keyframes iosOpen { from { transform: translateY(6%) scale(0.94) !important; opacity: 0; border-radius: 40px; } to { transform: none; opacity: 1; } }
+
+  /* nav bar: back button, centred title, frosted */
+  .window-titlebar, .retro-bar, .term-bar {
+    position: relative; flex: none; height: auto !important; min-height: 44px; display: flex; align-items: center; justify-content: center;
+    padding: calc(6px + env(safe-area-inset-top)) 86px 8px !important; cursor: default !important;
+    background: rgba(248,240,236,0.86) !important; backdrop-filter: blur(20px) saturate(1.6); -webkit-backdrop-filter: blur(20px) saturate(1.6);
+    border-bottom: 0.5px solid rgba(60,20,30,0.18) !important; touch-action: auto !important;
+  }
+  .term-bar { background: rgba(30,10,18,0.92) !important; border-bottom-color: rgba(255,255,255,0.1) !important; }
+  .window-titlebar .traffic-lights, .retro-bar .traffic-lights, .term-bar .traffic-lights { display: none !important; }
+  .window-title, .retro-title, .term-title { font-family: var(--ios) !important; font-size: 17px !important; font-weight: 600 !important; letter-spacing: -0.02em; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
+  .window-title { display: block !important; }
+  .window-title .win-path { display: none; }
+  .window-title .win-name { color: #2b0f17; }
+  .retro-title { color: #2b0f17; position: static !important; transform: none !important; }
+  .term-title { color: #f6e7d0; }
+  .ios-back {
+    display: flex; align-items: center; gap: 4px; position: absolute; left: 8px; bottom: 6px; z-index: 2;
+    background: none; border: none; padding: 6px 8px; font-family: var(--ios); font-size: 17px; color: #a3304f; cursor: pointer;
+  }
+  .ios-back svg { width: 11px; height: 19px; }
+  .term-bar .ios-back { color: #e2c069; }
+  .ios-back:active { opacity: 0.4; }
+
+  .window-body, .retro-body, .term-body { flex: 1; min-height: 0; overflow-y: auto; -webkit-overflow-scrolling: touch; padding-bottom: calc(40px + env(safe-area-inset-bottom)) !important; max-height: none !important; }
+  .retro-win { overflow: hidden !important; }
+
+  /* home indicator */
+  .ios-homebar {
+    display: flex; justify-content: center; align-items: flex-end; position: absolute; left: 0; right: 0; bottom: 0; z-index: 50;
+    height: calc(30px + env(safe-area-inset-bottom)); padding-bottom: calc(8px + env(safe-area-inset-bottom)); cursor: pointer;
+    background: linear-gradient(180deg, transparent, rgba(248,240,236,0.0));
+  }
+  .ios-homebar i { width: 134px; height: 5px; border-radius: 3px; background: rgba(20,6,10,0.85); }
+  .term .ios-homebar i { background: rgba(255,255,255,0.75); }
+  .win-rz, .win-grip { display: none !important; }
+
+  /* inside apps: comfortable phone padding */
+  .page { padding: 20px 18px !important; }
+  .page.px, .page.sk, .page.cs-page { padding: 0 !important; }
+  .page.cs-page { padding: 0 16px 30px !important; }
+  .cs-bar { top: 0; }
+  body.hacked .window { animation: none !important; }
+}
+@media (max-width: 768px) {
+  .retro-bar .ios-back, .term-bar .ios-back { width: auto !important; height: auto !important; border: none !important; background: none !important; line-height: normal !important; font-size: 17px !important; padding: 6px 8px !important; box-shadow: none !important; }
+  .retro-bar .ios-back { color: #a3304f !important; }
+  .term-bar .ios-back { color: #e2c069 !important; }
+  .cs-bar .cs-back { display: none !important; }
+}
+@media (max-width: 768px) { .win-sub { display: none; } }
