@@ -23,14 +23,11 @@ export default function MenuBar({ showPage, onSimple }) {
     return () => clearInterval(id);
   }, []);
 
-  const items = [
-    { label: 'Portfolio', page: 'home' },
-    { label: 'About', page: 'about' },
-    { label: 'Experience', page: 'experience' },
-    { label: 'Projects', page: 'projects' },
-    { label: 'Skills', page: 'skills' },
-    { label: 'Awards', page: 'awards' },
-    { label: 'Contact', page: 'contact' },
+  const links = [
+    { label: 'Résumé', href: './BetulCetintas-Resume.pdf?v=2029' },
+    { label: 'GitHub', href: 'https://github.com/betulcetintas2706' },
+    { label: 'Devpost', href: 'https://devpost.com/betulcetintas2706' },
+    { label: 'LinkedIn', href: 'https://www.linkedin.com/in/betul-cetintas/' },
   ];
 
   return (
@@ -40,10 +37,9 @@ export default function MenuBar({ showPage, onSimple }) {
         <div className="easter-egg">Merhaba! You found it. Fun fact: NanoTrade spots a flash crash 27 billion times faster than the 2010 crash unfolded. ⚡</div>
       )}
       <div className="menubar-items">
-        {items.map((item) => (
-          <div key={item.page} className="menubar-item" onClick={() => showPage(item.page)}>
-            {item.label}
-          </div>
+        <div className="menubar-item" onClick={() => showPage('home')}>Portfolio</div>
+        {links.map((l) => (
+          <a key={l.label} className="menubar-item" href={l.href} target="_blank" rel="noopener noreferrer">{l.label}</a>
         ))}
       </div>
       <div className="menubar-right">
@@ -52,10 +48,6 @@ export default function MenuBar({ showPage, onSimple }) {
         </button>
         <button className="simple-toggle term-toggle" onClick={() => window.dispatchEvent(new Event('open-terminal'))} title="Open the terminal (shortcut: `)">&gt;_ Terminal</button>
         <button className="simple-toggle" onClick={onSimple} title="A plain, scrollable version of this site">Simple view</button>
-        <a href="./BetulCetintas-Resume.pdf?v=2029" target="_blank" rel="noopener noreferrer">Résumé</a>
-        <a href="https://github.com/betulcetintas2706" target="_blank" rel="noopener noreferrer">GitHub</a>
-        <a href="https://devpost.com/betulcetintas2706" target="_blank" rel="noopener noreferrer">Devpost</a>
-        <a href="https://www.linkedin.com/in/betul-cetintas/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
         <span className="sys-status" title="All systems running"><b />online · v2.6 · YYZ</span>
         <span className="mono-time">{time}</span>
       </div>

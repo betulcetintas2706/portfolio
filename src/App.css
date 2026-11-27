@@ -3137,3 +3137,4 @@ body.hack-dead #root > *:not(.hack):not(.term) { filter: hue-rotate(110deg) satu
   .cs-bar .cs-back { display: none !important; }
 }
 @media (max-width: 768px) { .win-sub { display: none; } }
+a.menubar-item { color: rgba(253, 246, 240, 0.9); text-decoration: none; }
