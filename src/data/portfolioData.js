@@ -278,6 +278,7 @@ export const projects = [
   },
   {
     title: "Mental Health Pop-up Space",
+    logo: "./logos/popup.png",
     desc: "Client design project for the Engineering and Computer Science Library at UofT (APS112). The library's peer-support program needed a private space four days a week. Our team generated 89 ideas and chose the SmartTint Glass Pod: glass that turns opaque when the pod is in use, a soundproof frame targeting STC 40, under 4% light transmittance, wheelchair access, and all within a $5,000 budget.",
     tags: ["Engineering Design", "Client Project", "Accessibility", "Teamwork"],
     award: "UofT APS112",
@@ -286,6 +287,7 @@ export const projects = [
   },
   {
     title: "Bahen Courtyard Food Initiative",
+    logo: "./logos/bahen.png",
     desc: "Design project with the UofT Sustainability Office (APS111). After the Cube food outlet closed, Bahen had no gathering space or food option. Our team observed the site for 7 hours, generated 64 ideas and proposed an exhibition space in the Bahen courtyard: modular, accessible, zero waste, with room for art, performances, tech demos and food events like potlucks.",
     tags: ["Sustainability", "Engineering Design", "Accessibility", "Teamwork"],
     award: "UofT APS111",

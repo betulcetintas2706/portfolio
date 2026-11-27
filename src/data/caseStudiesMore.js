@@ -394,6 +394,7 @@ export const moreCases = {
 
   mentalhealth: {
     id: 'mentalhealth',
+    logo: './logos/popup.png',
     title: 'Mental Health Pop-up Space',
     tagline: 'A private space for the peer-support program in the UofT Engineering and Computer Science Library.',
     award: 'UofT · APS112 Engineering Strategies & Practice II',
@@ -440,6 +441,7 @@ export const moreCases = {
 
   bahen: {
     id: 'bahen',
+    logo: './logos/bahen.png',
     title: 'Bahen Courtyard Food Initiative',
     tagline: 'A sustainable gathering space for Bahen after the Cube food outlet closed.',
     award: 'UofT · APS111 Engineering Strategies & Practice I',
