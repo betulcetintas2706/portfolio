@@ -258,6 +258,7 @@ export const moreCases = {
     tagline: 'Feel music through vibration, made for Deaf and hard of hearing people.',
     award: '2nd Place, Hackville 2026',
     image: './vybe.png',
+    demo: { src: './vybe/demo.mp4', poster: './vybe/demo-poster.jpg' },
     meta: [
       { k: 'Team', v: 'Sehreen Basara, Teresa Akinbodun, Vidhi Kalal and me' },
       { k: 'Built at', v: 'Hackville 2026' },
