@@ -53,6 +53,7 @@ export const moreCases = {
     tagline: 'An iOS app that shows coaches, athletes and clinics who is at risk, before an injury happens.',
     award: 'Praevo · Founding Engineer',
     icon: 'chip',
+    logo: './praevo/icon.png',
     demo: { src: './praevo/demo.mp4', poster: './praevo/demo-poster.jpg' },
     meta: [
       { k: 'My role', v: 'Frontend, SwiftUI' },

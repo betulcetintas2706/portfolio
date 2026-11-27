@@ -24,6 +24,7 @@ const openGame = (id, view) => window.dispatchEvent(new CustomEvent('open-extra'
 const ICON_FOR = { IRIS: 'eye', '49th': 'globe', NanoTrade: 'chip', 'Comfy Cakes': 'chip', 'Gold Miner (FPGA Game)': 'chip', RearView: 'rearview', SideQuest: 'globe', VYBE: 'music' };
 
 function Icon({ p }) {
+  if (p.logo) return <img className="px-logo" src={p.logo} alt="" />;
   const C = projectIconMap[p.icon || ICON_FOR[p.title]] || ChipIcon;
   return <C />;
 }

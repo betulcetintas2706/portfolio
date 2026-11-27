@@ -92,7 +92,7 @@ export function CaseStudy({ id, onOpen, onBack, compact }) {
   } else if (c.demo) {
     hero = (
       <div className="cs-hero-phones single">
-        <Phone className="front"><video src={c.demo.src} poster={c.demo.poster} autoPlay muted loop playsInline /></Phone>
+        <Phone className="front"><video src={c.demo.src} poster={c.demo.poster} autoPlay muted loop playsInline controls /></Phone>
         <div className="cs-cap">Screen recording from the iOS build</div>
       </div>
     );

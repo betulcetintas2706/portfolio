@@ -160,6 +160,7 @@ export const projects = [
     award: "Harvard HSIL 2026",
     icon: "chat",
     image: "./meducine/preview.jpg",
+    logo: "./meducine/icon.png",
   },
   {
     title: "Kavodax Agentic Payments",
@@ -178,9 +179,8 @@ export const projects = [
     desc: "The SwiftUI iOS app for Praevo, a wearable that predicts athlete injuries. One app with role-based views: coaches see their whole roster's readiness and who needs attention today, athletes see a daily readiness score with pressure, recovery, movement and temperature signals plus guidance, and clinics track visits, patients and outcomes over time. Includes onboarding, alerts, team reports and settings.",
     tags: ["SwiftUI", "iOS", "Health Tech", "Wearables"],
     award: "Praevo startup",
-    video: "./praevo/demo.mp4",
-    poster: "./praevo/demo-poster.jpg",
-    image: "./praevo/demo-poster.jpg",
+    image: "./praevo/preview.jpg",
+    logo: "./praevo/icon.png",
     icon: "chip",
   },
   {
