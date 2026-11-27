@@ -64,8 +64,8 @@ export const about = {
   hello: "I'm a computer engineering student at the University of Toronto who loves building products where hardware, AI and people meet, from ASIC chips to iOS apps used by real people.",
   drives: "I ship fast and care deeply about impact. Whether it's helping newcomers navigate Canada, making music accessible through haptics, or detecting market anomalies in 80 ns, I build things that matter.",
   stats: [
-    { num: "10+", label: "Projects Shipped" },
-    { num: "6", label: "Internships & Roles" },
+    { num: "15+", label: "Projects Shipped" },
+    { num: "10", label: "Internships & Roles" },
     { num: "5", label: "Hackathon Awards" },
     { num: "1st", label: "Harvard HSIL 2026", sub: "Toronto Hub" },
   ],
