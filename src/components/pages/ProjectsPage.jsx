@@ -107,8 +107,8 @@ export default function ProjectsPage({ showPage, simple }) {
     <div className="page active px">
       {simple && (
         <div className="section-header px-simple-head">
-          <div className="section-title">My <span>Projects</span></div>
-          <div className="section-sub">Pick one to see it up close</div>
+          <h2 className="xp-title">My <span>projects</span></h2>
+          <div className="xp-sub">Pick one to see it up close.</div>
         </div>
       )}
       <div className="px-tabs" role="tablist" aria-label="Filter projects">

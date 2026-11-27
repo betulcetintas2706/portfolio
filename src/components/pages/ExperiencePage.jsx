@@ -31,7 +31,7 @@ function Role({ exp }) {
     <article className="xp-item">
       <div className="xp-when">
         <i className="xp-dot" aria-hidden="true" />
-        <div className="xp-date">{r.from}{r.to && <><br />{r.to}</>}</div>
+        <div className="xp-date">{r.from}{r.to && <><span className="xp-dash"> – </span><br />{r.to}</>}</div>
         {r.current && <div className="xp-live"><i />Current</div>}
       </div>
       <div className="xp-body">
@@ -54,7 +54,7 @@ function Role({ exp }) {
             {(exp.links || []).map((l) => l.project
               ? <button key={l.project} className="xp-link" onClick={() => actions.project(l.project)}>{l.label} ↗</button>
               : <a key={l.url} className="xp-link" href={l.url} target="_blank" rel="noopener noreferrer">{l.label} ↗</a>)}
-            {caseId && <button className="xp-link" onClick={() => actions.page(`case-${caseId}`)}>Explore {r.name} ↗</button>}
+            {caseId && !(exp.links || []).some((l) => l.project) && <button className="xp-link" onClick={() => actions.page(`case-${caseId}`)}>Explore {r.name} ↗</button>}
           </div>
         </div>
       </div>

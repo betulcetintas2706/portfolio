@@ -2999,3 +2999,45 @@ body.hack-dead #root > *:not(.hack):not(.term) { filter: hue-rotate(110deg) satu
   background: linear-gradient(135deg, transparent 0 45%, var(--burgundy-500, #8b2942) 45% 52%, transparent 52% 65%, var(--burgundy-500, #8b2942) 65% 72%, transparent 72%); }
 .window:hover .win-grip { opacity: 0.8; }
 @media (max-width: 768px) { .win-rz, .win-grip { display: none; } }
+
+/* ===== Simple view polish ===== */
+.xp-dash { display: none; }
+.simple-main { max-width: 1080px; }
+.simple-hero h1 { font-family: 'Lora', serif; font-weight: 700; font-size: clamp(32px, 4vw, 46px); letter-spacing: -0.01em; }
+.simple-tag { font-family: 'Lora', serif; font-size: 17px; color: var(--burgundy-800); }
+.simple-hero-links a { font-family: 'Space Mono', monospace; transition: transform 0.15s, background 0.15s; }
+.simple-hero-links a:hover { background: #6b1f35; transform: translateY(-1px); }
+.simple-section .px-simple-head { padding: 28px 28px 16px; border-bottom: 2px solid #b8913a; margin: 0; }
+.simple-section .px-simple-head .xp-title { margin: 0; }
+.simple-section { overflow: hidden; }
+.simple-footer { padding: 8px 0 24px; }
+@media (max-width: 760px) {
+  .xp-when { padding-left: 34px; }
+  .xp-body { padding-left: 34px; }
+  .xp-date br { display: none; }
+  .xp-dash { display: inline; }
+  .xp-line::before { left: 8px; }
+  .xp-head { flex-wrap: wrap; gap: 2px 10px; }
+}
+@media (max-width: 900px) {
+  .aw-f-main { min-width: 0; }
+  .aw-feature { overflow: hidden; }
+  .aw-f-cta { flex-wrap: wrap; gap: 10px; }
+  .aw-tabs button { white-space: nowrap; }
+}
+@media (max-width: 640px) {
+  .simple-nav { padding: 8px 12px; gap: 6px 12px; }
+  .simple-links { flex: 1 1 100%; order: 3; flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; margin: 0 -12px; padding: 0 8px; }
+  .simple-links::-webkit-scrollbar { display: none; }
+  .simple-links button, .simple-links a { flex: 0 0 auto; }
+  .simple-main { padding: 0 10px; gap: 14px; margin-top: 14px; }
+  .simple-hero { padding: 22px 18px; gap: 14px; }
+  .simple-hero .status-list { text-align: left; display: inline-block; }
+  .simple-hero-links { justify-content: center; }
+}
+@media (min-width: 761px) {
+  .simple-section .page.sk { align-items: flex-start; }
+  .simple-section .sk-side { position: sticky; top: 54px; align-self: flex-start; }
+  .simple-section .px-detail { position: sticky; top: 54px; align-self: flex-start; }
+}
+.simple-section .px-body { align-items: flex-start; }
