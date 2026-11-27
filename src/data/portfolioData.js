@@ -154,6 +154,7 @@ export const experiences = [
 export const projects = [
   {
     title: "Meducine",
+    cats: ["AI", "iOS", "Full Stack"],
     featured: true,
     desc: "AI health literacy platform that turns complex medical information into plain, personal guidance, with a 60+ term dictionary, 26 specialty filters and text-to-speech. Won 1st at Harvard HSIL Toronto Hub (~7.2% acceptance), advanced to the HSIL Venture Building Bootcamp (top 120 teams globally), and was showcased at the AstraZeneca and Plan International Canada Faces of the Future reception.",
     tags: ["React Native", "Expo", "AI", "Health Tech"],
@@ -164,6 +165,7 @@ export const projects = [
   },
   {
     title: "Kavodax Agentic Payments",
+    cats: ["AI", "Full Stack"],
     featured: true,
     links: [{ label: "Live demo", url: "https://betulcetintas.com/kavodax-demo/" }],
     desc: "Sandbox prototype I built during my Kavodax internship to explore how AI agents could move money safely. An agent reads a payment written in plain words, and a policy engine with 7 configurable rules across 3 currencies (CAD, USDC, CADK) either pays it, sends it to a human for approval, or blocks it. Includes a treasury dashboard, agent permissions, an audit log, a mock payment API with ~450 ms simulated latency, and optional Base Sepolia testnet settlement. Simulated balances only, no real money.",
@@ -175,6 +177,7 @@ export const projects = [
   },
   {
     title: "Praevo",
+    cats: ["iOS", "Full Stack"],
     featured: true,
     links: [{ label: "praevo.band", url: "https://praevo.band" }],
     desc: "Founding engineer at Praevo, a wearable that predicts athlete injuries. I coded the Next.js landing page at praevo.band: a WebGL ripple background, scroll storytelling with live stats, a signal strength scroll meter, sound, and a waitlist with a referral system. I also built the SwiftUI iOS app with role-based views: coaches see their roster's readiness and who needs attention, athletes get a daily readiness score from pressure, recovery, movement and temperature signals, and clinics track visits and outcomes.",
@@ -186,6 +189,7 @@ export const projects = [
   },
   {
     title: "UNUHR",
+    cats: ["iOS", "Full Stack"],
     logo: "./logos/unuhr.png",
     links: [{ label: "unuhr.com", url: "https://unuhr.com" }],
     desc: "Mobile app that connects health workers with healthcare employers, built during my Full Stack Engineer internship at UNUHR. I worked on frontend and backend features: registration and profiles, resume uploads, job discovery, and how employers and candidates find and talk to each other. The recruiter side has a candidate pool with AI candidate suggestions, job posting, messaging, and a catalog that tracks placements from in progress to filled.",
@@ -195,6 +199,7 @@ export const projects = [
   },
   {
     title: "OSIRIS",
+    cats: ["AI", "Full Stack"],
     logo: "./logos/osiris.png",
     links: [{ label: "GitHub", url: "https://github.com/SehreenB/Hack-the-Future" }, { label: "Demo", url: "https://drive.google.com/file/d/1HkIpK71xP0PUbO6-Wj8pGv1H6KMbrSzS/view" }],
     desc: "AI supply chain co-pilot that spots global disruptions early and plans the response. A Google ADK agent with Gemini 2.5 Flash runs an 11-step analysis on signals from GDELT, GNews, NASA FIRMS and ACLED: risk score, revenue at risk, base, stress and shock scenarios, a ranked mitigation playbook, a supplier email draft and an ERP flag. Built with human-in-the-loop guardrails: it never places orders, emails wait for approval, and ERP changes stay simulated.",
@@ -205,6 +210,7 @@ export const projects = [
   },
   {
     title: "IRIS",
+    cats: ["AI", "Hardware", "iOS"],
     logo: "./logos/iris.png",
     featured: true,
     links: [{ label: "Devpost", url: "https://devpost.com/software/iris-de1z3t" }, { label: "Demo", url: "https://vimeo.com/1178189406" }],
@@ -215,6 +221,7 @@ export const projects = [
   },
   {
     title: "RearView",
+    cats: ["AI", "iOS", "Full Stack"],
     logo: "./logos/rearview.png",
     links: [{ label: "GitHub", url: "https://github.com/SehreenB/RearView" }, { label: "Devpost", url: "https://devpost.com/software/rearview-gy51t3" }, { label: "Demo", url: "https://vimeo.com/1158143118" }],
     desc: "iOS app that simulates a Quebec Class 5 road test: examiner-style voice directions, speed and stop tracking, and ARKit TrueDepth head tracking for shoulder checks. Ends with pass or fail, a mistake list and an error heatmap.",
@@ -224,6 +231,7 @@ export const projects = [
   },
   {
     title: "49th",
+    cats: ["AI", "Full Stack"],
     logo: "./logos/49th.png",
     featured: true,
     links: [{ label: "GitHub", url: "https://github.com/akashngb/roots" }, { label: "Devpost", url: "https://devpost.com/software/hack-canada-2026" }, { label: "Demo", url: "https://vimeo.com/1171501862" }],
@@ -234,6 +242,7 @@ export const projects = [
   },
   {
     title: "SideQuest",
+    cats: ["AI", "iOS", "Full Stack"],
     logo: "./logos/sidequest.png",
     links: [{ label: "GitHub", url: "https://github.com/SehreenB/SideQuest" }, { label: "Devpost", url: "https://devpost.com/software/sidequest-0iysgt" }, { label: "Demo", url: "https://vimeo.com/1169233848" }],
     desc: "Discovery-first navigation iOS app generating scenic, themed routes (Adventure, Foodie, Nature, Culture) with Gemini and ElevenLabs voice narration, geo-tagged memories, challenges and Solana NFT badges.",
@@ -243,6 +252,7 @@ export const projects = [
   },
   {
     title: "NanoTrade",
+    cats: ["Hardware"],
     logo: "./logos/nanotrade.png",
     featured: true,
     links: [{ label: "GitHub", url: "https://github.com/betulcetintas2706/ttsky-nanotrades" }, { label: "Website", url: "https://betulcetintas2706.github.io/websitenanotrade/" }, { label: "Devpost", url: "https://devpost.com/software/nanotrade" }, { label: "Demo", url: "https://vimeo.com/1167116687" }],
@@ -253,6 +263,7 @@ export const projects = [
   },
   {
     title: "Comfy Cakes",
+    cats: ["Hardware"],
     logo: "./logos/cakes.png",
     desc: "Recreation of the Purble Place Comfy Cakes game on a DE1-SoC FPGA in Verilog. I own the game logic and control: FSMs, order generation and checking, scoring, timing and difficulty.",
     tags: ["Verilog", "FPGA", "DE1-SoC", "FSMs"],
@@ -261,6 +272,7 @@ export const projects = [
   },
   {
     title: "VYBE",
+    cats: ["iOS"],
     logo: "./logos/vybe.png",
     links: [{ label: "GitHub", url: "https://github.com/Vidhikalal/VYBE" }, { label: "Devpost", url: "https://devpost.com/software/vybe-l3ua1m" }],
     desc: "iOS app for Deaf and hard-of-hearing users that turns live music into real-time vibration: bass drives intensity, tempo drives pulse speed. Built with AVFoundation audio capture and Core Haptics, plus an Apple Watch companion app so you can feel it on your wrist.",
@@ -270,6 +282,7 @@ export const projects = [
   },
   {
     title: "Gold Miner (FPGA Game)",
+    cats: ["Hardware"],
     logo: "./logos/goldminer.png",
     desc: "Minecraft-themed Gold Miner arcade game built fully in hardware in Verilog on the DE1-SoC. 31-state control FSM plus sub-FSMs, five custom RAM modules, pixel-level collision detection, 320×240 VGA graphics, a 45-second HEX timer, PS/2 keyboard controls, LFSR object placement and win/fail audio.",
     tags: ["Verilog", "FPGA", "DE1-SoC", "FSMs", "VGA"],
@@ -278,6 +291,7 @@ export const projects = [
   },
   {
     title: "Mental Health Pop-up Space",
+    cats: ["Design"],
     logo: "./logos/popup.png",
     desc: "Client design project for the Engineering and Computer Science Library at UofT (APS112). The library's peer-support program needed a private space four days a week. Our team generated 89 ideas and chose the SmartTint Glass Pod: glass that turns opaque when the pod is in use, a soundproof frame targeting STC 40, under 4% light transmittance, wheelchair access, and all within a $5,000 budget.",
     tags: ["Engineering Design", "Client Project", "Accessibility", "Teamwork"],
@@ -287,6 +301,7 @@ export const projects = [
   },
   {
     title: "Bahen Courtyard Food Initiative",
+    cats: ["Design"],
     logo: "./logos/bahen.png",
     desc: "Design project with the UofT Sustainability Office (APS111). After the Cube food outlet closed, Bahen had no gathering space or food option. Our team observed the site for 7 hours, generated 64 ideas and proposed an exhibition space in the Bahen courtyard: modular, accessible, zero waste, with room for art, performances, tech demos and food events like potlucks.",
     tags: ["Sustainability", "Engineering Design", "Accessibility", "Teamwork"],
@@ -296,6 +311,7 @@ export const projects = [
   },
   {
     title: "Micro:bit Heartbeat Monitor",
+    cats: ["Hardware"],
     logo: "./logos/microbit.png",
     links: [{ label: "MakeCode", url: "https://makecode.microbit.org/80595-13066-38518-17603" }],
     desc: "A heartbeat monitor built on the micro:bit. Shake it to start, and it tracks the heart rate, beeps and flashes a heart when it goes below 60 or above 100 beats per minute, and sends the alert by radio to a second micro:bit so a relative knows right away. Built with Jeka and Maurelle after researching heart arrhythmias.",
@@ -306,6 +322,7 @@ export const projects = [
   },
   {
     title: "AI Trash Bin Sorter",
+    cats: ["AI"],
     logo: "./logos/trash.png",
     links: [{ label: "Notebook", url: "https://colab.research.google.com/drive/1k_vZATjrWmMxxs7SI8zC9FMjW3MpRBEQ" }, { label: "Slides", url: "https://www.canva.com/design/DAFpLSxUW78/3r-3tZ81YAY_jcMKMIsq3A/view" }],
     desc: "Team Binary Brains: a PyTorch image classifier that tells you which bin your waste goes in: garbage, recycling, compost or hazardous. We fine-tuned a pretrained ResNet50 and reached about 96% validation accuracy in 8 epochs. I built the webcam capture, the text-to-speech that reads the answer out loud, and the check that tells users if they sorted it right, and found the hazardous waste dataset. Built in 4 days.",

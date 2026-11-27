@@ -7,15 +7,8 @@ import { CaseStudy } from './CaseStudyPage';
 
 // Project explorer: a compact list on the left, one big preview on the right.
 
-const FILTERS = ['All', 'AI', 'Hardware', 'iOS', 'Full Stack'];
-const has = (p, words) => p.tags.concat(p.title).some((t) => words.some((w) => t.toLowerCase().includes(w)));
-const inFilter = (p, f) => {
-  if (f === 'All') return true;
-  if (f === 'AI') return has(p, ['ai', 'gemini', 'claude', 'computer vision', 'agent', 'adk']);
-  if (f === 'Hardware') return has(p, ['verilog', 'fpga', 'asic', 'esp32', 'micro:bit', 'sensors']);
-  if (f === 'iOS') return has(p, ['swift', 'react native', 'watchos']);
-  return has(p, ['react', 'node', 'fastapi', 'supabase', 'typescript']);
-};
+const FILTERS = ['All', 'AI', 'Hardware', 'iOS', 'Full Stack', 'Design'];
+const inFilter = (p, f) => f === 'All' || (p.cats || []).includes(f);
 
 const PLAYABLE = { 'Gold Miner (FPGA Game)': 'goldminer', 'Comfy Cakes': 'cakes' };
 const slug = (t) => t.toLowerCase().replace(/[^a-z0-9]/g, '');
