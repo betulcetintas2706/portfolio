@@ -25,6 +25,7 @@ export function CaseStudy({ id, onOpen, onBack, compact }) {
   const [tab, setTab] = useState('overview');
   const rootRef = useRef(null);
   const refs = useRef({});
+  const lock = useRef(0);
 
   const projectTitle = Object.keys(caseForProject).find((t) => caseForProject[t] === id);
   const x = explorer[projectTitle] || {};
@@ -48,9 +49,15 @@ export function CaseStudy({ id, onOpen, onBack, compact }) {
     while (sc && sc !== document.body && !/(auto|scroll)/.test(getComputedStyle(sc).overflowY)) sc = sc.parentElement;
     const target = sc && sc !== document.body ? sc : window;
     const onScroll = () => {
+      if (Date.now() < lock.current) return;
       const top = (target === window ? 0 : target.getBoundingClientRect().top) + 110;
       let cur = 'overview';
       tabs.forEach(([k]) => { const el = refs.current[k]; if (el && el.getBoundingClientRect().top <= top) cur = k; });
+      // at the very bottom the last sections can't reach the top, so pick the last one
+      const atEnd = target === window
+        ? window.innerHeight + window.scrollY >= document.body.scrollHeight - 4
+        : target.scrollTop + target.clientHeight >= target.scrollHeight - 4;
+      if (atEnd && tabs.length) cur = tabs[tabs.length - 1][0];
       setTab(cur);
     };
     target.addEventListener('scroll', onScroll, { passive: true });
@@ -60,7 +67,7 @@ export function CaseStudy({ id, onOpen, onBack, compact }) {
   }, [id]); // eslint-disable-line react-hooks/exhaustive-deps
 
   if (!c) return null;
-  const go = (k) => refs.current[k]?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  const go = (k) => { setTab(k); lock.current = Date.now() + 900; refs.current[k]?.scrollIntoView({ behavior: 'smooth', block: 'start' }); };
   const reg = (k) => (el) => { refs.current[k] = el; };
 
   const meta = c.meta || [];
