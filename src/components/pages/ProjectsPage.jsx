@@ -32,10 +32,12 @@ function Preview({ p, x }) {
   const game = PLAYABLE[p.title];
   return (
     <div className={`px-panel${p.image ? '' : ' no-img'}`}>
-      <div className="px-panel-label">{game ? 'Play it in the browser' : p.image ? 'Preview' : 'At a glance'}</div>
+      <div className="px-panel-label">{game ? 'Play it in the browser' : p.video ? 'Screen recording' : p.image ? 'Preview' : 'At a glance'}</div>
       <div className="px-panel-row">
-        <div className={`px-shot${game ? ' game' : ''}`}>
-          {p.image
+        <div className={`px-shot${game ? ' game' : ''}${p.video ? ' vid' : ''}`}>
+          {p.video
+            ? <video key={p.video} src={p.video} poster={p.poster} autoPlay muted loop playsInline controls preload="metadata" />
+            : p.image
             ? <img src={p.image} alt={`${name(p.title)} preview`} loading="lazy" />
             : <span className="px-shot-icon"><Icon p={p} /></span>}
           {game && <button className="px-shot-play" onClick={() => openGame(game, 'play')} aria-label={`Play ${name(p.title)}`}>▶</button>}

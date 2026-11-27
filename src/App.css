@@ -2751,3 +2751,6 @@ body.hack-dead #root > *:not(.hack):not(.term) { filter: hue-rotate(110deg) satu
   .case-lb-nav { position: absolute; bottom: 24px; }
   .case-lb-nav:first-child { left: 24px; } .case-lb-nav:nth-child(3) { right: 24px; }
 }
+
+.px-shot.vid { background: #0b0b0c; transform: none; }
+.px-shot.vid video { height: 100%; width: auto; max-width: 100%; display: block; margin: 0 auto; }

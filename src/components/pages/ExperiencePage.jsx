@@ -51,7 +51,9 @@ function Role({ exp }) {
         <div className="xp-foot">
           <div className="xp-stack">{exp.tags.join(' · ')}</div>
           <div className="xp-links">
-            {(exp.links || []).map((l) => <a key={l.url} className="xp-link" href={l.url} target="_blank" rel="noopener noreferrer">{l.label} ↗</a>)}
+            {(exp.links || []).map((l) => l.project
+              ? <button key={l.project} className="xp-link" onClick={() => actions.project(l.project)}>{l.label} ↗</button>
+              : <a key={l.url} className="xp-link" href={l.url} target="_blank" rel="noopener noreferrer">{l.label} ↗</a>)}
             {caseId && <button className="xp-link" onClick={() => actions.page(`case-${caseId}`)}>Explore {r.name} ↗</button>}
           </div>
         </div>

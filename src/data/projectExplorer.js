@@ -8,6 +8,18 @@ export const explorer = {
     headline: 'Medicine, in plain words.',
     points: ['60+ term medical dictionary', '26 specialty filters', '1st at Harvard HSIL Toronto Hub'],
   },
+  'Kavodax Agentic Payments': {
+    kicker: 'AI · Fintech', sub: 'Agentic payments',
+    summary: 'A sandbox where an AI agent makes payments, and a policy engine decides if it can.',
+    headline: 'Let the agent pay, safely.',
+    points: ['Plain words in, payment out', '7 policy rules across CAD, USDC and CADK', 'Pay, ask a human, or block'],
+  },
+  'Praevo iOS App': {
+    kicker: 'iOS · Health', sub: 'Injury prediction',
+    summary: 'A SwiftUI app that shows coaches, athletes and clinics who is at risk before an injury happens.',
+    headline: 'Before athletes become patients.',
+    points: ['Coach, Athlete and Clinic views', 'Daily readiness score from 4 body signals', 'Alerts, team reports and care history'],
+  },
   OSIRIS: {
     kicker: 'AI · Supply chain', sub: 'Supply chain risk',
     summary: 'A multi-agent AI that watches world news and logistics data for supply chain risk.',
