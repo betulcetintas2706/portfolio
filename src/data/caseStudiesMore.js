@@ -182,9 +182,9 @@ export const moreCases = {
       { t: 'Questions mid setup', d: 'An intent check answers side questions without losing your place in onboarding.' },
     ],
     results: [
-      'Third Place Overall at Hack Canada 2026.',
-      'Winner of the Google Build with AI track.',
-      'A full loop working end to end, from WhatsApp onboarding to the browser agent updating the dashboard.',
+      { icon: 'medal', h: '3rd Place', d: 'Overall at Hack Canada 2026, against 600+ participants' },
+      { icon: 'laurel', h: 'Winner', d: 'Google Build with AI track' },
+      { icon: 'star', h: 'End to end', d: 'From WhatsApp onboarding to the browser agent updating the dashboard' },
     ],
     learned: 'Designing for newcomers means not assuming a data plan, a laptop or English. Meeting people where they already are changes everything.',
     links: [
@@ -261,7 +261,7 @@ export const moreCases = {
       { t: 'Core Haptics', d: 'Keeping vibration in sync with live audio took a lot of tuning.' },
       { t: 'Real devices only', d: 'You cannot feel vibration in the simulator, so every change had to be tested on a real iPhone.' },
     ],
-    results: ['Won 2nd Place at Hackville 2026.'],
+    results: [{ icon: 'medal', h: '2nd Place', d: 'Hackville 2026' }],
     learned: 'Accessibility works best when it is the starting point, not something added at the end. iOS was new for most of us, and we shipped anyway.',
     links: [
       { label: 'GitHub', url: 'https://github.com/Vidhikalal/VYBE' },
@@ -351,7 +351,7 @@ export const moreCases = {
       { k: 'Course', v: 'Engineering Strategies & Practice I' },
     ],
     built: [
-      'A team design project on sustainable food solutions for the Bahen Courtyard, one of the busiest spots for engineering students.',
+      'A team design project on sustainable food solutions for the Bahen Courtyard at UofT.',
     ],
     myPart: ['Led the team through the design process, from understanding the problem to the final proposal.'],
     links: [],

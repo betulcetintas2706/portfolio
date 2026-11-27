@@ -84,7 +84,7 @@ export const experiences = [
     role: "Full Stack Engineer",
     date: "Apr 2026 – Present",
     company: "Meducine · Toronto, ON · 1st Place, Harvard HSIL Hackathon 2026",
-    desc: "Building the React Native (Expo) frontend of an AI health literacy app as 1 of 2 engineers (35+ commits, 6 iOS builds on TestFlight), with a 60+ term medical dictionary, 26 specialty filters and text-to-speech. Won a top 120 global venture spot and demoed live to leaders at AstraZeneca and Plan International.",
+    desc: "Building an AI health literacy app end to end, React Native (Expo) frontend and backend, as 1 of 2 engineers (35+ commits, 6 iOS builds on TestFlight), with a 60+ term medical dictionary, 26 specialty filters and text-to-speech. Won a top 120 global venture spot and demoed live to leaders at AstraZeneca and Plan International.",
     tags: ["React Native", "Expo", "TypeScript", "TestFlight", "Text-to-Speech"],
   },
   {
