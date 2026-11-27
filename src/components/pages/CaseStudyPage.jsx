@@ -22,6 +22,7 @@ function Phone({ children, className = '' }) {
 export function CaseStudy({ id, onOpen, onBack, compact }) {
   const c = caseStudies[id];
   const [big, setBig] = useState(null);
+  const [shot, setShot] = useState(0);
   const [tab, setTab] = useState('overview');
   const rootRef = useRef(null);
   const refs = useRef({});
@@ -64,6 +65,7 @@ export function CaseStudy({ id, onOpen, onBack, compact }) {
     if (target !== window) target.scrollTop = 0;
     setTab('overview');
     return () => target.removeEventListener('scroll', onScroll);
+    setShot(0);
   }, [id]); // eslint-disable-line react-hooks/exhaustive-deps
 
   if (!c) return null;
@@ -221,6 +223,27 @@ export function CaseStudy({ id, onOpen, onBack, compact }) {
               ))}
             </ol>
           )}
+        </section>
+      )}
+
+      {c.web && (
+        <section className="cs-sec cs-web">
+          <div className="cs-web-head">
+            <h3 className="cs-h">The landing page</h3>
+            <a href={c.web.url} target="_blank" rel="noopener noreferrer">{c.web.url.replace('https://', '')} ↗</a>
+          </div>
+          <div className="cs-browser">
+            <div className="cs-browser-bar"><i /><i /><i /><span>{c.web.url.replace('https://', '')}</span></div>
+            <img src={c.web.shots[shot].src} alt={`${c.title} landing page: ${c.web.shots[shot].label}`} />
+          </div>
+          <div className="cs-web-thumbs">
+            {c.web.shots.map((w, i) => (
+              <button key={w.src} className={i === shot ? 'on' : ''} onClick={() => setShot(i)}>
+                <img src={w.src} alt="" loading="lazy" /><span>{w.label}</span>
+              </button>
+            ))}
+          </div>
+          <div className="cs-cap">Real screenshots from praevo.band. Open the live site to see it move.</div>
         </section>
       )}
 

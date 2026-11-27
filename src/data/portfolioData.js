@@ -93,7 +93,7 @@ export const experiences = [
     company: "Praevo (Wearable Athlete Injury Prediction) · Toronto, ON",
     desc: "Built the Next.js landing page (praevo.band) with a WebGL ripple background, scroll storytelling and a waitlist with a referral system, plus the SwiftUI iOS app with role-based Coach, Athlete and Clinic views for readiness and injury risk.",
     tags: ["Next.js", "WebGL", "SwiftUI", "iOS"],
-    links: [{ label: "praevo.band", url: "https://praevo.band" }, { label: "Praevo iOS app", project: "Praevo iOS App" }],
+    links: [{ label: "praevo.band", url: "https://praevo.band" }, { label: "Praevo case study", project: "Praevo" }],
   },
   {
     role: "Distributor & Operations Lead",
@@ -173,11 +173,11 @@ export const projects = [
     icon: "chip",
   },
   {
-    title: "Praevo iOS App",
+    title: "Praevo",
     featured: true,
     links: [{ label: "praevo.band", url: "https://praevo.band" }],
-    desc: "The SwiftUI iOS app for Praevo, a wearable that predicts athlete injuries. One app with role-based views: coaches see their whole roster's readiness and who needs attention today, athletes see a daily readiness score with pressure, recovery, movement and temperature signals plus guidance, and clinics track visits, patients and outcomes over time. Includes onboarding, alerts, team reports and settings.",
-    tags: ["SwiftUI", "iOS", "Health Tech", "Wearables"],
+    desc: "Founding engineer at Praevo, a wearable that predicts athlete injuries. I coded the Next.js landing page at praevo.band: a WebGL ripple background, scroll storytelling with live stats, a signal strength scroll meter, sound, and a waitlist with a referral system. I also built the SwiftUI iOS app with role-based views: coaches see their roster's readiness and who needs attention, athletes get a daily readiness score from pressure, recovery, movement and temperature signals, and clinics track visits and outcomes.",
+    tags: ["Next.js", "WebGL", "SwiftUI", "iOS", "Health Tech", "Wearables"],
     award: "Praevo startup",
     image: "./praevo/preview.jpg",
     logo: "./praevo/icon.png",
@@ -287,7 +287,7 @@ export const projects = [
 
 export const skills = {
   languages: [
-    { name: "Swift", usedIn: ["Praevo iOS App", "IRIS", "VYBE", "RearView", "SideQuest"] },
+    { name: "Swift", usedIn: ["Praevo", "IRIS", "VYBE", "RearView", "SideQuest"] },
     { name: "Python", usedIn: ["SaHera ML model", "IRIS backend", "AI Trash Bin Sorter"] },
     { name: "JavaScript", usedIn: ["Kavodax Agentic Payments", "OSIRIS", "SideQuest", "49th", "This website"] },
     { name: "TypeScript / SQL", usedIn: ["Meducine", "49th"] },

@@ -49,20 +49,31 @@ export const moreCases = {
 
   praevo: {
     id: 'praevo',
-    title: 'Praevo iOS App',
-    tagline: 'An iOS app that shows coaches, athletes and clinics who is at risk, before an injury happens.',
+    title: 'Praevo',
+    tagline: 'A wearable that predicts athlete injuries. I coded the landing page at praevo.band and the iOS app.',
     award: 'Praevo · Founding Engineer',
     icon: 'chip',
     logo: './praevo/icon.png',
     demo: { src: './praevo/demo.mp4', poster: './praevo/demo-poster.jpg' },
+    web: {
+      url: 'https://praevo.band',
+      shots: [
+        { src: './praevo/web/hero.jpg', label: 'Hero with the WebGL ripple' },
+        { src: './praevo/web/signal.jpg', label: 'Scroll story with live stats' },
+        { src: './praevo/web/band.jpg', label: 'The band' },
+        { src: './praevo/web/athletes.jpg', label: 'Before athletes become patients' },
+        { src: './praevo/web/waitlist.jpg', label: 'Waitlist' },
+      ],
+    },
     meta: [
-      { k: 'My role', v: 'Frontend, SwiftUI' },
-      { k: 'Team', v: 'Built the frontend with Louise' },
-      { k: 'When', v: 'Summer 2026' },
-      { k: 'Stack', v: 'SwiftUI, iOS' },
+      { k: 'My role', v: 'Founding Engineer' },
+      { k: 'Team', v: 'Built the app frontend with Louise' },
+      { k: 'When', v: 'May 2026 to Sep 2026' },
+      { k: 'Stack', v: 'Next.js, WebGL, SwiftUI, iOS' },
     ],
     stats: [
-      { n: '3', l: 'role based views: coach, athlete, clinic' },
+      { n: '2', l: 'products: landing page and iOS app' },
+      { n: '3', l: 'role based app views: coach, athlete, clinic' },
       { n: '4', l: 'body signals: pressure, recovery, movement, temperature' },
       { n: '1', l: 'daily readiness score out of 100' },
     ],
@@ -71,19 +82,19 @@ export const moreCases = {
       'Coaches look after a whole roster and cannot see who is wearing down until someone gets injured.',
     ],
     built: [
-      'Praevo is a wearable that predicts athlete injuries. The app turns its signals into something each person can act on.',
+      'Praevo is a wearable that predicts athlete injuries. The landing page tells that story and collects a waitlist. The app turns the signals into something each person can act on.',
       'Coaches see their team at a glance and who needs attention today. Athletes see a daily readiness score with their signals and simple guidance. Clinics track visits, patients and outcomes over time.',
     ],
     flow: ['Wearable band', 'Body signals', 'Readiness score', 'Coach, athlete or clinic view'],
     myPart: [
-      'Built the SwiftUI frontend of the app.',
-      'Onboarding, the coach team overview, alerts and team reports.',
-      'The athlete readiness screen with signal patterns and guidance, and the clinic views for visits and care history.',
-      'We went back and forth between React Native with Expo and SwiftUI, and rebuilt it natively in the end.',
+      { t: 'Landing page', d: 'Coded praevo.band in Next.js: a WebGL ripple background, scroll storytelling that types out each line with big live stats, a signal strength scroll meter and sound.' },
+      { t: 'Waitlist and referrals', d: 'A waitlist with a referral system, so early sign ups can bring in more people.' },
+      { t: 'iOS app', d: 'Built the SwiftUI frontend: onboarding, the coach team overview, alerts and reports, the athlete readiness screen, and the clinic views.' },
+      { t: 'Picking the stack', d: 'We went back and forth between React Native with Expo and SwiftUI, and rebuilt the app natively in the end.' },
     ],
     hard: [
+      { t: 'A page that feels like the product', d: 'A wearable that reads signals should feel alive, so the page moves, types and reacts as you scroll instead of being a static template.' },
       { t: 'Three users, one app', d: 'A coach, an athlete and a clinic need very different things, so each role gets its own home screen instead of one crowded dashboard.' },
-      { t: 'Picking the stack', d: 'Switching between React Native and SwiftUI cost time, but native felt right for a health app people open every day.' },
     ],
     links: [{ label: 'praevo.band', url: 'https://praevo.band' }],
   },
@@ -401,7 +412,7 @@ export const moreCases = {
 // project title → case id
 export const moreCaseForProject = {
   'Kavodax Agentic Payments': 'kavodax',
-  'Praevo iOS App': 'praevo',
+  Praevo: 'praevo',
   OSIRIS: 'osiris',
   RearView: 'rearview',
   '49th': '49th',

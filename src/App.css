@@ -2962,3 +2962,17 @@ body.hack-dead #root > *:not(.hack):not(.term) { filter: hue-rotate(110deg) satu
 .cs-compact .cs-bar { position: static; }
 
 .px-logo { width: 100%; height: 100%; object-fit: contain; border-radius: 7px; display: block; }
+
+.cs-web-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.cs-web-head a { font-family: 'Space Mono', monospace; font-size: 13px; color: var(--burgundy-700); text-decoration: none; border-bottom: 1px dashed rgba(139,41,66,0.45); }
+.cs-browser { border-radius: 12px; overflow: hidden; background: #111; box-shadow: 0 16px 34px rgba(74,21,37,0.25), 0 0 0 1px rgba(74,21,37,0.12); }
+.cs-browser-bar { display: flex; align-items: center; gap: 6px; padding: 8px 12px; background: #2a2426; }
+.cs-browser-bar i { width: 10px; height: 10px; border-radius: 50%; background: #6b5a5e; }
+.cs-browser-bar span { margin-left: 10px; padding: 3px 12px; border-radius: 6px; background: rgba(255,255,255,0.08); font-family: 'Space Mono', monospace; font-size: 11px; color: #d9cdd0; }
+.cs-browser img { width: 100%; aspect-ratio: 1470 / 801; object-fit: cover; display: block; }
+.cs-web-thumbs { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin-top: 12px; }
+.cs-web-thumbs button { border: 0; background: none; padding: 0; cursor: pointer; text-align: left; }
+.cs-web-thumbs img { width: 100%; aspect-ratio: 16 / 9; object-fit: cover; border-radius: 8px; display: block; border: 2px solid transparent; opacity: 0.75; transition: opacity 0.15s, border-color 0.15s; }
+.cs-web-thumbs button:hover img, .cs-web-thumbs button.on img { opacity: 1; border-color: #b8913a; }
+.cs-web-thumbs span { display: block; font-family: 'Space Mono', monospace; font-size: 10.5px; line-height: 1.3; margin-top: 5px; color: var(--burgundy-900); }
+@media (max-width: 640px) { .cs-web-thumbs { grid-template-columns: repeat(3, 1fr); } }

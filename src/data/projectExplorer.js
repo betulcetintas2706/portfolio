@@ -14,11 +14,11 @@ export const explorer = {
     headline: 'Let the agent pay, safely.',
     points: ['Plain words in, payment out', '7 policy rules across CAD, USDC and CADK', 'Pay, ask a human, or block'],
   },
-  'Praevo iOS App': {
-    kicker: 'iOS · Health', sub: 'Injury prediction',
-    summary: 'A SwiftUI app that shows coaches, athletes and clinics who is at risk before an injury happens.',
+  Praevo: {
+    kicker: 'Web · iOS · Health', sub: 'Landing page + iOS app',
+    summary: 'The landing page at praevo.band and the iOS app for a wearable that predicts athlete injuries.',
     headline: 'Before athletes become patients.',
-    points: ['Coach, Athlete and Clinic views', 'Daily readiness score from 4 body signals', 'Alerts, team reports and care history'],
+    points: ['Next.js landing page with WebGL and scroll storytelling', 'Waitlist with a referral system', 'SwiftUI app for coaches, athletes and clinics'],
   },
   OSIRIS: {
     kicker: 'AI · Supply chain', sub: 'Supply chain risk',
