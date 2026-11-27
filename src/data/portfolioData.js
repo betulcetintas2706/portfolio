@@ -16,7 +16,7 @@ export const personalInfo = {
   headline: "I build where hardware, AI and people meet: from 80 ns ASIC chips to iOS apps real people use.",
   status: [
     "Software, AI and hardware engineer in training",
-    "6 internships and roles across fintech, health tech, data and startups",
+    "10 internships and roles across fintech, health tech, data and startups",
     "Shipped iOS, React Native, full-stack, ML and Verilog/ASIC projects",
     "5 hackathon awards, including 1st at Harvard HSIL 2026",
     "Open to Summer 2027 software, AI and hardware internships",
