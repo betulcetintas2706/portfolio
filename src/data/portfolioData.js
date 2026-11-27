@@ -287,44 +287,53 @@ export const projects = [
 
 export const skills = {
   languages: [
-    { name: "Swift", usedIn: ["IRIS", "VYBE", "RearView", "SideQuest"] },
+    { name: "Swift", usedIn: ["Praevo iOS App", "IRIS", "VYBE", "RearView", "SideQuest"] },
     { name: "Python", usedIn: ["SaHera ML model", "IRIS backend", "AI Trash Bin Sorter"] },
+    { name: "JavaScript", usedIn: ["Kavodax Agentic Payments", "OSIRIS", "SideQuest", "49th", "This website"] },
+    { name: "TypeScript / SQL", usedIn: ["Meducine", "49th"] },
+    { name: "Verilog", usedIn: ["NanoTrade", "Comfy Cakes", "Gold Miner"] },
     { name: "C / C++", usedIn: ["Data Structures (C++)", "C Programming"] },
-    { name: "JavaScript", usedIn: ["Kavodax", "OSIRIS", "SideQuest", "This website"] },
     { name: "HTML", usedIn: ["Re:Pair Genomics", "Praevo landing page", "This website"] },
     { name: "CSS", usedIn: ["Re:Pair Genomics", "Praevo landing page", "This website"] },
-    { name: "Verilog", usedIn: ["NanoTrade", "Comfy Cakes", "Gold Miner"] },
-    { name: "TypeScript / SQL", usedIn: ["Meducine", "49th"] },
     { name: "Java", usedIn: [] },
     { name: "MATLAB", usedIn: [] },
   ],
   categories: [
     {
-      title: "// Web",
-      chips: ["HTML5", "CSS3", "Responsive Design", "React", "Next.js", "Vite", "WebGL", "WordPress", "Canvas API", "Web Audio API", "GitHub Pages", "Accessibility (ARIA)"],
+      id: "web", title: "Web",
+      chips: ["HTML5", "CSS3", "Responsive Design", "React", "Next.js", "Vite", "Tailwind CSS", "WebGL", "WordPress", "Canvas API", "Web Audio API", "GitHub Pages", "Accessibility (ARIA)"],
     },
     {
-      title: "// Platforms & iOS",
-      chips: ["SwiftUI", "React", "React Native (Expo)", "Next.js", "Vite", "FastAPI", "SFSpeechRecognizer", "AVFoundation", "Core Haptics", "MapKit", "ARKit (TrueDepth)", "ROS 2", "Linux (Ubuntu)", "Gemini API", "ElevenLabs", "Vision API", "Multimodal AI", "OCR Pipelines", "Text-to-Speech"],
+      id: "platforms", title: "Platforms & iOS",
+      chips: ["SwiftUI", "React Native (Expo)", "watchOS", "Node.js", "Express", "FastAPI", "Vapor", "SFSpeechRecognizer", "AVFoundation", "Core Haptics", "MapKit", "Core Location", "ARKit (TrueDepth)", "TestFlight", "ROS 2", "Linux (Ubuntu)"],
     },
     {
-      title: "// Cloud & Data",
-      chips: ["Google Cloud Storage", "Google Apps Script", "Looker Studio", "OAuth 2.0", "ETL Pipeline Design", "Signal Ingestion", "GDELT", "NASA FIRMS", "ACLED", "RevenueCat", "REST / JSON", "Mobile Monetization"],
+      id: "ai", title: "AI & Agents",
+      chips: ["Gemini API", "Claude API", "Claude Vision", "AI Agents", "Multi-Agent Systems", "Human-in-the-Loop (HITL)", "Prompt Design", "ElevenLabs", "Text-to-Speech", "Vision API", "Multimodal AI", "OCR Pipelines", "Computer Vision", "XGBoost", "Time-Series Features"],
     },
     {
-      title: "// Fundamentals",
-      chips: ["Multi-Agent Systems", "Human-in-the-Loop (HITL)", "Computer Vision", "Data Structures & Algorithms", "OOP", "Version Control (Git)", "Real-Time Systems", "Client–Server Workflows", "Event-Driven Systems", "Unit Testing", "API Testing", "Prompt Design", "SDLC", "XGBoost", "Time-Series Features"],
+      id: "cloud", title: "Cloud & Data",
+      chips: ["Supabase", "MongoDB", "Google Cloud Storage", "Google Apps Script", "Looker Studio", "Auth0", "OAuth 2.0", "Twilio", "Cloudinary", "ETL Pipeline Design", "Signal Ingestion", "GDELT", "NASA FIRMS", "ACLED", "REST / JSON", "OpenAPI", "RevenueCat", "Mobile Monetization"],
     },
     {
-      title: "// Hardware",
-      chips: ["FPGA (DE1-SoC)", "ASIC Flow (SKY130)", "Verilog Testbenches", "ESP32-S3", "Microcontrollers (Micro:bit)", "Digital Logic", "FSMs", "Sensors", "Serial Debugging"],
+      id: "fintech", title: "Fintech & Web3",
+      chips: ["Payment APIs", "Stablecoins", "Policy Engines", "Audit Trails", "ethers.js", "Base Sepolia Testnet", "Solana"],
     },
     {
-      title: "// Tools",
-      chips: ["Postman", "Playwright", "Google ADK", "Xcode", "GitHub", "VS Code", "Linux/Unix CLI", "Bash", "Node-RED", "ModelSim", "Logic Simulation", "Figma", "Lovable"],
+      id: "fundamentals", title: "Fundamentals",
+      chips: ["Data Structures & Algorithms", "OOP", "Version Control (Git)", "Real-Time Systems", "Client-Server Workflows", "Event-Driven Systems", "Unit Testing", "API Testing", "SDLC"],
+    },
+    {
+      id: "hardware", title: "Hardware",
+      chips: ["FPGA (DE1-SoC)", "ASIC Flow (SKY130)", "Tiny Tapeout", "Verilog Testbenches", "FSMs", "Digital Logic", "VGA", "PS/2", "LFSR", "ESP32-S3", "Microcontrollers (Micro:bit)", "Sensors", "Serial Debugging"],
+    },
+    {
+      id: "tools", title: "Tools",
+      chips: ["Git", "GitHub", "VS Code", "Xcode", "Postman", "Playwright", "Google ADK", "Linux/Unix CLI", "Bash", "Node-RED", "ModelSim", "Icarus Verilog", "Logic Simulation", "Figma", "Lovable"],
     },
   ],
 };
+
 
 export const contact = {
   email: "betul.cetintas@mail.utoronto.ca",
