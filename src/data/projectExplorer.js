@@ -93,10 +93,10 @@ export const explorer = {
     points: ['Client: UofT Sustainability Office', '64 ideas, 3 concepts, 1 exhibition space', 'Zero waste and year round use'],
   },
   'Micro:bit Heartbeat Monitor': {
-    kicker: 'Hardware · Wearables', sub: 'Heartbeat monitor',
-    summary: 'A wearable heartbeat monitor built on the Micro:bit, a project I led.',
+    kicker: 'Hardware · Health', sub: 'Heartbeat monitor',
+    summary: 'A micro:bit that watches your heart rate and alerts a relative when it looks wrong.',
     headline: 'A heartbeat you can wear.',
-    points: ['Built on the Micro:bit', 'Heart rate sensing', 'Project lead'],
+    points: ['Alerts below 60 or above 100 BPM', 'Beeps and flashes a heart', 'Sends the alarm by radio to a second micro:bit'],
   },
   'AI Trash Bin Sorter': {
     kicker: 'AI · Computer vision', sub: 'Sorting waste with AI',

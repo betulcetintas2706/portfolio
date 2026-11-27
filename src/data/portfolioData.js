@@ -296,9 +296,12 @@ export const projects = [
   },
   {
     title: "Micro:bit Heartbeat Monitor",
-    desc: "Led a project building a wearable heartbeat monitor on the Micro:bit.",
-    tags: ["Micro:bit", "Sensors", "Wearables"],
-    award: "Project Lead",
+    logo: "./logos/microbit.png",
+    links: [{ label: "MakeCode", url: "https://makecode.microbit.org/80595-13066-38518-17603" }],
+    desc: "A heartbeat monitor built on the micro:bit. Shake it to start, and it tracks the heart rate, beeps and flashes a heart when it goes below 60 or above 100 beats per minute, and sends the alert by radio to a second micro:bit so a relative knows right away. Built with Jeka and Maurelle after researching heart arrhythmias.",
+    tags: ["Micro:bit", "MakeCode", "Radio", "Sensors", "Health Tech"],
+    award: "Project lead · 2021",
+    image: "./microbit/simulator.jpg",
     icon: "music",
   },
   {

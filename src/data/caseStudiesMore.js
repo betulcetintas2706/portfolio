@@ -495,23 +495,51 @@ export const moreCases = {
   microbit: {
     id: 'microbit',
     title: 'Micro:bit Heartbeat Monitor',
-    tagline: 'A wearable heartbeat monitor that alerts your phone when something looks wrong.',
-    award: 'Project lead',
+    logo: './logos/microbit.png',
+    tagline: 'A micro:bit that watches your heart rate and alerts a relative when it looks wrong.',
+    award: 'Project lead · Summer 2021',
     icon: 'music',
+    image: './microbit/simulator.jpg',
+    gallery: {
+      title: 'The prototype',
+      caption: 'Our MakeCode project. Open it to run the micro:bit simulator yourself.',
+      shots: [
+        { src: './microbit/simulator.jpg', label: 'micro:bit simulator' },
+        { src: './microbit/blocks.jpg', label: 'The code in MakeCode blocks' },
+      ],
+    },
     meta: [
-      { k: 'My role', v: 'Project lead, coded the system' },
-      { k: 'Stack', v: 'Micro:bit, heart rate sensor, phone notifications' },
+      { k: 'My role', v: 'Project lead' },
+      { k: 'Team', v: 'Jeka, Maurelle and me' },
+      { k: 'When', v: 'Summer 2021' },
+      { k: 'Stack', v: 'micro:bit, MakeCode, radio, pulse sensor' },
+    ],
+    stats: [
+      { n: '<60', l: 'BPM: too slow, alert' },
+      { n: '>100', l: 'BPM: too fast, alert' },
+      { n: '2', l: 'micro:bits linked by radio' },
+      { n: '35,000', l: 'Canadians go into cardiac arrest each year' },
+    ],
+    problem: [
+      'Heart arrhythmias happen when the electrical signal that runs your heart goes wrong, so it beats too fast, too slow or unevenly. Around 35,000 Canadians go into cardiac arrest every year.',
+      'Many signs are easy to miss, and help often comes too late because nobody nearby knows something is wrong.',
     ],
     built: [
-      'A Micro:bit based heartbeat monitor built into a wearable watch. It gives real time feedback and sends a phone notification when a reading looks abnormal.',
+      'You shake the micro:bit to start, and it reads the heart rate and shows it on the LED screen. If the rate drops below 60 or goes above 100 beats per minute, it beeps and flashes a heart.',
+      'The reading is also sent by radio to a second micro:bit, usually held by a relative, so they get the same alarm and can get help faster.',
     ],
-    flow: ['Sensor on the wrist', 'Micro:bit reads heartbeat', 'Check for abnormal readings', 'Alert on your phone'],
+    flow: ['Shake to start', 'Read the heart rate', 'Below 60 or above 100?', 'Beep and flash a heart', 'Radio alert to a relative'],
     myPart: [
-      'Led the project and coded the monitoring system.',
-      'Designed and tested it for reliability and accuracy, with user safety in mind.',
-      'Delivered a fully working prototype.',
+      { t: 'Led the project', d: 'Kept the team moving from the research to a working prototype.' },
+      { t: 'Coded the monitor', d: 'Built the heartbeat monitoring system that gives real time feedback and alerts on abnormal readings.' },
+      { t: 'Tested it', d: 'Tested the system for reliability and accuracy, with user safety in mind.' },
     ],
-    links: [],
+    hard: [
+      { t: 'Three ideas, one device', d: 'We compared a blood sugar tracker, a blood pressure tracker and a heart alert device, and picked the heart alert because it keeps both the person and the people around them informed.', decision: 'Heart rate first.' },
+      { t: 'Cheap enough for anyone', d: 'Feedback asked us to also detect shortness of breath and fatigue. We kept it focused so it stays cheap and affordable for everyone.', decision: 'Affordable over extra sensors.' },
+      { t: 'Feedback we did add', d: 'Someone suggested a sound so others notice, so we added a beep that plays on both micro:bits.', decision: 'Alarm on both devices.' },
+    ],
+    links: [{ label: 'MakeCode project', url: 'https://makecode.microbit.org/80595-13066-38518-17603' }],
   },
 
   trash: {
