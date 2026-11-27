@@ -20,6 +20,12 @@ export const explorer = {
     headline: 'Before athletes become patients.',
     points: ['Next.js landing page with WebGL and scroll storytelling', 'Waitlist with a referral system', 'SwiftUI app for coaches, athletes and clinics'],
   },
+  UNUHR: {
+    kicker: 'Full stack · Health', sub: 'Health job matching',
+    summary: 'A mobile app that matches health workers with healthcare employers.',
+    headline: 'The right nurse, faster.',
+    points: ['Candidate pool with AI suggestions', 'Job posting and messaging', 'Placements tracked from start to filled'],
+  },
   OSIRIS: {
     kicker: 'AI · Supply chain', sub: 'Supply chain risk',
     summary: 'A multi-agent AI that watches world news and logistics data for supply chain risk.',

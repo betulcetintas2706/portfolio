@@ -100,6 +100,40 @@ export const moreCases = {
     links: [{ label: 'praevo.band', url: 'https://praevo.band' }],
   },
 
+  unuhr: {
+    id: 'unuhr',
+    logo: './logos/unuhr.png',
+    title: 'UNUHR',
+    tagline: 'A mobile app that connects health workers with healthcare employers.',
+    award: 'UNUHR · Full Stack Engineer Intern',
+    icon: 'globe',
+    demo: { src: './unuhr/demo.mp4', poster: './unuhr/demo-poster.jpg' },
+    screens: [
+      ['s01', 'Welcome'], ['s02', 'Log in'], ['s03', 'Home'], ['s04', 'Candidate profile'], ['s05', 'Certifications'],
+      ['s06', 'Messaging'], ['s07', 'Job pool'], ['s08', 'AI candidate suggestions'], ['s09', 'New job posting'], ['s10', 'Catalog'], ['s11', 'In progress'],
+    ].map(([f, l]) => ({ src: `./unuhr/${f}.jpg`, label: l })),
+    meta: [
+      { k: 'My role', v: 'Full Stack Engineer Intern' },
+      { k: 'When', v: 'Mar 2026 to May 2026' },
+      { k: 'Where', v: 'UNUHR Inc., Toronto' },
+    ],
+    problem: [
+      'Healthcare employers need qualified people fast, and health workers need jobs that match their certifications. Matching them by hand is slow.',
+    ],
+    built: [
+      'UNUHR is a job app made for healthcare. Recruiters browse a candidate pool, get AI candidate suggestions for a job, check certifications and legal documents, view resumes and message candidates.',
+      'They post jobs, save candidates and jobs into a catalog, and track every placement from in progress to filled, with labels for what is due or overdue.',
+    ],
+    flow: ['Health worker signs up', 'Profile, resume, certifications', 'Recruiter posts a job', 'AI suggests candidates', 'Message and place'],
+    myPart: [
+      { t: 'Frontend and backend', d: 'Built features on both sides in a small startup team, taking them from idea and mockup to working code.' },
+      { t: 'Accounts and profiles', d: 'Registration, profiles and resume uploads.' },
+      { t: 'Jobs and matching', d: 'Job discovery, and how employers and candidates find and interact with each other.' },
+      { t: 'App Store readiness', d: 'Helped review the app to get it ready for the App Store.' },
+    ],
+    links: [{ label: 'unuhr.com', url: 'https://unuhr.com' }],
+  },
+
   osiris: {
     id: 'osiris',
     title: 'OSIRIS',
@@ -422,6 +456,7 @@ export const moreCases = {
 export const moreCaseForProject = {
   'Kavodax Agentic Payments': 'kavodax',
   Praevo: 'praevo',
+  UNUHR: 'unuhr',
   OSIRIS: 'osiris',
   RearView: 'rearview',
   '49th': '49th',

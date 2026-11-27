@@ -132,7 +132,7 @@ export const experiences = [
     company: "UNUHR Inc. · Toronto, ON",
     desc: "Built frontend and backend features for a healthcare job-seeking app for health workers, taking features from idea and mockup to working code in a small startup team.",
     tags: ["Full Stack", "Startup"],
-    links: [{ label: "unuhr.com", url: "https://unuhr.com" }],
+    links: [{ label: "unuhr.com", url: "https://unuhr.com" }, { label: "UNUHR case study", project: "UNUHR" }],
   },
   {
     role: "Web Developer",
@@ -183,6 +183,15 @@ export const projects = [
     image: "./praevo/preview.jpg",
     logo: "./praevo/icon.png",
     icon: "chip",
+  },
+  {
+    title: "UNUHR",
+    logo: "./logos/unuhr.png",
+    links: [{ label: "unuhr.com", url: "https://unuhr.com" }],
+    desc: "Mobile app that connects health workers with healthcare employers, built during my Full Stack Engineer internship at UNUHR. I worked on frontend and backend features: registration and profiles, resume uploads, job discovery, and how employers and candidates find and talk to each other. The recruiter side has a candidate pool with AI candidate suggestions, job posting, messaging, and a catalog that tracks placements from in progress to filled.",
+    tags: ["Full Stack", "Mobile App", "Health Tech", "Startup"],
+    award: "UNUHR internship",
+    image: "./unuhr/preview.jpg",
   },
   {
     title: "OSIRIS",
