@@ -258,6 +258,24 @@ export function CaseStudy({ id, onOpen, onBack, compact }) {
         </section>
       )}
 
+      {c.gallery && (
+        <section className="cs-sec cs-web">
+          <h3 className="cs-h">{c.gallery.title}</h3>
+          <div className="cs-gallery-main">
+            <img src={c.gallery.shots[shot].src} alt={`${c.title}: ${c.gallery.shots[shot].label}`} />
+            <span>{c.gallery.shots[shot].label}</span>
+          </div>
+          <div className="cs-web-thumbs">
+            {c.gallery.shots.map((w, i) => (
+              <button key={w.src} className={i === shot ? 'on' : ''} onClick={() => setShot(i)}>
+                <img src={w.src} alt="" loading="lazy" /><span>{w.label}</span>
+              </button>
+            ))}
+          </div>
+          {c.gallery.caption && <div className="cs-cap">{c.gallery.caption}</div>}
+        </section>
+      )}
+
       {(inside || c.myPart?.length > 0) && (
         <section className={`cs-sec cs-split${inside && c.myPart?.length ? '' : ' solo'}`}>
           {inside}

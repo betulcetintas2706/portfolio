@@ -82,15 +82,15 @@ export const explorer = {
   },
   'Mental Health Pop-up Space': {
     kicker: 'Design · Client project', sub: 'Engineering Library',
-    summary: 'A mental health pop-up space for students, designed for the UofT Engineering Library.',
+    summary: 'A private pop-up space for the peer-support program in the UofT Engineering Library.',
     headline: 'A quiet place on campus.',
-    points: ['Client project with the Engineering Library', 'Engineering Strategies & Practice II', 'Team design process'],
+    points: ['SmartTint glass turns opaque when in use', 'Soundproof to STC 40', '89 ideas narrowed to 1'],
   },
   'Bahen Courtyard Food Initiative': {
-    kicker: 'Design · Sustainability', sub: 'Sustainable food',
-    summary: 'I led a team designing sustainable food options for the Bahen Courtyard at UofT.',
+    kicker: 'Design · Sustainability', sub: 'Sustainable gathering space',
+    summary: 'A sustainable gathering space for Bahen after the Cube food outlet closed.',
     headline: 'Greener food on campus.',
-    points: ['Team lead', 'Engineering Strategies & Practice I', 'Sustainability-focused design'],
+    points: ['Client: UofT Sustainability Office', '64 ideas, 3 concepts, 1 exhibition space', 'Zero waste and year round use'],
   },
   'Micro:bit Heartbeat Monitor': {
     kicker: 'Hardware · Wearables', sub: 'Heartbeat monitor',
