@@ -131,6 +131,7 @@ export const moreCases = {
     award: 'ConUHacks X',
     image: './rearview.png',
     video: 'https://player.vimeo.com/video/1158143118',
+    videoPortrait: true,
     meta: [
       { k: 'Team', v: 'Sehreen Basara, Amine Arrachid and me' },
       { k: 'Built at', v: 'ConUHacks X, Montreal' },

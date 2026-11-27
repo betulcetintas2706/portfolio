@@ -131,7 +131,13 @@ export function CaseStudy({ id, onOpen, onBack, compact }) {
           <a className="cs-small-link" href={c.live} target="_blank" rel="noopener noreferrer">Open the demo full screen ↗</a>
         </>
       )}
-      {c.video && !c.live && (
+      {c.video && !c.live && c.videoPortrait && (
+        <div className="cs-phone-video">
+          <Phone className="demo"><iframe src={`${c.video}?dnt=1&title=0&byline=0&portrait=0`} title={`${c.title} demo`}
+            allow="autoplay; fullscreen; picture-in-picture" allowFullScreen loading="lazy" /></Phone>
+        </div>
+      )}
+      {c.video && !c.live && !c.videoPortrait && (
         <div className="cs-video">
           <iframe src={`${c.video}?dnt=1&title=0&byline=0&portrait=0`} title={`${c.title} demo`}
             allow="autoplay; fullscreen; picture-in-picture" allowFullScreen loading="lazy" />

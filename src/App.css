@@ -2976,3 +2976,7 @@ body.hack-dead #root > *:not(.hack):not(.term) { filter: hue-rotate(110deg) satu
 .cs-web-thumbs button:hover img, .cs-web-thumbs button.on img { opacity: 1; border-color: #b8913a; }
 .cs-web-thumbs span { display: block; font-family: 'Space Mono', monospace; font-size: 10.5px; line-height: 1.3; margin-top: 5px; color: var(--burgundy-900); }
 @media (max-width: 640px) { .cs-web-thumbs { grid-template-columns: repeat(3, 1fr); } }
+
+.cs-phone-video { display: flex; justify-content: center; }
+.cs-phone-video .cs-phone { width: 260px; }
+.cs-phone-screen iframe { width: 100%; height: 100%; border: 0; display: block; background: #fff; }
