@@ -47,7 +47,7 @@ function Preview({ p, x }) {
 
 export default function ProjectsPage({ showPage, simple }) {
   const [filter, setFilter] = useState('All');
-  const [sel, setSel] = useState('IRIS');
+  const [sel, setSel] = useState('Meducine');
   const [inline, setInline] = useState(null);
   const [more, setMore] = useState(false);
   const detailRef = useRef(null);
