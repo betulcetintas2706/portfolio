@@ -47,6 +47,12 @@ function Preview({ p, x }) {
 
 export default function ProjectsPage({ showPage, simple }) {
   const [filter, setFilter] = useState('All');
+  const [phone, setPhone] = useState(() => window.matchMedia('(max-width: 768px)').matches);
+  useEffect(() => {
+    const m = window.matchMedia('(max-width: 768px)');
+    const f = () => setPhone(m.matches);
+    m.addEventListener('change', f); return () => m.removeEventListener('change', f);
+  }, []);
   const [sel, setSel] = useState('Meducine');
   const [inline, setInline] = useState(null);
   const [more, setMore] = useState(false);
@@ -102,6 +108,41 @@ export default function ProjectsPage({ showPage, simple }) {
       </button>
     );
   };
+
+  // iPhone: a plain scrolling list, like an iOS settings list
+  if (phone && !simple) {
+    const Row = ({ q }) => {
+      const qx = explorer[q.title] || {};
+      const cid = caseForProject[q.title];
+      return (
+        <button className="ios-row" onClick={() => (cid ? onCase(cid) : pick(q.title))}>
+          <span className="ios-row-icon"><Icon p={q} /></span>
+          <span className="ios-row-text">
+            <b>{name(q.title)}</b>
+            <small>{qx.sub || q.tags.slice(0, 2).join(' · ')}</small>
+            {q.award && q.award !== 'In Progress' && <em>{q.award}</em>}
+          </span>
+          {PLAYABLE[q.title] && <span className="ios-row-tag">Play</span>}
+          <svg className="ios-chev" viewBox="0 0 8 14" aria-hidden="true"><path d="M1 1l6 6-6 6" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg>
+        </button>
+      );
+    };
+    return (
+      <div className="page active ios-projects">
+        <h2 className="ios-large">Projects</h2>
+        <div className="ios-seg" role="tablist" aria-label="Filter projects">
+          {FILTERS.map((f) => (
+            <button key={f} role="tab" aria-selected={filter === f} className={filter === f ? 'on' : ''} onClick={() => setFilter(f)}>{f}</button>
+          ))}
+        </div>
+        {featured.length > 0 && <div className="ios-group-label">Selected work</div>}
+        {featured.length > 0 && <div className="ios-group">{featured.map((q) => <Row key={q.title} q={q} />)}</div>}
+        {rest.length > 0 && <div className="ios-group-label">More projects</div>}
+        {rest.length > 0 && <div className="ios-group">{rest.map((q) => <Row key={q.title} q={q} />)}</div>}
+        <p className="ios-foot">{list.length} {list.length === 1 ? 'project' : 'projects'}{filter !== 'All' ? ` in ${filter}` : ''}</p>
+      </div>
+    );
+  }
 
   return (
     <div className="page active px">

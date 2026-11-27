@@ -47,7 +47,7 @@ export default function Window({ activePage, showPage, title, windowBodyRef, min
 
   const handlePointerDown = (e) => {
     // Prevent dragging if the user is clicking on the control buttons
-    if (e.target.closest('.traffic-lights') || maximized) return;
+    if (e.target.closest('.traffic-lights, .ios-back') || maximized || window.innerWidth <= 768) return;
     
     const r = winRef.current.getBoundingClientRect();
     setIsDragging(true);
