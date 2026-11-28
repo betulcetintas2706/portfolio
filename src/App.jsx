@@ -11,7 +11,7 @@ import SimpleView from './components/SimpleView';
 import Tour from './components/Tour';
 import Terminal from './components/Terminal';
 import MobileHome from './components/MobileHome';
-import HackIntro, { hasSeenIntro } from './components/HackIntro';
+import HackIntro from './components/HackIntro';
 import Launcher from './components/Launcher';
 
 function startSimple() {
@@ -24,12 +24,13 @@ function startSimple() {
 
 export default function App() {
   const [activePage, setActivePage] = useState(() => (window.innerWidth <= 768 ? null : 'home')); // phones start on the home screen
-  const [minimized, setMinimized] = useState(() => !hasSeenIntro() && !startSimple());
+  const [minimized, setMinimized] = useState(() => new URLSearchParams(window.location.search).has('hack'));
   const [simple, setSimple] = useState(startSimple);
   const [touring, setTouring] = useState(false);
   const [term, setTerm] = useState(false);
   const [launch, setLaunch] = useState(null); // null = closed, string = starting query
-  const [hack, setHack] = useState(() => !hasSeenIntro() && !startSimple());
+  // Intro game is off on first load for now. It only runs with ?hack=1 or the start-hack event.
+  const [hack, setHack] = useState(() => new URLSearchParams(window.location.search).has('hack'));
   const windowBodyRef = useRef(null);
 
   useEffect(() => {
